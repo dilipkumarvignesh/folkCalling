@@ -1,6 +1,7 @@
 package com.iskcon.pfh.folkcalling;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -8,32 +9,33 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.speech.tts.TextToSpeech;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.telephony.PhoneStateListener;
+import android.telephony.TelephonyManager;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.os.Handler;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.Locale;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     private static final int MY_PERMISSIONS_REQUEST_CALL = 0;
-    private String[] no = {"+918939325360","+919962701659"};
-    private String[] name = {"Dinasharan","Dilip"};
+
     EditText txtGoogleId;
     TextView txtStatus;
     String jName;
-    Button btnDownload;
+    Integer Callenabled;
+    Button btnDownload,CallStop,CallContinue;
     JSONObject obj = new JSONObject();
     JSONArray jA = new JSONArray();
     String GoogleId;
@@ -47,6 +49,29 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        TelephonyManager telephonyManager = (TelephonyManager)getSystemService(
+                Context.TELEPHONY_SERVICE);
+        Callenabled = 1;
+        PhoneStateListener callStateListener = new PhoneStateListener() {
+            public void onCallStateChanged(int state, String incomingNumber){
+                if(state==TelephonyManager.CALL_STATE_RINGING){
+                  //  tts.speak(incomingNumber+" calling", TextToSpeech.QUEUE_FLUSH, null);
+//                    Toast.makeText(getApplicationContext(),"Phone is Ringing : "+incomingNumber,
+//                            Toast.LENGTH_LONG).show();
+                }
+                if(state==TelephonyManager.CALL_STATE_OFFHOOK){
+//                    Toast.makeText(getApplicationContext(),"Phone in a call or call picked",
+//                            Toast.LENGTH_LONG).show();
+                }
+                if(state==TelephonyManager.CALL_STATE_IDLE){
+                    //phone is neither ringing nor in a call
+//                    Toast.makeText(getApplicationContext(),"Phone Idle",
+//                            Toast.LENGTH_LONG).show();
+                    repeatCall();
+                }
+            }
+        };
+        telephonyManager.listen(callStateListener, PhoneStateListener.LISTEN_CALL_STATE);
 
         ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
@@ -57,38 +82,27 @@ public class MainActivity extends AppCompatActivity {
         btnDownload = (Button) findViewById(R.id.btnDownload);
         btnDownload.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
-                Log.d("info", "onClick working");
-
                 download_excel();
             }
         });
-//        b2.setOnClickListener(new View.OnClickListener() {
+        CallStop = (Button) findViewById(R.id.CALLSTOP);
+        CallContinue = (Button) findViewById(R.id.CALLCONTINUE);
+        CallStop.setOnClickListener(this);
+        CallContinue.setOnClickListener(this);
+      //  Button fab = (Button) findViewById(R.id.btn1);
+       // fab.setOnClickListener(new View.OnClickListener() {
 //            @Override
-//            public void onClick(View v) {
-////                            String toSpeak = ed1.getText().toString();
-////                            Toast.makeText(getApplicationContext(), toSpeak, Toast.LENGTH_SHORT).show();
-////                            t1.speak(toSpeak, TextToSpeech.QUEUE_FLUSH, null);
-//                repeatCall();
+//            public void onClick(View view) {
+//               callNow();
 //            }
 //        });
-        Button fab = (Button) findViewById(R.id.btn1);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-               callNow();
-            }
-        });
 
-      //  ed1=(EditText)findViewById(R.id.editText);
-//        b1=(Button)findViewById(R.id.button);
         b2=(Button)findViewById(R.id.btn2);
 
         b2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                            String toSpeak = ed1.getText().toString();
-//                            Toast.makeText(getApplicationContext(), toSpeak, Toast.LENGTH_SHORT).show();
-//                            t1.speak(toSpeak, TextToSpeech.QUEUE_FLUSH, null);
+//
                 repeatCall();
             }
         });
@@ -101,23 +115,32 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-//        b1.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                String toSpeak = "Calling";
-//                Toast.makeText(getApplicationContext(), toSpeak, Toast.LENGTH_SHORT).show();
-//                t1.speak(toSpeak, TextToSpeech.QUEUE_FLUSH, null);
-//            }
-//        });
+        ActivityCompat.requestPermissions(this,
+                new String[]{Manifest.permission.CALL_PHONE},
+                MY_PERMISSIONS_REQUEST_CALL);
 
-//        Intent intent = new Intent(Intent.ACTION_CALL);
-//
-////        intent.setData(Uri.parse("tel:" + bundle.getString("mobilePhone")));
-//
-//        intent.setData(Uri.parse("tel:" + "9663898009"));
+
+
 
     }
 
+    @Override
+    public void onClick(View v) {
+        Log.d("info","Button clicked:"+v.getId());
+        switch(v.getId()) {
+            case R.id.CALLCONTINUE:
+                Callenabled = 1;
+                Log.d("info","CallEnabled:"+"TRUE");
+                repeatCall();
+                break;
+            case R.id.CALLSTOP:
+                 Callenabled = 0;
+                Log.d("info","CallEnabled:"+"FALSE");
+                break;
+
+
+        }
+    }
     private void processJson(JSONObject object) {
 
 
@@ -129,6 +152,7 @@ public class MainActivity extends AppCompatActivity {
            //int cou = contact_count - i;
             String Status =  "0 Contacts Called " + contact_count+" Contacts Remaining";
             txtStatus.setText(Status);
+
             Log.d("info", "values_of_rows=" + rows);
             for (int r = 0; r < rows.length(); ++r) {
                 JSONObject row = rows.getJSONObject(r);
@@ -146,16 +170,23 @@ public class MainActivity extends AppCompatActivity {
                 jA.put(obj);
 
             }
+
             Log.d("info", "values=" + jA);
 
         } catch (JSONException e) {
             e.printStackTrace();
         }
     }
+    private String getGoogleId(String goog)
+    {
+       // goog = "https://docs.google.com/spreadsheets/d/1xk8AY8MOWiqwC3qvFEyOVN-wBdMtDW8QtirmcUkocrU/edit#gid=0";
+        String[] words=goog.split("/");
+        return words[5];
+    }
     private void download_excel() {
         //  DownloadWebpageTask myTask = new DownloadWebpageTask();
         GoogleId = txtGoogleId.getText().toString();
-        Log.d("info", "googleId=" + GoogleId);
+
         Toast.makeText(getApplicationContext(),
                 "Downloading Excel. Please wait ...", Toast.LENGTH_LONG).show();
         DownloadWebpageTask dow = new DownloadWebpageTask(new AsyncResult() {
@@ -166,12 +197,11 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
-        //  GoogleId = ""+GoogleId;
-        //GoogleId = ""+"1iuVKzHh2ueSkZ7pAGQBb4CmaqwXHpdd5a3lV89xpdGs";
-       // GoogleId = "" + "1xk8AY8MOWiqwC3qvFEyOVN-wBdMtDW8QtirmcUkocrU";
-        GoogleId = "1ZVxUrStq3US-Yyi22aojwESTAbYHZfcOKIhmBAYWqew";
-        dow.execute("https://spreadsheets.google.com/tq?key="+GoogleId);
-        //1iuVKzHh2ueSkZ7pAGQBb4CmaqwXHpdd5a3lV89xpdGs
+
+         String final_google_id  = getGoogleId(GoogleId);
+        //String final_google_id = "1raLPgHU5tmJVaWUcjD0Ve0TnMZ-dqUTr_lyhjWPXALE";
+        dow.execute("https://spreadsheets.google.com/tq?key="+final_google_id);
+
     }
 
     public void callNow()
@@ -187,7 +217,7 @@ public class MainActivity extends AppCompatActivity {
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     Log.d("Info", "Call now");
                        // repeatCall();
-                    repeatCall();
+                 //   repeatCall();
 //                    b2.setOnClickListener(new View.OnClickListener() {
 //                        @Override
 //                        public void onClick(View v) {
@@ -217,61 +247,81 @@ public class MainActivity extends AppCompatActivity {
         Log.d("info","Connecting Call");
         Intent intent = new Intent(Intent.ACTION_CALL);
         try {
-            JSONObject objects = jA.getJSONObject(i);
-            jName = objects.get("Name").toString();
-            String jNumber = objects.get("Number").toString();
-            String fNumber = jNumber;
-            intent.setData(Uri.parse("tel:" + fNumber));
-           // String na = name[i];
-            t1.speak("Calling " + jName, TextToSpeech.QUEUE_FLUSH, null);
-            intent.setData(Uri.parse("tel:" + jNumber));
-            startActivity(intent);
-           // startActivityForResult(intent, REQUEST_CODE);
-            Toast.makeText(getApplicationContext(),
-                    "Calling "+jName, Toast.LENGTH_LONG).show();
-            i++;
-            int cou = contact_count - i;
-            String Status = i+ " Contacts Called " + cou+" Contacts Remaining";
-            txtStatus.setText(Status);
-            Runnable showDialogRun = new Runnable() {
-                public void run(){
-                    Intent showDialogIntent = new Intent(MainActivity.this, DisplayMessageActivity.class);
-                    showDialogIntent.putExtra("Name", jName);
-                    startActivity(showDialogIntent);
+            if(Callenabled == 1) {
+                JSONObject objects = jA.getJSONObject(i);
+                jName = objects.get("Name").toString();
+                String jNumber = objects.get("Number").toString();
+                String fNumber = jNumber;
+                intent.setData(Uri.parse("tel:" + fNumber));
+                // String na = name[i];
+                t1.speak("Calling " + jName, TextToSpeech.QUEUE_FLUSH, null);
+                intent.setData(Uri.parse("tel:" + jNumber));
+                // startActivity(intent);
 
-                }
-            };
-            Handler h = new Handler();
-            h.postDelayed(showDialogRun, 2000);
+                startActivityForResult(intent, REQUEST_CODE);
+
+                Toast.makeText(getApplicationContext(),
+                        "Calling " + jName, Toast.LENGTH_LONG).show();
+                i++;
+                int cou = contact_count - i;
+                String Status = i + " Contacts Called " + cou + " Contacts Remaining";
+                txtStatus.setText(Status);
+                Runnable showDialogRun = new Runnable() {
+                    public void run() {
+                        Intent showDialogIntent = new Intent(MainActivity.this, DisplayMessageActivity.class);
+                        showDialogIntent.putExtra("Name", jName);
+                        startActivityForResult(showDialogIntent, 2);
+
+                    }
+                };
+                Handler h = new Handler();
+                h.postDelayed(showDialogRun, 2000);
+            }
         }
         catch (JSONException e){
                             e.printStackTrace();
                         }
-//        intent.setData(Uri.parse("tel:" + jNumber));
-//        String na = name[i];
-//        t1.speak(jName, TextToSpeech.QUEUE_FLUSH, null);
 
-
-//        String na = name[i];
-//         t1.speak(na, TextToSpeech.QUEUE_FLUSH, null);
-//
-//        startActivityForResult(intent, REQUEST_CODE);
-//
-
-//        if(i<=1) {
-//            Log.d("info","I value="+i);
-//            startActivityForResult(intent, REQUEST_CODE);
-//        }
-//        else{
-//            return;
-//        }
 
 
     }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         Log.d("info","Inside OnActivityResult");
-        Log.d("info","I value="+i);
+        //Log.d("info","I value="+i);
+
+        if (requestCode == 1) {
+
+           // repeatCall();
+            Log.d("info","Inside requestCode");
+            // Make sure the request was successful
+//            if (resultCode == RESULT_OK) {
+//                Log.d("info","Inside result Ok");
+//                if(i<=contact_count) {
+//                   repeatCall();
+//                }
+//                if (resultCode == RESULT_CANCELED){
+//                    Toast.makeText(getApplicationContext(), "Cancelled", Toast.LENGTH_SHORT).show();
+//                    // The user picked a contact.
+//                }
+//                // The Intent's data Uri identifies which contact was selected.
+
+                // Do something with the contact here (bigger example below)
+            }
+            else if  (requestCode == 2){
+            if (resultCode == Activity.RESULT_OK) {
+                // TODO Extract the data returned from the child Activity.
+                String returnValue = data.getStringExtra("Status");
+                Log.d("info","UpdatedStatus="+returnValue);
+                TextView updText = (TextView)findViewById(R.id.UpdatedStatus1);
+                String StatusText = updText.getText().toString();
+                StatusText = StatusText + "\n"+ returnValue;
+                updText.setText(StatusText);
+
+
+            }
+        }
+        }
 
 //        new Timer().schedule(new TimerTask() {
 //            @Override
@@ -305,25 +355,4 @@ public class MainActivity extends AppCompatActivity {
 //            }
 //        }}
     }
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-}

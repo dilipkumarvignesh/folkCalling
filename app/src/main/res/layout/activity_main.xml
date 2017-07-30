@@ -78,14 +78,14 @@
         android:text="Download"
 
         />
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Get Call Permission"
-        android:id="@+id/btn1"
-        android:layout_below="@+id/editText"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="46dp" />
+    <!--<Button-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:text="Get Call Permission"-->
+        <!--android:id="@+id/btn1"-->
+        <!--android:layout_below="@+id/editText"-->
+        <!--android:layout_centerHorizontal="true"-->
+        <!--android:layout_marginTop="46dp" />-->
 
     <Button
         android:layout_width="wrap_content"
@@ -96,11 +96,39 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="46dp" />
     <TextView
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:text="Calling Status"
+    android:id="@+id/Status"
+    />
+
+    <TextView
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="Calling Status"
-        android:id="@+id/Status"
+
+        android:id="@+id/UpdatedStatus1"
         />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="58dp"
+        android:weightSum="1">
+
+        <Button
+            android:id="@+id/CALLSTOP"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="STOP" />
+
+        <Button
+            android:id="@+id/CALLCONTINUE"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignRight="@+id/CALLSTOP"
+            android:layout_toEndOf="@+id/CALLSTOP"
+            android:layout_weight="0.06"
+            android:text="CONTINUE" />
+    </LinearLayout>
 </LinearLayout>
 
 

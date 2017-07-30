@@ -19,7 +19,7 @@
         />
 
     <EditText
-        android:id="@+id/txtGoogleId"
+        android:id="@+id/UpdatedText"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:text="Update Status"
