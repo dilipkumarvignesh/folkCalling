@@ -66,7 +66,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     //phone is neither ringing nor in a call
 //                    Toast.makeText(getApplicationContext(),"Phone Idle",
 //                            Toast.LENGTH_LONG).show();
-                    repeatCall();
+                    Runnable showDialogRun = new Runnable() {
+                        public void run() {
+                            repeatCall();
+                        }
+                    };
+                    Handler h = new Handler();
+                    h.postDelayed(showDialogRun, 3000);
+
                 }
             }
         };
