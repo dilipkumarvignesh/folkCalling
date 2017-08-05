@@ -9,7 +9,6 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
 import android.speech.tts.TextToSpeech;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -21,7 +20,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
-
+import android.os.Handler;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -71,8 +70,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
             }
         };
-        telephonyManager.listen(callStateListener, PhoneStateListener.LISTEN_CALL_STATE);
 
+        telephonyManager.listen(callStateListener, PhoneStateListener.LISTEN_CALL_STATE);
         ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
         //Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -89,8 +88,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         CallContinue = (Button) findViewById(R.id.CALLCONTINUE);
         CallStop.setOnClickListener(this);
         CallContinue.setOnClickListener(this);
-      //  Button fab = (Button) findViewById(R.id.btn1);
-       // fab.setOnClickListener(new View.OnClickListener() {
+//        Button fab = (Button) findViewById(R.id.btn1);
+//        fab.setOnClickListener(new View.OnClickListener() {
 //            @Override
 //            public void onClick(View view) {
 //               callNow();
@@ -198,8 +197,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         });
 
-         String final_google_id  = getGoogleId(GoogleId);
-        //String final_google_id = "1raLPgHU5tmJVaWUcjD0Ve0TnMZ-dqUTr_lyhjWPXALE";
+        // String final_google_id  = getGoogleId(GoogleId);
+        String final_google_id = "1C7XyjLQj0t6waLGlDWsvVdGtM0JWh24RFi0ZiR5L6w0";
         dow.execute("https://spreadsheets.google.com/tq?key="+final_google_id);
 
     }
@@ -256,9 +255,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 // String na = name[i];
                 t1.speak("Calling " + jName, TextToSpeech.QUEUE_FLUSH, null);
                 intent.setData(Uri.parse("tel:" + jNumber));
-                // startActivity(intent);
+                 startActivity(intent);
 
-                startActivityForResult(intent, REQUEST_CODE);
+                //startActivityForResult(intent, REQUEST_CODE);
 
                 Toast.makeText(getApplicationContext(),
                         "Calling " + jName, Toast.LENGTH_LONG).show();
