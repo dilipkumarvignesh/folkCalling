@@ -3,6 +3,9 @@
     android:orientation="vertical"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
+    android:windowBackground="@android:color/transparent"
+    android:windowIsTranslucent="true"
+    android:windowAnimationStyle="@android:style/Animation.Translucent"
     >
 
     <TextView

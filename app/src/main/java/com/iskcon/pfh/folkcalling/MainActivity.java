@@ -9,6 +9,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.speech.tts.TextToSpeech;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -20,16 +21,21 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.os.Handler;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.Locale;
 
+import static android.R.attr.permission;
+
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     private static final int MY_PERMISSIONS_REQUEST_CALL = 0;
-
+    private static String[] PERMISSIONS_STORAGE = {
+            Manifest.permission.READ_EXTERNAL_STORAGE,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE
+    };
     EditText txtGoogleId;
     TextView txtStatus;
     String jName;
@@ -37,6 +43,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     Button btnDownload,CallStop,CallContinue;
     JSONObject obj = new JSONObject();
     JSONArray jA = new JSONArray();
+    View vi;
     String GoogleId;
     TextToSpeech t1;
     EditText ed1;
@@ -44,13 +51,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     int i=0;
     int contact_count=0;
     public static final int REQUEST_CODE = 1;
+    private static final int REQUEST_EXTERNAL_STORAGE = 1;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         TelephonyManager telephonyManager = (TelephonyManager)getSystemService(
                 Context.TELEPHONY_SERVICE);
+        vi = this.findViewById(android.R.id.content);
         Callenabled = 1;
+        if (permission != PackageManager.PERMISSION_GRANTED) {
+            // We don't have permission so prompt the user
+            ActivityCompat.requestPermissions(
+                    this,
+                    PERMISSIONS_STORAGE,
+                    REQUEST_EXTERNAL_STORAGE
+            );}
         PhoneStateListener callStateListener = new PhoneStateListener() {
             public void onCallStateChanged(int state, String incomingNumber){
                 if(state==TelephonyManager.CALL_STATE_RINGING){
@@ -262,7 +278,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 // String na = name[i];
                 t1.speak("Calling " + jName, TextToSpeech.QUEUE_FLUSH, null);
                 intent.setData(Uri.parse("tel:" + jNumber));
-                 startActivity(intent);
+                startActivity(intent);
 
                 //startActivityForResult(intent, REQUEST_CODE);
 
@@ -280,9 +296,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                     }
                 };
+//                FragmentManager fm = getFragmentManager();
+//                CallStatus cs = new CallStatus();
+//                cs.show(fm,"DialogFragment");
                 Handler h = new Handler();
                 h.postDelayed(showDialogRun, 2000);
+                CallStatusUpdate updateCall = new CallStatusUpdate();
+                updateCall.getData(jNumber);
             }
+
+            //vi.addView(ly1, params1);
+
+
+
         }
         catch (JSONException e){
                             e.printStackTrace();
