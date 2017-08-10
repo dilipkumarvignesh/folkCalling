@@ -1,8 +1,12 @@
 package com.iskcon.pfh.folkcalling;
 
 import android.Manifest;
+import android.content.Context;
 import android.os.Environment;
 import android.util.Log;
+import android.widget.Toast;
+
+import org.json.JSONArray;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -23,7 +27,7 @@ public class CallStatusUpdate {
             Manifest.permission.READ_EXTERNAL_STORAGE,
             Manifest.permission.WRITE_EXTERNAL_STORAGE
     };
-    public void getData(String Number)
+    public void getData(String Number, String Status, Context con)
     {
         InputStream inputStream;
         String[] ids;
@@ -47,18 +51,19 @@ public class CallStatusUpdate {
 
 
                 ids = csvLine.split(",");
-            //    Toast.makeText(getBaseContext(), csvLine,Toast.LENGTH_LONG).show();
-                if(ids[1] == Number)
+
+                if(ids[1].equalsIgnoreCase(Number))
                 {
-                    csvLine=csvLine+",Not Attending";
+
+                    csvLine=csvLine+","+Status;
                     bw.write(csvLine+"\n");
+
                 }
                 else{
                     bw.write(csvLine+"\n");
                 }
 
-              //  message= txtEd.getText().toString();
-              //  message=message+ids[0]+":"+ids[1]+"/n";
+
                 Log.d("Collumn 1 ", "" + ids[0]+ids[1]);
                 //txtEd.setText(message);
 
@@ -68,13 +73,13 @@ public class CallStatusUpdate {
             reader.close();
             bw.close();
             file.delete();
-            file1.renameTo(new File(SD_CARD_PATH, "/Contacts.csv"));
+            file1.renameTo(new File(SD_CARD_PATH, "Contacts.csv"));
 //        bw.close();
 //        fw.close();
             //  inputStream = getResources().openRawResource(file);
         }catch (Exception e) {
-//            Toast.makeText(getBaseContext(), e.getMessage(),
-//                    Toast.LENGTH_SHORT).show();
+            Toast.makeText(con.getApplicationContext(), e.getMessage(),
+                   Toast.LENGTH_SHORT).show();
         }
 //    try{
 //    File file = new File(SD_CARD_PATH, "/Music/Contacts.csv");
@@ -86,5 +91,45 @@ public class CallStatusUpdate {
 //        Toast.makeText(getBaseContext(), e.getMessage(),
 //                Toast.LENGTH_SHORT).show();
 //    }
+    }
+
+    public JSONArray getCallDataStatus(String Status,Context Con)
+    {
+        InputStream inputStream;
+        String[] ids;
+        FileInputStream iStream;
+        BufferedReader reader;
+        String message;
+        String csvLine;
+        JSONArray jA = new JSONArray();
+
+        File SD_CARD_PATH = Environment.getExternalStorageDirectory(); //.toString();
+
+
+        try {
+            File file = new File(SD_CARD_PATH, "Contacts.csv");
+            FileInputStream fIn = new FileInputStream(file);
+            reader = new BufferedReader(new InputStreamReader(fIn));
+            while ((csvLine = reader.readLine()) != null) {
+                Toast.makeText(Con.getApplicationContext(), csvLine,
+                Toast.LENGTH_SHORT).show();
+                ids = csvLine.split(",");
+
+                if (ids[2].equalsIgnoreCase(Status))
+                {
+                    Toast.makeText(Con.getApplicationContext(), csvLine,
+                        Toast.LENGTH_SHORT).show();
+//                    JSONObject obj = new JSONObject();
+//                    obj.put("Name", ids[0]);
+//                    obj.put("Number", ids[1]);
+//                    jA.put(obj);
+                }
+            }
+        }
+        catch (Exception e) {
+            Toast.makeText(Con.getApplicationContext(), e.getMessage(),
+                    Toast.LENGTH_SHORT).show();
+        }
+        return jA;
     }
 }

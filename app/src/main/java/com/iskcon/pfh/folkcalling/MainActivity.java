@@ -41,7 +41,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     String jName;
     Integer Callenabled;
     Button btnDownload,CallStop,CallContinue;
-    JSONObject obj = new JSONObject();
+
     JSONArray jA = new JSONArray();
     View vi;
     String GoogleId;
@@ -211,18 +211,24 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         Toast.makeText(getApplicationContext(),
                 "Downloading Excel. Please wait ...", Toast.LENGTH_LONG).show();
-        DownloadWebpageTask dow = new DownloadWebpageTask(new AsyncResult() {
-            @Override
-            public void onResult(JSONObject object) {
 
-                processJson(object);
+         CallStatusUpdate CallData = new CallStatusUpdate();
+         jA = CallData.getCallDataStatus("A1",this);
+         Toast.makeText(getApplicationContext(),
+                 jA.length()+" Contacts Downloaded", Toast.LENGTH_LONG).show();
 
-            }
-        });
+//        DownloadWebpageTask dow = new DownloadWebpageTask(new AsyncResult() {
+//            @Override
+//            public void onResult(JSONObject object) {
+//
+//                processJson(object);
+//
+//            }
+//        });
 
         // String final_google_id  = getGoogleId(GoogleId);
-        String final_google_id = "1C7XyjLQj0t6waLGlDWsvVdGtM0JWh24RFi0ZiR5L6w0";
-        dow.execute("https://spreadsheets.google.com/tq?key="+final_google_id);
+//        String final_google_id = "1C7XyjLQj0t6waLGlDWsvVdGtM0JWh24RFi0ZiR5L6w0";
+//        dow.execute("https://spreadsheets.google.com/tq?key="+final_google_id);
 
     }
 
@@ -302,7 +308,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 Handler h = new Handler();
                 h.postDelayed(showDialogRun, 2000);
                 CallStatusUpdate updateCall = new CallStatusUpdate();
-                updateCall.getData(jNumber);
+                updateCall.getData(jNumber,"A1",this);
             }
 
             //vi.addView(ly1, params1);
