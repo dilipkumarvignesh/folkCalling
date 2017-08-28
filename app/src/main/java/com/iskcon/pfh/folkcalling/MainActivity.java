@@ -27,6 +27,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.Locale;
 
 import static android.R.attr.permission;
@@ -177,15 +178,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
     private void processJson(JSONObject object) {
 
-
+        i=0;
+        jA= new JSONArray(new ArrayList<String>());
         try {
             JSONArray rows = object.getJSONArray("rows");
-            Toast.makeText(getApplicationContext(),
-                    rows.length()+" Contacts Downloaded", Toast.LENGTH_LONG).show();
-            contact_count = rows.length();
+
+            Spinner sta = (Spinner)findViewById(R.id.spinner);
+            String SpinnerValue = sta.getSelectedItem().toString();
            //int cou = contact_count - i;
-            String Status =  "0 Contacts Called " + contact_count+" Contacts Remaining";
-            txtStatus.setText(Status);
+
 
             Log.d("info", "values_of_rows=" + rows);
             for (int r = 0; r < rows.length(); ++r) {
@@ -197,14 +198,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 //                int position = columns.getJSONObject(0).getInt("v");
                 String name = columns.getJSONObject(0).getString("v");
                 String number = columns.getJSONObject(1).getString("f");
+                String StatusValue = columns.getJSONObject(2).getString("v");
                 Log.d("info", "Name=" + name);
                 Log.d("info", "Number=" + number);
                 obj.put("Name", name);
                 obj.put("Number", number);
-                jA.put(obj);
-
+                obj.put("Status",StatusValue);
+                if (StatusValue.equals(SpinnerValue)) {
+                    jA.put(obj);
+                }
             }
-
+            Toast.makeText(getApplicationContext(),
+                    jA.length()+" Contacts Downloaded", Toast.LENGTH_LONG).show();
+            contact_count = jA.length();
+            String Status =  "0 Contacts Called " + contact_count+" Contacts Remaining";
+            txtStatus.setText(Status);
             Log.d("info", "values=" + jA);
 
         } catch (JSONException e) {
@@ -240,6 +248,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
         else if(!GoogleId.equals(""))
         {
+            String final_google_id = getGoogleId(GoogleId);
             Toast.makeText(getApplicationContext(),
                     "Downloading Excel. Please wait ...", Toast.LENGTH_LONG).show();
             DownloadWebpageTask dow = new DownloadWebpageTask(new AsyncResult() {
@@ -251,7 +260,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                 }
             });
-            String final_google_id = "1C7XyjLQj0t6waLGlDWsvVdGtM0JWh24RFi0ZiR5L6w0";
+           // String final_google_id = "1C7XyjLQj0t6waLGlDWsvVdGtM0JWh24RFi0ZiR5L6w0";
             dow.execute("https://spreadsheets.google.com/tq?key="+final_google_id);
         }
 
