@@ -19,6 +19,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -66,7 +67,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     this,
                     PERMISSIONS_STORAGE,
                     REQUEST_EXTERNAL_STORAGE
-            );}
+
+
+            );
+
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.CALL_PHONE},
+                    MY_PERMISSIONS_REQUEST_CALL);
+        }
         PhoneStateListener callStateListener = new PhoneStateListener() {
             public void onCallStateChanged(int state, String incomingNumber){
                 if(state==TelephonyManager.CALL_STATE_RINGING){
@@ -82,6 +90,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     //phone is neither ringing nor in a call
 //                    Toast.makeText(getApplicationContext(),"Phone Idle",
 //                            Toast.LENGTH_LONG).show();
+
+//                    Intent showDialogIntent = new Intent(MainActivity.this, DisplayMessageActivity.class);
+//                        showDialogIntent.putExtra("Name", jName);
+//                        startActivityForResult(showDialogIntent, 2);
                     Runnable showDialogRun = new Runnable() {
                         public void run() {
                             repeatCall();
@@ -137,9 +149,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         });
 
-        ActivityCompat.requestPermissions(this,
-                new String[]{Manifest.permission.CALL_PHONE},
-                MY_PERMISSIONS_REQUEST_CALL);
+//        ActivityCompat.requestPermissions(this,
+//                new String[]{Manifest.permission.CALL_PHONE},
+//                MY_PERMISSIONS_REQUEST_CALL);
 
 
 
@@ -207,36 +219,57 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
     private void download_excel() {
         //  DownloadWebpageTask myTask = new DownloadWebpageTask();
+        i=0;
         GoogleId = txtGoogleId.getText().toString();
+        EditText cFilename = (EditText) findViewById(R.id.LFileInput);
+        String csvFilename = cFilename.getText().toString();
+        if (!csvFilename.equals(""))
+        {
+            Spinner sta = (Spinner)findViewById(R.id.spinner);
+            String StatusValue = sta.getSelectedItem().toString();
+            Log.d("info","SpinnerText:"+StatusValue);
+            CallStatusUpdate CallData = new CallStatusUpdate();
+            jA = CallData.getCallDataStatus(StatusValue,this,csvFilename);
+            Toast.makeText(getApplicationContext(),
+                    jA.length()+" Contacts Downloaded", Toast.LENGTH_LONG).show();
+            contact_count = jA.length();
+            //int cou = contact_count - i;
+            String Status =  "0 Contacts Called " + contact_count+" Contacts Remaining";
+            txtStatus.setText(Status);
 
-        Toast.makeText(getApplicationContext(),
-                "Downloading Excel. Please wait ...", Toast.LENGTH_LONG).show();
+        }
+        else if(!GoogleId.equals(""))
+        {
+            Toast.makeText(getApplicationContext(),
+                    "Downloading Excel. Please wait ...", Toast.LENGTH_LONG).show();
+            DownloadWebpageTask dow = new DownloadWebpageTask(new AsyncResult() {
+                @Override
+                public void onResult(JSONObject object) {
+                    //    ActivityCompat.requestPermissions(this,
+//                new String[]{Manifest.permission.CALL_PHONE},
+                    processJson(object);
 
-         CallStatusUpdate CallData = new CallStatusUpdate();
-         jA = CallData.getCallDataStatus("A1",this);
-         Toast.makeText(getApplicationContext(),
-                 jA.length()+" Contacts Downloaded", Toast.LENGTH_LONG).show();
+                }
+            });
+            String final_google_id = "1C7XyjLQj0t6waLGlDWsvVdGtM0JWh24RFi0ZiR5L6w0";
+            dow.execute("https://spreadsheets.google.com/tq?key="+final_google_id);
+        }
 
-//        DownloadWebpageTask dow = new DownloadWebpageTask(new AsyncResult() {
-//            @Override
-//            public void onResult(JSONObject object) {
+
+
+//         Toast.makeText(getApplicationContext(),
+//                 jA.length()+" Contacts Downloaded", Toast.LENGTH_LONG).show();
+
+
+       // String final_google_id  = getGoogleId(GoogleId);
+
+
+        }
+
+public void callNow()
+        {           Log.d("info","inside Call now");
 //
-//                processJson(object);
-//
-//            }
-//        });
-
-        // String final_google_id  = getGoogleId(GoogleId);
-//        String final_google_id = "1C7XyjLQj0t6waLGlDWsvVdGtM0JWh24RFi0ZiR5L6w0";
-//        dow.execute("https://spreadsheets.google.com/tq?key="+final_google_id);
-
-    }
-
-    public void callNow()
-    {           Log.d("info","inside Call now");
-                 ActivityCompat.requestPermissions(this,
-                new String[]{Manifest.permission.CALL_PHONE},
-                MY_PERMISSIONS_REQUEST_CALL);
+//                MY_PERMISSIONS_REQUEST_CALL);
     }
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
         switch (requestCode) {
@@ -275,7 +308,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Log.d("info","Connecting Call");
         Intent intent = new Intent(Intent.ACTION_CALL);
         try {
-            if(Callenabled == 1) {
+            if(Callenabled == 1 && i < contact_count) {
+
                 JSONObject objects = jA.getJSONObject(i);
                 jName = objects.get("Name").toString();
                 String jNumber = objects.get("Number").toString();
@@ -294,11 +328,53 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 int cou = contact_count - i;
                 String Status = i + " Contacts Called " + cou + " Contacts Remaining";
                 txtStatus.setText(Status);
+                final Context context = this;
                 Runnable showDialogRun = new Runnable() {
                     public void run() {
-                        Intent showDialogIntent = new Intent(MainActivity.this, DisplayMessageActivity.class);
-                        showDialogIntent.putExtra("Name", jName);
-                        startActivityForResult(showDialogIntent, 2);
+//                        Intent showDialogIntent = new Intent(MainActivity.this, DisplayMessageActivity.class);
+//                        showDialogIntent.putExtra("Name", jName);
+//                        startActivityForResult(showDialogIntent, 2);
+//
+//                        // get prompts.xml view
+//                        LayoutInflater li = LayoutInflater.from(context);
+//                        View promptsView = li.inflate(R.layout.custom_dialog, null);
+//
+//                        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
+//                                context);
+//
+//                        // set prompts.xml to alertdialog builder
+//                        alertDialogBuilder.setView(promptsView);
+//
+//                        final EditText userInput = (EditText) promptsView
+//                                .findViewById(R.id.editTextDialogUserInput);
+
+                        // set dialog message
+//                        alertDialogBuilder
+//                                .setCancelable(false)
+//                                .setPositiveButton("OK",
+//                                        new DialogInterface.OnClickListener() {
+//                                            public void onClick(DialogInterface dialog,int id) {
+//                                                // get user input and set it to result
+//                                                // edit text
+//                                                result.setText(userInput.getText());
+//                                            }
+//                                        })
+//                                .setNegativeButton("Cancel",
+//                                        new DialogInterface.OnClickListener() {
+//                                            public void onClick(DialogInterface dialog,int id) {
+//                                                dialog.cancel();
+//                                            }
+//                                        });
+//
+//                        // create alert dialog
+//                        AlertDialog alertDialog = alertDialogBuilder.create();
+//
+//                        // show it
+//                        alertDialog.show();
+
+
+
+
 
                     }
                 };
@@ -307,8 +383,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 //                cs.show(fm,"DialogFragment");
                 Handler h = new Handler();
                 h.postDelayed(showDialogRun, 2000);
-                CallStatusUpdate updateCall = new CallStatusUpdate();
-                updateCall.getData(jNumber,"A1",this);
+//                CallStatusUpdate updateCall = new CallStatusUpdate();
+//                updateCall.getData(jNumber,"A1",this);
             }
 
             //vi.addView(ly1, params1);

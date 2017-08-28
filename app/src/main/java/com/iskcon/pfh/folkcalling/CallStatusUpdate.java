@@ -7,6 +7,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -93,7 +94,7 @@ public class CallStatusUpdate {
 //    }
     }
 
-    public JSONArray getCallDataStatus(String Status,Context Con)
+    public JSONArray getCallDataStatus(String Status,Context Con,String Filename)
     {
         InputStream inputStream;
         String[] ids;
@@ -104,25 +105,26 @@ public class CallStatusUpdate {
         JSONArray jA = new JSONArray();
 
         File SD_CARD_PATH = Environment.getExternalStorageDirectory(); //.toString();
-
+        String fname = Filename +".csv";
 
         try {
-            File file = new File(SD_CARD_PATH, "Contacts.csv");
+            File file = new File(SD_CARD_PATH, fname);
             FileInputStream fIn = new FileInputStream(file);
             reader = new BufferedReader(new InputStreamReader(fIn));
             while ((csvLine = reader.readLine()) != null) {
-                Toast.makeText(Con.getApplicationContext(), csvLine,
-                Toast.LENGTH_SHORT).show();
+//                Toast.makeText(Con.getApplicationContext(), csvLine,
+//                Toast.LENGTH_SHORT).show();
                 ids = csvLine.split(",");
-
+                Log.d("info","Rowinfo:"+ids[2]);
                 if (ids[2].equalsIgnoreCase(Status))
                 {
-                    Toast.makeText(Con.getApplicationContext(), csvLine,
-                        Toast.LENGTH_SHORT).show();
-//                    JSONObject obj = new JSONObject();
-//                    obj.put("Name", ids[0]);
-//                    obj.put("Number", ids[1]);
-//                    jA.put(obj);
+//                    Toast.makeText(Con.getApplicationContext(), csvLine,
+//                        Toast.LENGTH_SHORT).show();
+                    JSONObject obj = new JSONObject();
+                    obj.put("Name", ids[0]);
+                    obj.put("Number", ids[1]);
+                    jA.put(obj);
+                      Log.d("info","FileInfo:"+ids[1]+","+ids[2]);
                 }
             }
         }

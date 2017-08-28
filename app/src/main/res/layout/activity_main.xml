@@ -1,79 +1,106 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent">
+<!--<ScrollView-->
+    <!--xmlns:android="http://schemas.android.com/apk/res/android"-->
+    <!--android:layout_width="fill_parent"-->
+    <!--android:layout_height="fill_parent">-->
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingLeft="16dp"
+    android:paddingRight="16dp"
     >
 
     <TextView
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:text="Enter Google Sheet ID"
+        android:id="@+id/GoogleIdText"
         />
     <EditText
         android:id="@+id/txtGoogleId"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/GoogleIdText"
         />
+
+    <TextView
+        android:id="@+id/LFileName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Enter File Name:"
+        android:layout_below="@+id/txtGoogleId"/>
+
+    <EditText
+        android:id="@+id/LFileInput"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/LFileName"
+        />
+    <Spinner
+        android:layout_below="@+id/LFileInput"
+        android:id="@+id/spinner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:entries="@array/array_name"/>
 
     <Button
         android:id="@+id/btnDownload"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:text="Download"
-
+        android:layout_below="@+id/spinner"
         />
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Start Call"
+        android:text="Start Calling"
         android:id="@+id/btn2"
-        android:layout_below="@+id/editText"
-        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/btnDownload"
+        android:layout_alignParentLeft="true"
         android:layout_marginTop="46dp" />
     <TextView
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    android:text="Calling Status"
+    android:text="Calling Status" android:layout_below="@+id/btn2"
     android:id="@+id/Status"
     />
 
     <TextView
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-
+        android:layout_below="@+id/Status"
         android:id="@+id/UpdatedStatus1"
         />
 
-    <LinearLayout
+
+
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="58dp"
-        android:weightSum="1">
+        android:layout_height="wrap_content"
+        android:weightSum="1"
+        android:layout_alignParentBottom="true">
 
         <Button
             android:id="@+id/CALLSTOP"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_weight="0.5"
             android:text="STOP" />
 
         <Button
             android:id="@+id/CALLCONTINUE"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignRight="@+id/CALLSTOP"
-            android:layout_toEndOf="@+id/CALLSTOP"
-            android:layout_weight="0.06"
+            android:layout_alignParentRight="true"
+            android:layout_weight="0.5"
+
             android:text="CONTINUE" />
-    </LinearLayout>
+    </RelativeLayout>
 
-</LinearLayout>
+</RelativeLayout>
 
 
-    </ScrollView>
+    <!--</ScrollView>-->
