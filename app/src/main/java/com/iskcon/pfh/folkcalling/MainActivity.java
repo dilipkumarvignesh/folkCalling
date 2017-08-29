@@ -95,6 +95,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 //                    Intent showDialogIntent = new Intent(MainActivity.this, DisplayMessageActivity.class);
 //                        showDialogIntent.putExtra("Name", jName);
 //                        startActivityForResult(showDialogIntent, 2);
+//                    FragmentManager fm = getFragmentManager();
+//                    CallStatus cs = new CallStatus();
+//                    cs.show(fm,"DialogFragment");
                     Runnable showDialogRun = new Runnable() {
                         public void run() {
                             repeatCall();
@@ -387,13 +390,11 @@ public void callNow()
 
                     }
                 };
-//                FragmentManager fm = getFragmentManager();
-//                CallStatus cs = new CallStatus();
-//                cs.show(fm,"DialogFragment");
+
                 Handler h = new Handler();
                 h.postDelayed(showDialogRun, 2000);
-//                CallStatusUpdate updateCall = new CallStatusUpdate();
-//                updateCall.getData(jNumber,"A1",this);
+                CallStatusUpdate updateCall = new CallStatusUpdate();
+                updateCall.writeStatus(jNumber,"Y1",this);
             }
 
             //vi.addView(ly1, params1);

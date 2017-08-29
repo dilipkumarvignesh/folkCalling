@@ -28,7 +28,7 @@ public class CallStatusUpdate {
             Manifest.permission.READ_EXTERNAL_STORAGE,
             Manifest.permission.WRITE_EXTERNAL_STORAGE
     };
-    public void getData(String Number, String Status, Context con)
+    public void writeStatus(String Number, String Status, Context con)
     {
         InputStream inputStream;
         String[] ids;
@@ -52,10 +52,10 @@ public class CallStatusUpdate {
 
 
                 ids = csvLine.split(",");
-
+                Log.d("info","Write Number:"+Number);
                 if(ids[1].equalsIgnoreCase(Number))
                 {
-
+                    Log.d("info","Write Number Inside:"+Number);
                     csvLine=csvLine+","+Status;
                     bw.write(csvLine+"\n");
 
