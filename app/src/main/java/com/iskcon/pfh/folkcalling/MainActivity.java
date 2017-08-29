@@ -355,7 +355,9 @@ public void callNow()
                 int cou = contact_count - i;
                 String Status = i + " Contacts Called " + cou + " Contacts Remaining";
                 txtStatus.setText(Status);
-                final Context context = this;
+                TextView nameStatus = (TextView)findViewById(R.id.txtStatus);
+                nameStatus.setText("Update Call Status for "+jName);
+
 
 
 
@@ -378,8 +380,11 @@ public void callNow()
 
     public void updateStatus(String number, String Status)
     {
+
         CallStatusUpdate updateCall = new CallStatusUpdate();
         updateCall.writeStatus(number,Status,this);
+        Toast.makeText(getApplicationContext(),"Status Updated",
+                            Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -391,19 +396,7 @@ public void callNow()
 
            // repeatCall();
             Log.d("info","Inside requestCode");
-            // Make sure the request was successful
-//            if (resultCode == RESULT_OK) {
-//                Log.d("info","Inside result Ok");
-//                if(i<=contact_count) {
-//                   repeatCall();
-//                }
-//                if (resultCode == RESULT_CANCELED){
-//                    Toast.makeText(getApplicationContext(), "Cancelled", Toast.LENGTH_SHORT).show();
-//                    // The user picked a contact.
-//                }
-//                // The Intent's data Uri identifies which contact was selected.
 
-                // Do something with the contact here (bigger example below)
             }
             else if  (requestCode == 2){
             if (resultCode == Activity.RESULT_OK) {

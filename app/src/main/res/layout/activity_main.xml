@@ -5,93 +5,95 @@
     <!--android:layout_height="fill_parent">-->
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     android:paddingLeft="16dp"
-    android:paddingRight="16dp"
-    >
+    android:paddingRight="16dp">
 
     <TextView
+        android:id="@+id/GoogleIdText"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="Enter Google Sheet ID"
-        android:id="@+id/GoogleIdText"
-        />
+        android:text="Enter Google Sheet ID" />
+
     <EditText
         android:id="@+id/txtGoogleId"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/GoogleIdText"
-        />
+        android:layout_below="@+id/GoogleIdText" />
 
     <TextView
         android:id="@+id/LFileName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Enter File Name:"
-        android:layout_below="@+id/txtGoogleId"/>
+        android:layout_below="@+id/txtGoogleId"
+        android:text="Enter File Name:" />
 
     <EditText
         android:id="@+id/LFileInput"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/LFileName"
-        />
+        android:layout_below="@+id/LFileName" />
+
     <Spinner
-        android:layout_below="@+id/LFileInput"
         android:id="@+id/spinner"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:entries="@array/array_name"/>
+        android:layout_below="@+id/LFileInput"
+        android:entries="@array/array_name" />
 
     <Button
         android:id="@+id/btnDownload"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="Download"
         android:layout_below="@+id/spinner"
-        />
+        android:text="Download" />
 
     <Button
+        android:id="@+id/btn2"
+        style="@style/Widget.AppCompat.Button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Start Calling"
-        android:id="@+id/btn2"
-        android:layout_below="@+id/btnDownload"
         android:layout_alignParentLeft="true"
-        android:layout_marginTop="46dp" />
-    <TextView
-    android:layout_width="fill_parent"
-    android:layout_height="wrap_content"
-    android:text="Calling Status" android:layout_below="@+id/btn2"
-    android:id="@+id/Status"
-    />
+        android:layout_below="@+id/btnDownload"
+        android:layout_marginTop="46dp"
+        android:backgroundTint="@color/primary_light"
+        android:text="Start Calling" />
 
     <TextView
+        android:id="@+id/Status"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/Status"
+        android:layout_below="@+id/btn2"
+        android:text="Calling Status" />
+
+    <TextView
         android:id="@+id/UpdatedStatus1"
-        />
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/Status" />
 
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/UpdatedStatus1"
-        >
+        android:background="@color/primary">
+
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
             android:id="@+id/txtStatus"
-           />
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
         <Spinner
-            android:layout_below="@+id/txtStatus"
             android:id="@+id/updateSpinner"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:entries="@array/array_name"/>
+            android:layout_below="@+id/txtStatus"
+            android:background="@android:drawable/spinner_background"
+            android:entries="@array/array_name" />
+
         <Button
             android:id="@+id/UpdateCallStatus"
             android:layout_width="wrap_content"
@@ -100,17 +102,20 @@
             android:text="Update Call Status" />
 
     </RelativeLayout>
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:weightSum="1"
-        android:layout_alignParentBottom="true">
+        android:layout_alignParentBottom="true"
+        android:background="@color/primary_light"
+        android:weightSum="1">
 
         <Button
             android:id="@+id/CALLSTOP"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="0.5"
+            android:background="@android:color/holo_red_light"
             android:text="STOP" />
 
         <Button
@@ -120,6 +125,7 @@
             android:layout_alignParentRight="true"
             android:layout_weight="0.5"
 
+            android:background="@android:color/holo_green_light"
             android:text="CONTINUE" />
     </RelativeLayout>
 
