@@ -9,7 +9,6 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
 import android.speech.tts.TextToSpeech;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -42,7 +41,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     TextView txtStatus;
     String jName;
     Integer Callenabled;
-    Button btnDownload,CallStop,CallContinue;
+    Button btnDownload,CallStop,CallContinue,UpdateCallStatus;
 
     JSONArray jA = new JSONArray();
     View vi;
@@ -95,17 +94,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 //                    Intent showDialogIntent = new Intent(MainActivity.this, DisplayMessageActivity.class);
 //                        showDialogIntent.putExtra("Name", jName);
 //                        startActivityForResult(showDialogIntent, 2);
-//                    FragmentManager fm = getFragmentManager();
-//                    CallStatus cs = new CallStatus();
-//                    cs.show(fm,"DialogFragment");
-                    Runnable showDialogRun = new Runnable() {
-                        public void run() {
-                            repeatCall();
-                        }
-                    };
-                    Handler h = new Handler();
-                    h.postDelayed(showDialogRun, 3000);
-
+//                    if (i!=0) {
+//                        FragmentManager fm = getFragmentManager();
+//                        CallStatus cs = new CallStatus();
+//                        cs.show(fm, "DialogFragment");
+//                        Runnable showDialogRun = new Runnable() {
+//                            public void run() {
+//                                repeatCall();
+//                            }
+//                        };
+//                        Handler h = new Handler();
+//                        h.postDelayed(showDialogRun, 3000);
+//                    }
                 }
             }
         };
@@ -124,9 +124,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         });
         CallStop = (Button) findViewById(R.id.CALLSTOP);
+        UpdateCallStatus = (Button)findViewById(R.id.UpdateCallStatus);
         CallContinue = (Button) findViewById(R.id.CALLCONTINUE);
         CallStop.setOnClickListener(this);
         CallContinue.setOnClickListener(this);
+        UpdateCallStatus.setOnClickListener(this);
+
 //        Button fab = (Button) findViewById(R.id.btn1);
 //        fab.setOnClickListener(new View.OnClickListener() {
 //            @Override
@@ -175,7 +178,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                  Callenabled = 0;
                 Log.d("info","CallEnabled:"+"FALSE");
                 break;
+            case R.id.UpdateCallStatus:
+                try {
+                    JSONObject objects = jA.getJSONObject(i-1);
 
+                    String jNumber = objects.get("Number").toString();
+                    Spinner sta = (Spinner) findViewById(R.id.updateSpinner);
+                    String StatusValue = sta.getSelectedItem().toString();
+                    updateStatus(jNumber,StatusValue);
+                    repeatCall();
+                }
+                catch (JSONException e){
+                    e.printStackTrace();
+                }
 
         }
     }
@@ -341,60 +356,11 @@ public void callNow()
                 String Status = i + " Contacts Called " + cou + " Contacts Remaining";
                 txtStatus.setText(Status);
                 final Context context = this;
-                Runnable showDialogRun = new Runnable() {
-                    public void run() {
-//                        Intent showDialogIntent = new Intent(MainActivity.this, DisplayMessageActivity.class);
-//                        showDialogIntent.putExtra("Name", jName);
-//                        startActivityForResult(showDialogIntent, 2);
-//
-//                        // get prompts.xml view
-//                        LayoutInflater li = LayoutInflater.from(context);
-//                        View promptsView = li.inflate(R.layout.custom_dialog, null);
-//
-//                        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
-//                                context);
-//
-//                        // set prompts.xml to alertdialog builder
-//                        alertDialogBuilder.setView(promptsView);
-//
-//                        final EditText userInput = (EditText) promptsView
-//                                .findViewById(R.id.editTextDialogUserInput);
-
-                        // set dialog message
-//                        alertDialogBuilder
-//                                .setCancelable(false)
-//                                .setPositiveButton("OK",
-//                                        new DialogInterface.OnClickListener() {
-//                                            public void onClick(DialogInterface dialog,int id) {
-//                                                // get user input and set it to result
-//                                                // edit text
-//                                                result.setText(userInput.getText());
-//                                            }
-//                                        })
-//                                .setNegativeButton("Cancel",
-//                                        new DialogInterface.OnClickListener() {
-//                                            public void onClick(DialogInterface dialog,int id) {
-//                                                dialog.cancel();
-//                                            }
-//                                        });
-//
-//                        // create alert dialog
-//                        AlertDialog alertDialog = alertDialogBuilder.create();
-//
-//                        // show it
-//                        alertDialog.show();
 
 
 
 
 
-                    }
-                };
-
-                Handler h = new Handler();
-                h.postDelayed(showDialogRun, 2000);
-                CallStatusUpdate updateCall = new CallStatusUpdate();
-                updateCall.writeStatus(jNumber,"Y1",this);
             }
 
             //vi.addView(ly1, params1);
@@ -409,6 +375,13 @@ public void callNow()
 
 
     }
+
+    public void updateStatus(String number, String Status)
+    {
+        CallStatusUpdate updateCall = new CallStatusUpdate();
+        updateCall.writeStatus(number,Status,this);
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         Log.d("info","Inside OnActivityResult");
