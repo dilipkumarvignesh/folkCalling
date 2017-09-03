@@ -6,11 +6,14 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
-    <uses-permission android:name="android.permission.PROCESS_OUTGOING_CALLS"/>
+    <uses-permission android:name="android.permission.PROCESS_OUTGOING_CALLS" />
     <uses-permission android:name="android.permission.READ_PRECISE_PHONE_STATE" />
-    <uses-feature android:name="android.hardware.telephony"></uses-feature>
+
+    <uses-feature android:name="android.hardware.telephony" />
+
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -31,37 +34,39 @@
             android:name=".DisplayMessageActivity"
             android:excludeFromRecents="true"
             android:launchMode="singleInstance"
+            android:theme="@android:style/Theme.Dialog"></activity>
+        <!-- <receiver android:name=".CallReceiver" > -->
+        <!-- <intent-filter> -->
+        <!-- <action android:name="android.intent.action.PHONE_STATE" /> -->
+        <!-- </intent-filter> -->
+        <!-- <intent-filter> -->
+        <!-- <action android:name="android.intent.action.NEW_OUTGOING_CALL" /> -->
+        <!-- </intent-filter> -->
+        <!-- </receiver> -->
+        <!-- <receiver -->
+        <!-- android:name=".OutCallLogger" -->
+        <!-- android:enabled="true" -->
+        <!-- android:exported="true" > -->
+        <!-- <intent-filter> -->
+        <!-- <action android:name="android.intent.action.PRECISE_CALL_STATE" /> -->
+        <!-- <action android:name="android.intent.action.NEW_OUTGOING_CALL" /> -->
+        <!-- </intent-filter> -->
+        <!-- </receiver> -->
+        <!-- <receiver android:name=".CallReceiver" > -->
+        <!-- <intent-filter> -->
+        <!-- <action android:name="android.intent.action.PHONE_STATE" /> -->
 
-            android:theme="@android:style/Theme.Dialog">
-        </activity>
-        <!--<receiver android:name=".CallReceiver" >-->
-            <!--<intent-filter>-->
-                <!--<action android:name="android.intent.action.PHONE_STATE" />-->
-            <!--</intent-filter>-->
-            <!--<intent-filter>-->
-                <!--<action android:name="android.intent.action.NEW_OUTGOING_CALL" />-->
-            <!--</intent-filter>-->
-        <!--</receiver>-->
-        <!--<receiver-->
-            <!--android:name=".OutCallLogger"-->
-            <!--android:enabled="true"-->
-            <!--android:exported="true" >-->
-            <!--<intent-filter>-->
-                <!--<action android:name="android.intent.action.PRECISE_CALL_STATE" />-->
-                <!--<action android:name="android.intent.action.NEW_OUTGOING_CALL" />-->
-            <!--</intent-filter>-->
-        <!--</receiver>-->
-        <!--<receiver android:name=".CallReceiver" >-->
-            <!--<intent-filter>-->
-                <!--<action android:name="android.intent.action.PHONE_STATE" />-->
 
-            <!--</intent-filter>-->
-            <!--<intent-filter>-->
-                <!--<action android:name="android.intent.action.NEW_OUTGOING_CALL" />-->
+        <!-- </intent-filter> -->
+        <!-- <intent-filter> -->
+        <!-- <action android:name="android.intent.action.NEW_OUTGOING_CALL" /> -->
 
-            <!--</intent-filter>-->
 
-        <!--</receiver>-->
+        <!-- </intent-filter> -->
+
+
+        <!-- </receiver> -->
+        <activity android:name=".StatusActivity"></activity>
     </application>
 
 </manifest>

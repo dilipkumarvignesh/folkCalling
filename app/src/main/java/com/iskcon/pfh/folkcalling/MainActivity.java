@@ -123,10 +123,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 download_excel();
             }
         });
-        CallStop = (Button) findViewById(R.id.CALLSTOP);
+    //    CallStop = (Button) findViewById(R.id.CALLSTOP);
         UpdateCallStatus = (Button)findViewById(R.id.UpdateCallStatus);
         CallContinue = (Button) findViewById(R.id.CALLCONTINUE);
-        CallStop.setOnClickListener(this);
+       // CallStop.setOnClickListener(this);
         CallContinue.setOnClickListener(this);
         UpdateCallStatus.setOnClickListener(this);
 
@@ -170,29 +170,36 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Log.d("info","Button clicked:"+v.getId());
         switch(v.getId()) {
             case R.id.CALLCONTINUE:
-                Callenabled = 1;
-                Log.d("info","CallEnabled:"+"TRUE");
-                repeatCall();
+//                Callenabled = 1;
+//                Log.d("info","CallEnabled:"+"TRUE");
+//                repeatCall();
+                Intent k = new Intent(getApplicationContext(),StatusActivity.class);
+                startActivity(k);
                 break;
-            case R.id.CALLSTOP:
-                 Callenabled = 0;
-                Log.d("info","CallEnabled:"+"FALSE");
-                break;
+//            case R.id.CALLSTOP:
+//                 Callenabled = 0;
+//                Log.d("info","CallEnabled:"+"FALSE");
+//                break;
             case R.id.UpdateCallStatus:
                 try {
                     JSONObject objects = jA.getJSONObject(i-1);
 
                     String jNumber = objects.get("Number").toString();
                     Spinner sta = (Spinner) findViewById(R.id.updateSpinner);
+                    EditText comments = (EditText)findViewById(R.id.CallComment);
                     String StatusValue = sta.getSelectedItem().toString();
-                    updateStatus(jNumber,StatusValue);
+                    String comm = comments.getText().toString();
+                    Log.d("info","StatusValue:"+StatusValue);
+                    updateStatus(jNumber,StatusValue,comm);
                     repeatCall();
                 }
                 catch (JSONException e){
                     e.printStackTrace();
                 }
+                break;
 
         }
+
     }
     private void processJson(JSONObject object) {
 
@@ -378,11 +385,12 @@ public void callNow()
 
     }
 
-    public void updateStatus(String number, String Status)
+    public void updateStatus(String number, String Status,String comm)
     {
-
+        EditText cFilename = (EditText) findViewById(R.id.LFileInput);
+        String csvFilename = cFilename.getText().toString();
         CallStatusUpdate updateCall = new CallStatusUpdate();
-        updateCall.writeStatus(number,Status,this);
+        updateCall.writeStatus(number,Status,comm,this,csvFilename);
         Toast.makeText(getApplicationContext(),"Status Updated",
                             Toast.LENGTH_SHORT).show();
     }

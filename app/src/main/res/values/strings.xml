@@ -21,5 +21,11 @@
         <item>Y1</item>
         <item>Y2</item>
         <item>Y3</item>
+        <item>Fresh Calls</item>
+        <item>ReCall Inactive Numbers</item>
+        <item>Inactive Calls</item>
+        <item>Confirmation Calls</item>
+        <item>Tentative</item>
+
     </string-array>
 </resources>
