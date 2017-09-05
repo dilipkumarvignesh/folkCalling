@@ -30,4 +30,30 @@
     <item>Y2(Call Later)</item>
     <item>Y3(Call on a particular date)</item>
     </string-array>
+
+    <string-array name="set_TC">
+      <item>TC1</item>
+        <item>TC2</item>
+        <item>TC3</item>
+        <item>TC4</item>
+        <item>TC5</item>
+        <item>TC6</item>
+        <item>TC7</item>
+        <item>TC8</item>
+        <item>TC9</item>
+        <item>TC10</item>
+    </string-array>
+
+    <string-array name="set_Day">
+        <item>Monday</item>
+        <item>Tuesday</item>
+        <item>Wednesday</item>
+        <item>Thursday</item>
+        <item>Friday</item>
+        <item>Saturday</item>
+        <item>Sunday</item>
+        </string-array>
+
+
+
 </resources>

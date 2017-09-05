@@ -42,12 +42,26 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/LFileInput"
         android:entries="@array/array_name" />
+    <Spinner
+        android:id="@+id/updateTC"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/spinner"
+
+        android:entries="@array/set_TC" />
+    <Spinner
+        android:id="@+id/updateDay"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/updateTC"
+
+        android:entries="@array/set_Day" />
 
     <Button
         android:id="@+id/btnDownload"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/spinner"
+        android:layout_below="@+id/updateDay"
         android:layout_centerHorizontal="true"
         android:text="Download"
         android:drawableLeft="@android:drawable/stat_sys_download"/>
@@ -59,7 +73,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_below="@+id/btnDownload"
-        android:layout_marginTop="46dp"
+
         android:drawableLeft="@android:drawable/sym_action_call"
         android:backgroundTint="@color/primary_light"
         android:text="Start Calling" />
@@ -93,7 +107,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/txtStatus"
-            android:background="@android:drawable/spinner_background"
+
             android:entries="@array/set_status" />
 
         <EditText
@@ -120,14 +134,22 @@
         android:background="@color/primary_light"
         android:weightSum="1">
 
-        <!--<Button-->
-            <!--android:id="@+id/CALLSTOP"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_weight="0.5"-->
-            <!--android:background="@android:color/holo_red_light"-->
-            <!--android:text="STOP" />-->
+        <Button
+            android:id="@+id/CALLSTOP"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.3"
+            android:background="@android:color/holo_red_light"
+            android:text="STOP" />
 
+        <Button
+            android:id="@+id/REPORT"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.4"
+            android:layout_centerHorizontal="true"
+            android:background="@android:color/holo_blue_light"
+            android:text="REPORT" />
         <Button
             android:id="@+id/CALLCONTINUE"
             android:layout_width="wrap_content"
@@ -136,7 +158,7 @@
             android:layout_weight="0.5"
 
             android:background="@android:color/holo_green_light"
-            android:text="REPORT" />
+            android:text="CONTINUE" />
     </RelativeLayout>
 
 </RelativeLayout>

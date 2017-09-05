@@ -199,7 +199,7 @@ public class CallStatusUpdate {
 //    }
     }
 
-    public JSONArray getCallDataStatus(String Status,Context Con,String Filename)
+    public JSONArray getCallDataStatus(String Status,Context Con,String Filename,String TeleCaller, String Day)
     {
         InputStream inputStream;
         String[] ids;
@@ -241,7 +241,7 @@ public class CallStatusUpdate {
                 }
                 else if(Status.equalsIgnoreCase("Fresh Calls"))
                 {
-                    if(ids[8].equals("NA"))
+                    if(ids[8].equals("NA")&&ids[6].equals(TeleCaller)&&ids[14].equals(Day))
                     {
                         obj.put("Name", ids[0]);
                         Log.d("info","RowName"+ids[0]);
@@ -250,7 +250,7 @@ public class CallStatusUpdate {
                         jA.put(obj);
                     }
                 }
-                else if(Status.equals("Confirmation Calls")){
+                else if(Status.equals("Confirmation Calls")&&ids[6].equals(TeleCaller)&&ids[14].equals(Day)){
                     if(ids[8].equals("A1"))
                     {
                         obj.put("Name", ids[0]);
@@ -258,7 +258,7 @@ public class CallStatusUpdate {
                         jA.put(obj);
                     }
                 }
-                else if(Status.equals("Inactive Calls")){
+                else if(Status.equals("Inactive Calls")&&ids[6].equals(TeleCaller)&&ids[14].equals(Day)){
                     if(ids[8].equals("B")||ids[8].equals("C")||ids[8].equals("Y2")||ids[8].equals("E")||ids[8].equals("F")||
                             ids[8].equals("Y1"))
                     {
@@ -267,7 +267,7 @@ public class CallStatusUpdate {
                         jA.put(obj);
                     }
                 }
-                else if(Status.equals("Tentative")){
+                else if(Status.equals("Tentative")&&ids[6].equals(TeleCaller)&&ids[14].equals(Day)){
                     if(ids[8].equals("A4") || ids[8].equals("Y1") || ids[8].equals("Y2"))
                     {
                         obj.put("Name", ids[0]);
@@ -275,7 +275,7 @@ public class CallStatusUpdate {
                         jA.put(obj);
                     }
                 }
-                else if(Status.equals("Recall Inactive Numbers")){
+                else if(Status.equals("Recall Inactive Numbers")&&ids[6].equals(TeleCaller)&&ids[14].equals(Day)){
                   if((ids[8].equals("B")||ids[8].equals("C")||ids[8].equals("Y2")||ids[8].equals("E")||ids[8].equals("F")||
                     ids[8].equals("Y1")) && ids[11].equals(getDate()))
                     {

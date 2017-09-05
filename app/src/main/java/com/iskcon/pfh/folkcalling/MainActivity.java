@@ -41,7 +41,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     TextView txtStatus;
     String jName;
     Integer Callenabled;
-    Button btnDownload,CallStop,CallContinue,UpdateCallStatus;
+    Button btnDownload,CallStop,CallContinue,UpdateCallStatus,Report;
 
     JSONArray jA = new JSONArray();
     View vi;
@@ -123,12 +123,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 download_excel();
             }
         });
-    //    CallStop = (Button) findViewById(R.id.CALLSTOP);
+        CallStop = (Button) findViewById(R.id.CALLSTOP);
         UpdateCallStatus = (Button)findViewById(R.id.UpdateCallStatus);
         CallContinue = (Button) findViewById(R.id.CALLCONTINUE);
-       // CallStop.setOnClickListener(this);
+        CallStop.setOnClickListener(this);
         CallContinue.setOnClickListener(this);
         UpdateCallStatus.setOnClickListener(this);
+        Report = (Button) findViewById(R.id.REPORT);
+        Report.setOnClickListener(this);
+
+
 
 //        Button fab = (Button) findViewById(R.id.btn1);
 //        fab.setOnClickListener(new View.OnClickListener() {
@@ -170,20 +174,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Log.d("info","Button clicked:"+v.getId());
         switch(v.getId()) {
             case R.id.CALLCONTINUE:
-//                Callenabled = 1;
-//                Log.d("info","CallEnabled:"+"TRUE");
-//                repeatCall();
-                CallStatusUpdate updateCall = new CallStatusUpdate();
-                int FinalReport[] = updateCall.getFinalReport();
-                Intent k = new Intent(getApplicationContext(),StatusActivity.class);
-                k.putExtra("finalReport",FinalReport);
-
-                startActivity(k);
+                Callenabled = 1;
+                Log.d("info","CallEnabled:"+"TRUE");
+                repeatCall();
                 break;
-//            case R.id.CALLSTOP:
-//                 Callenabled = 0;
-//                Log.d("info","CallEnabled:"+"FALSE");
-//                break;
+            case R.id.CALLSTOP:
+                 Callenabled = 0;
+                Log.d("info","CallEnabled:"+"FALSE");
+                break;
             case R.id.UpdateCallStatus:
                 try {
                     JSONObject objects = jA.getJSONObject(i-1);
@@ -201,6 +199,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     e.printStackTrace();
                 }
                 break;
+            case R.id.REPORT:
+                CallStatusUpdate updateCall = new CallStatusUpdate();
+                int FinalReport[] = updateCall.getFinalReport();
+                Intent k = new Intent(getApplicationContext(),StatusActivity.class);
+                k.putExtra("finalReport",FinalReport);
+
+                startActivity(k);
+
 
         }
 
@@ -264,9 +270,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         {
             Spinner sta = (Spinner)findViewById(R.id.spinner);
             String StatusValue = sta.getSelectedItem().toString();
+            Spinner TC = (Spinner)findViewById(R.id.updateTC);
+            String TeleCaller = TC.getSelectedItem().toString();
+            Spinner Day = (Spinner)findViewById(R.id.updateDay);
+            String DayValue = Day.getSelectedItem().toString();
+
             Log.d("info","SpinnerText:"+StatusValue);
+            Log.d("info","TCValue:"+TeleCaller);
+            Log.d("info","DayValue"+DayValue);
             CallStatusUpdate CallData = new CallStatusUpdate();
-            jA = CallData.getCallDataStatus(StatusValue,this,csvFilename);
+            jA = CallData.getCallDataStatus(StatusValue,this,csvFilename,TeleCaller,DayValue);
             Toast.makeText(getApplicationContext(),
                     jA.length()+" Contacts Downloaded", Toast.LENGTH_LONG).show();
             contact_count = jA.length();
