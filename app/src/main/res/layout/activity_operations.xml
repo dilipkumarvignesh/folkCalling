@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.iskcon.pfh.folkcalling.Operations"
+    tools:layout_editor_absoluteY="8dp"
+    tools:layout_editor_absoluteX="8dp">
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+    <Button
+        android:id="@+id/btn2"
+        style="@style/Widget.AppCompat.Button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/btnDownload"
+        android:drawableLeft="@android:drawable/sym_action_call"
+        android:backgroundTint="@color/primary_light"
+        android:text="Start Calling"
+        />
+
+    <TextView
+        android:id="@+id/Status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/btn2"
+        android:text="Calling Status"
+      />
+
+    <TextView
+        android:id="@+id/UpdatedStatus1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/Status"
+         />
+
+</RelativeLayout>
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        >
+
+        <TextView
+            android:id="@+id/txtStatus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/UpdatedStatus1"
+
+            />
+
+        <Spinner
+            android:id="@+id/updateSpinner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/txtStatus"
+            android:entries="@array/set_status" />
+
+        <EditText
+            android:id="@+id/CallComment"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/updateSpinner" />
+
+
+        <Button
+            android:id="@+id/UpdateCallStatus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/CallComment"
+            android:layout_centerHorizontal="true"
+            android:text="Update Call Status" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="@color/primary_light"
+        android:weightSum="1"
+        tools:layout_editor_absoluteY="0dp"
+        tools:layout_editor_absoluteX="8dp">
+
+        <Button
+            android:id="@+id/CALLSTOP"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.3"
+            android:background="@android:color/holo_red_light"
+            android:text="STOP" />
+
+        <Button
+            android:id="@+id/REPORT"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.4"
+            android:layout_centerHorizontal="true"
+            android:background="@android:color/holo_blue_light"
+            android:text="REPORT" />
+        <Button
+            android:id="@+id/CALLCONTINUE"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_weight="0.5"
+
+            android:background="@android:color/holo_green_light"
+            android:text="CONTINUE" />
+    </RelativeLayout>
+
+
+</RelativeLayout>
