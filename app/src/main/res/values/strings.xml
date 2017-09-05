@@ -32,6 +32,7 @@
     </string-array>
 
     <string-array name="set_TC">
+        <item>NA</item>
         <item>TC1</item>
         <item>TC2</item>
         <item>TC3</item>
@@ -45,6 +46,7 @@
     </string-array>
 
     <string-array name="set_Day">
+        <item>ALL</item>
         <item>Monday</item>
         <item>Tuesday</item>
         <item>Wednesday</item>
