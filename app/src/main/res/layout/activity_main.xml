@@ -94,7 +94,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/txtStatus"
             android:background="@android:drawable/spinner_background"
-            android:entries="@array/array_name" />
+            android:entries="@array/set_status" />
 
         <EditText
             android:id="@+id/CallComment"

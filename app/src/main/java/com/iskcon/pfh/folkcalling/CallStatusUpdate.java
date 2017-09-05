@@ -25,6 +25,8 @@ import java.util.Calendar;
 
 public class CallStatusUpdate {
     private static final int REQUEST_EXTERNAL_STORAGE = 1;
+    int finalReport[]={0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+    int totalCallCount = -1;
     //  CSVWriter writer;
     private static String[] PERMISSIONS_STORAGE = {
             Manifest.permission.READ_EXTERNAL_STORAGE,
@@ -52,9 +54,11 @@ public class CallStatusUpdate {
 //        FileWriter fw = new FileWriter(file.getAbsoluteFile());
             BufferedWriter bw = new BufferedWriter(new FileWriter(file1));
             String csvLine;
+
             while ((csvLine = reader.readLine()) != null) {
 
-
+                updateTotalCount();
+                totalCallCount++;
                 ids = csvLine.split(",");
 
              //   ids[2]=Status;
@@ -63,54 +67,65 @@ public class CallStatusUpdate {
                 if(ids[1].equalsIgnoreCase(Number))
                 {
                     Log.d("info","Write Number Inside:"+Number);
-
+                    String FinalStatus = getStatus(Status);
                    // csvLine=String.join(",",ids);
-                    if(Status.equals("A1"))
-                    {
-                        CallResponse = "Active";
-                    }
-                    switch(Status){
+
+                    switch(FinalStatus){
                         case "A1":
                             CallResponse ="Active";
+                            finalReport[0]++;
                             break;
                         case "A2":
                             CallResponse ="Active";
+                            finalReport[1]++;
                             break;
                         case "A3":
                             CallResponse ="Active";
+                            finalReport[2]++;
                             break;
                         case "A4":
                             CallResponse ="Active";
+                            finalReport[3]++;
                             break;
                         case "B":
                             CallResponse ="InActive";
+                            finalReport[4]++;
                             break;
                         case "C":
                             CallResponse="InActive";
+                            finalReport[5]++;
                             break;
                         case "D":
                             CallResponse="Drop";
+                            finalReport[6]++;
                             break;
                         case "E":
                             CallResponse="InActive";
+                            finalReport[7]++;
                             break;
                         case "F":
                             CallResponse="InActive";
+                            finalReport[8]++;
                             break;
                         case "G":
                             CallResponse="Drop";
+                            finalReport[9]++;
                             break;
                         case "X":
                             CallResponse="Drop";
+                            finalReport[9]++;
                             break;
                         case "Y1":
                             CallResponse="Inactive";
+                            finalReport[10]++;
                             break;
                         case "Y2":
                             CallResponse="Inactive";
+                            finalReport[11]++;
                             break;
                         case "Y3":
                             CallResponse="Inactive";
+                            finalReport[12]++;
                             break;
 
 
@@ -119,12 +134,12 @@ public class CallStatusUpdate {
 //                    String currentTime = currentTime();
                     if(ids[8].equals("NA"))
                     {
-                        ids[8]=Status;
+                        ids[8]=getStatus(Status);
                     }
                     else
                     {
                         ids[7]=ids[8];
-                        ids[8]=Status;
+                        ids[8]=getStatus(Status);
                     }
                     if(getDate().equals(ids[11]))
                     {
@@ -197,16 +212,21 @@ public class CallStatusUpdate {
         File SD_CARD_PATH = Environment.getExternalStorageDirectory(); //.toString();
         String fname = Filename +".csv";
 
+
         try {
             File file = new File(SD_CARD_PATH, fname);
             FileInputStream fIn = new FileInputStream(file);
             reader = new BufferedReader(new InputStreamReader(fIn));
-            JSONObject obj = new JSONObject();
+
             while ((csvLine = reader.readLine()) != null) {
 //                Toast.makeText(Con.getApplicationContext(), csvLine,
 //                Toast.LENGTH_SHORT).show();
+
+                JSONObject obj = new JSONObject();
                 ids = csvLine.split(",");
                 Log.d("info","Rowinfo:"+ids[2]);
+                Log.d("info","RowName:"+ids[0]);
+
 
                 if (ids[8].equalsIgnoreCase(Status))
                 {
@@ -224,6 +244,8 @@ public class CallStatusUpdate {
                     if(ids[8].equals("NA"))
                     {
                         obj.put("Name", ids[0]);
+                        Log.d("info","RowName"+ids[0]);
+                        Log.d("info","InfoValues:"+jA);
                         obj.put("Number", ids[1]);
                         jA.put(obj);
                     }
@@ -254,16 +276,18 @@ public class CallStatusUpdate {
                     }
                 }
                 else if(Status.equals("Recall Inactive Numbers")){
-//                    if(ids[8].equals("A4") || ids[8].equals("Y1") || ids[8].equals("Y2"))
-//                    {
-//                        obj.put("Name", ids[0]);
-//                        obj.put("Number", ids[1]);
-//                        jA.put(obj);
-//                    }
+                  if((ids[8].equals("B")||ids[8].equals("C")||ids[8].equals("Y2")||ids[8].equals("E")||ids[8].equals("F")||
+                    ids[8].equals("Y1")) && ids[11].equals(getDate()))
+                    {
+                        obj.put("Name", ids[0]);
+                        obj.put("Number", ids[1]);
+                        jA.put(obj);
+                    }
                 }
 
 
             }
+            Log.d("info","Downloaded Info Data:"+jA);
         }
         catch (Exception e) {
             Toast.makeText(Con.getApplicationContext(), e.getMessage(),
@@ -293,5 +317,19 @@ public class CallStatusUpdate {
             return currentTime;
 
 
+    }
+
+    public String getStatus(String Status)
+    {
+        String[] status = Status.split("[(]");
+        return status[0];
+    }
+    public int[] getFinalReport ()
+    {
+        return finalReport;
+    }
+    public void updateTotalCount()
+    {
+        totalCallCount++;
     }
 }

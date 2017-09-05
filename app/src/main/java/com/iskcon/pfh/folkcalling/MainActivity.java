@@ -173,7 +173,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 //                Callenabled = 1;
 //                Log.d("info","CallEnabled:"+"TRUE");
 //                repeatCall();
+                CallStatusUpdate updateCall = new CallStatusUpdate();
+                int FinalReport[] = updateCall.getFinalReport();
                 Intent k = new Intent(getApplicationContext(),StatusActivity.class);
+                k.putExtra("finalReport",FinalReport);
+
                 startActivity(k);
                 break;
 //            case R.id.CALLSTOP:
@@ -452,5 +456,6 @@ public void callNow()
 //                repeatCall();
 //            }
 //        }}
+
     }
 

@@ -6,26 +6,28 @@
 
 
     <string-array name="array_name">
-        <item>NA</item>
-        <item>A1</item>
-        <item>A2</item>
-        <item>A3</item>
-        <item>A4</item>
-        <item>B</item>
-        <item>C</item>
-        <item>D</item>
-        <item>E</item>
-        <item>F</item>
-        <item>G</item>
-        <item>X</item>
-        <item>Y1</item>
-        <item>Y2</item>
-        <item>Y3</item>
+
         <item>Fresh Calls</item>
         <item>ReCall Inactive Numbers</item>
         <item>Inactive Calls</item>
         <item>Confirmation Calls</item>
         <item>Tentative</item>
 
+    </string-array>
+    <string-array name="set_status">
+    <item>A1(Interested and coming)</item>
+    <item>A2(Not Interested)</item>
+    <item>A3(Interested and Not coming)</item>
+    <item>A4(Tentative)</item>
+    <item>B(Ringing but not picking)</item>
+    <item>C(Busy)</item>
+    <item>D(Invalid no / Out of service)</item>
+    <item>E(Switched Off)</item>
+    <item>F(Not Reachable)</item>
+    <item>G(Relocated to Out of Bangalore)</item>
+    <item>X(age>30 or female)</item>
+    <item>Y1(Call after few minutes)</item>
+    <item>Y2(Call Later)</item>
+    <item>Y3(Call on a particular date)</item>
     </string-array>
 </resources>
