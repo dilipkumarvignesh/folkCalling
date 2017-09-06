@@ -20,6 +20,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Locale;
 
 public class Operations extends AppCompatActivity implements View.OnClickListener {
     private static final int MY_PERMISSIONS_REQUEST_CALL = 0;
@@ -57,6 +58,14 @@ public class Operations extends AppCompatActivity implements View.OnClickListene
             public void onClick(View v) {
 //
                 repeatCall();
+            }
+        });
+        t1=new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
+            @Override
+            public void onInit(int status) {
+                if(status != TextToSpeech.ERROR) {
+                    t1.setLanguage(Locale.ENGLISH);
+                }
             }
         });
         Callenabled = 1;
@@ -160,7 +169,7 @@ public class Operations extends AppCompatActivity implements View.OnClickListene
                 String fNumber = jNumber;
                 intent.setData(Uri.parse("tel:" + fNumber));
                 // String na = name[i];
-              //  t1.speak("Calling " + jName, TextToSpeech.QUEUE_FLUSH, null);
+               // t1.speak("Calling " + jName, TextToSpeech.QUEUE_FLUSH, null);
                 intent.setData(Uri.parse("tel:" + jNumber));
                 startActivity(intent);
 

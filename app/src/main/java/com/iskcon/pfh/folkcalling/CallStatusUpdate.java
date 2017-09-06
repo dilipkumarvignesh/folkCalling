@@ -165,7 +165,7 @@ public class CallStatusUpdate {
                     ids[12] = currentTime();
                     csvLine = ids[0]+","+ids[1]+","+ids[2]+","+ids[3]+","+ids[4]+","+ids[5]+
                             ","+ids[6]+","+ids[7]+","+ids[8]+","+ids[9]+","+ids[10]
-                            +","+ids[11]+","+ids[12]+","+ids[13]+ids[14];
+                            +","+ids[11]+","+ids[12]+","+ids[13]+","+ids[14];
                    // csvLine=csvLine+","+Status+","+CallResponse+","+comm+","+TodayDate+","+currentTime;
 
                     bw.write(csvLine+"\n");

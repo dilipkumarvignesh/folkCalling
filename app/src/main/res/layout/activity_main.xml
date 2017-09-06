@@ -30,16 +30,18 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/txtGoogleId"
         android:text="Enter File Name:" />
+
     <RelativeLayout
         android:id="@+id/FileSelectorLayout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/LFileName">
+
         <EditText
             android:id="@+id/LFileInput"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-             />
+            android:layout_marginBottom="@dimen/list_item_spacing" />
 
         <ImageView
             android:id="@+id/GET_FILE"
@@ -59,130 +61,144 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/FileSelectorLayout"
+        android:layout_marginBottom="@dimen/list_item_spacing"
+        android:background="@android:drawable/spinner_background"
         android:entries="@array/array_name" />
+
     <Spinner
         android:id="@+id/updateTC"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/spinner"
 
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/spinner"
+        android:layout_marginBottom="@dimen/list_item_spacing"
+        android:background="@android:drawable/spinner_background"
         android:entries="@array/set_TC" />
+
     <Spinner
         android:id="@+id/updateDay"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/updateTC"
 
+        android:layout_marginBottom="@dimen/list_item_spacing"
+        android:background="@android:drawable/spinner_background"
         android:entries="@array/set_Day" />
+
     <Spinner
         android:id="@+id/updateProgram"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
         android:layout_below="@+id/updateDay"
+        android:background="@android:drawable/spinner_background"
         android:entries="@array/set_Pr" />
+
     <Button
         android:id="@+id/btnDownload"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/updateDay"
+        android:layout_below="@+id/updateProgram"
         android:layout_centerHorizontal="true"
-        android:text="Download"
-        android:drawableLeft="@android:drawable/stat_sys_download"/>
+        android:layout_marginTop="@dimen/list_item_spacing"
+        android:drawableLeft="@android:drawable/stat_sys_download"
+        android:text="Download" />
 
-    <Button
-        android:id="@+id/btn2"
-        style="@style/Widget.AppCompat.Button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_below="@+id/btnDownload"
+    <!--<Button-->
+    <!--android:id="@+id/btn2"-->
+    <!--style="@style/Widget.AppCompat.Button"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_alignParentLeft="true"-->
+    <!--android:layout_below="@+id/btnDownload"-->
 
-        android:drawableLeft="@android:drawable/sym_action_call"
-        android:backgroundTint="@color/primary_light"
-        android:text="Start Calling" />
+    <!--android:drawableLeft="@android:drawable/sym_action_call"-->
+    <!--android:backgroundTint="@color/primary_light"-->
+    <!--android:text="Start Calling" />-->
 
-    <TextView
-        android:id="@+id/Status"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/btn2"
-        android:text="Calling Status" />
+    <!--<TextView-->
+    <!--android:id="@+id/Status"-->
+    <!--android:layout_width="fill_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_below="@+id/btn2"-->
+    <!--android:text="Calling Status" />-->
 
-    <TextView
-        android:id="@+id/UpdatedStatus1"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/Status" />
-
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/UpdatedStatus1">
-
-        <TextView
-            android:id="@+id/txtStatus"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-
-        <Spinner
-            android:id="@+id/updateSpinner"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/txtStatus"
-
-            android:entries="@array/set_status" />
-
-        <EditText
-            android:id="@+id/CallComment"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/updateSpinner" />
+    <!--<TextView-->
+    <!--android:id="@+id/UpdatedStatus1"-->
+    <!--android:layout_width="fill_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_below="@+id/Status" />-->
 
 
-        <Button
-            android:id="@+id/UpdateCallStatus"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/CallComment"
-            android:layout_centerHorizontal="true"
-            android:text="Update Call Status" />
+    <!--<RelativeLayout-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_below="@+id/UpdatedStatus1">-->
 
-    </RelativeLayout>
+    <!--<TextView-->
+    <!--android:id="@+id/txtStatus"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content" />-->
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:background="@color/primary_light"
-        android:weightSum="1">
+    <!--<Spinner-->
+    <!--android:id="@+id/updateSpinner"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_below="@+id/txtStatus"-->
 
-        <Button
-            android:id="@+id/CALLSTOP"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.3"
-            android:background="@android:color/holo_red_light"
-            android:text="STOP" />
+    <!--android:entries="@array/set_status" />-->
 
-        <Button
-            android:id="@+id/REPORT"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.4"
-            android:layout_centerHorizontal="true"
-            android:background="@android:color/holo_blue_light"
-            android:text="REPORT" />
-        <Button
-            android:id="@+id/CALLCONTINUE"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_weight="0.5"
+    <!--<EditText-->
+    <!--android:id="@+id/CallComment"-->
+    <!--android:layout_width="fill_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_below="@+id/updateSpinner" />-->
 
-            android:background="@android:color/holo_green_light"
-            android:text="CONTINUE" />
-    </RelativeLayout>
+
+    <!--<Button-->
+    <!--android:id="@+id/UpdateCallStatus"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_below="@+id/CallComment"-->
+    <!--android:layout_centerHorizontal="true"-->
+    <!--android:text="Update Call Status" />-->
+
+    <!--</RelativeLayout>-->
+
+    <!--<RelativeLayout-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_alignParentBottom="true"-->
+    <!--android:background="@color/primary_light"-->
+    <!--android:weightSum="1">-->
+
+    <!--<Button-->
+    <!--android:id="@+id/CALLSTOP"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_weight="0.3"-->
+    <!--android:background="@android:color/holo_red_light"-->
+    <!--android:text="STOP" />-->
+
+    <!--<Button-->
+    <!--android:id="@+id/REPORT"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_weight="0.4"-->
+    <!--android:layout_centerHorizontal="true"-->
+    <!--android:background="@android:color/holo_blue_light"-->
+    <!--android:text="REPORT" />-->
+    <!--<Button-->
+    <!--android:id="@+id/CALLCONTINUE"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_alignParentRight="true"-->
+    <!--android:layout_weight="0.5"-->
+
+    <!--android:background="@android:color/holo_green_light"-->
+    <!--android:text="CONTINUE" />-->
+    <!--</RelativeLayout>-->
 
 </RelativeLayout>
 

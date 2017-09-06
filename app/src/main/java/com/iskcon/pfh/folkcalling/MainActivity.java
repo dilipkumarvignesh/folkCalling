@@ -129,14 +129,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 download_excel();
             }
         });
-        CallStop = (Button) findViewById(R.id.CALLSTOP);
-        UpdateCallStatus = (Button)findViewById(R.id.UpdateCallStatus);
-        CallContinue = (Button) findViewById(R.id.CALLCONTINUE);
-        CallStop.setOnClickListener(this);
-        CallContinue.setOnClickListener(this);
-        UpdateCallStatus.setOnClickListener(this);
-        Report = (Button) findViewById(R.id.REPORT);
-        Report.setOnClickListener(this);
+//        CallStop = (Button) findViewById(R.id.CALLSTOP);
+//        UpdateCallStatus = (Button)findViewById(R.id.UpdateCallStatus);
+//        CallContinue = (Button) findViewById(R.id.CALLCONTINUE);
+//        CallStop.setOnClickListener(this);
+//        CallContinue.setOnClickListener(this);
+//        UpdateCallStatus.setOnClickListener(this);
+//        Report = (Button) findViewById(R.id.REPORT);
+//        Report.setOnClickListener(this);
         lFileInput = (TextView)findViewById(R.id.LFileInput);
         SearchFile = (ImageView)findViewById(R.id.GET_FILE);
         SearchFile.setOnClickListener(this);
@@ -152,15 +152,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 //            }
 //        });
 
-        b2=(Button)findViewById(R.id.btn2);
-
-        b2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+//        b2=(Button)findViewById(R.id.btn2);
 //
-                repeatCall();
-            }
-        });
+//        b2.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+////
+//                repeatCall();
+//            }
+//        });
         t1=new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
             @Override
             public void onInit(int status) {

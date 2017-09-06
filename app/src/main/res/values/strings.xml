@@ -57,6 +57,7 @@
         <item>Sunday</item>
     </string-array>
     <string-array name="set_Pr">
+        <item>ALL</item>
         <item>PR1</item>
         <item>PR2</item>
         <item>PR3</item>
