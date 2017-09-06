@@ -5,6 +5,7 @@
     <!--android:layout_height="fill_parent">-->
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -29,18 +30,35 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/txtGoogleId"
         android:text="Enter File Name:" />
-
-    <EditText
-        android:id="@+id/LFileInput"
-        android:layout_width="fill_parent"
+    <RelativeLayout
+        android:id="@+id/FileSelectorLayout"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/LFileName" />
+        android:layout_below="@+id/LFileName">
+        <EditText
+            android:id="@+id/LFileInput"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+             />
+
+        <ImageView
+            android:id="@+id/GET_FILE"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/LFileInput"
+            android:layout_alignRight="@+id/LFileInput"
+            android:layout_alignTop="@+id/LFileInput"
+            android:padding="5dp"
+            app:srcCompat="?android:attr/actionModeWebSearchDrawable" />
+
+    </RelativeLayout>
+
 
     <Spinner
         android:id="@+id/spinner"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/LFileInput"
+        android:layout_below="@+id/FileSelectorLayout"
         android:entries="@array/array_name" />
     <Spinner
         android:id="@+id/updateTC"

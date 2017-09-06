@@ -29,10 +29,11 @@
         <item>Y1(Call after few minutes)</item>
         <item>Y2(Call Later)</item>
         <item>Y3(Call on a particular date)</item>
+        <item>Z(Already Attended)</item>
     </string-array>
 
     <string-array name="set_TC">
-        <item>NA</item>
+        <item>ALL</item>
         <item>TC1</item>
         <item>TC2</item>
         <item>TC3</item>

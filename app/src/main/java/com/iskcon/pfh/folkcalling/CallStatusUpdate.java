@@ -2,7 +2,10 @@ package com.iskcon.pfh.folkcalling;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Environment;
+import android.provider.CalendarContract;
+import android.provider.CalendarContract.Events;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -18,7 +21,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-
 /**
  * Created by i308830 on 8/8/17.
  */
@@ -127,6 +129,10 @@ public class CallStatusUpdate {
                             CallResponse="Inactive";
                             finalReport[12]++;
                             break;
+                        case "Z":
+                            CallResponse="Drop";
+                            finalReport[12]++;
+                            break;
 
 
                     }
@@ -159,7 +165,7 @@ public class CallStatusUpdate {
                     ids[12] = currentTime();
                     csvLine = ids[0]+","+ids[1]+","+ids[2]+","+ids[3]+","+ids[4]+","+ids[5]+
                             ","+ids[6]+","+ids[7]+","+ids[8]+","+ids[9]+","+ids[10]
-                            +","+ids[11]+","+ids[12]+","+ids[13];
+                            +","+ids[11]+","+ids[12]+","+ids[13]+ids[14];
                    // csvLine=csvLine+","+Status+","+CallResponse+","+comm+","+TodayDate+","+currentTime;
 
                     bw.write(csvLine+"\n");
@@ -210,7 +216,7 @@ public class CallStatusUpdate {
         JSONArray jA = new JSONArray();
         Log.d("info","CurrentStatus"+Status);
         File SD_CARD_PATH = Environment.getExternalStorageDirectory(); //.toString();
-        String fname = Filename +".csv";
+        String fname = Filename;
 
 
         try {
@@ -241,7 +247,7 @@ public class CallStatusUpdate {
                 }
                 else if(Status.equalsIgnoreCase("Fresh Calls"))
                 {
-                    if(ids[8].equals("NA")&&ids[6].equals(TeleCaller)&&(ids[14].equals(Day)||Day.equals("ALL")))
+                    if(ids[8].equals("NA")&&(ids[6].equals(TeleCaller)||TeleCaller.equals("ALL"))&&(ids[14].equals(Day)||Day.equals("ALL")))
                     {
                         obj.put("Name", ids[0]);
                         Log.d("info","RowName"+ids[0]);
@@ -250,7 +256,7 @@ public class CallStatusUpdate {
                         jA.put(obj);
                     }
                 }
-                else if(Status.equals("Confirmation Calls")&&ids[6].equals(TeleCaller)&&(ids[14].equals(Day)||Day.equals("ALL"))){
+                else if(Status.equals("Confirmation Calls")&&(ids[6].equals(TeleCaller)||TeleCaller.equals("ALL"))&&(ids[14].equals(Day)||Day.equals("ALL"))){
                     if(ids[8].equals("A1"))
                     {
                         obj.put("Name", ids[0]);
@@ -258,7 +264,7 @@ public class CallStatusUpdate {
                         jA.put(obj);
                     }
                 }
-                else if(Status.equals("Inactive Calls")&&ids[6].equals(TeleCaller)&&(ids[14].equals(Day)||Day.equals("ALL"))){
+                else if(Status.equals("Inactive Calls")&&(ids[6].equals(TeleCaller)||TeleCaller.equals("ALL"))&&(ids[14].equals(Day)||Day.equals("ALL"))){
                     if(ids[8].equals("B")||ids[8].equals("C")||ids[8].equals("Y2")||ids[8].equals("E")||ids[8].equals("F")||
                             ids[8].equals("Y1"))
                     {
@@ -267,7 +273,7 @@ public class CallStatusUpdate {
                         jA.put(obj);
                     }
                 }
-                else if(Status.equals("Tentative")&&ids[6].equals(TeleCaller)&&(ids[14].equals(Day)||Day.equals("ALL"))){
+                else if(Status.equals("Tentative")&&(ids[6].equals(TeleCaller)||TeleCaller.equals("ALL"))&&(ids[14].equals(Day)||Day.equals("ALL"))){
                     if(ids[8].equals("A4") || ids[8].equals("Y1") || ids[8].equals("Y2"))
                     {
                         obj.put("Name", ids[0]);
@@ -275,7 +281,7 @@ public class CallStatusUpdate {
                         jA.put(obj);
                     }
                 }
-                else if(Status.equals("Recall Inactive Numbers")&&ids[6].equals(TeleCaller)&&(ids[14].equals(Day)||Day.equals("ALL"))){
+                else if(Status.equals("Recall Inactive Numbers")&&(ids[6].equals(TeleCaller)||TeleCaller.equals("ALL"))&&(ids[14].equals(Day)||Day.equals("ALL"))){
                   if((ids[8].equals("B")||ids[8].equals("C")||ids[8].equals("Y2")||ids[8].equals("E")||ids[8].equals("F")||
                     ids[8].equals("Y1")) && ids[11].equals(getDate()))
                     {
@@ -332,4 +338,23 @@ public class CallStatusUpdate {
     {
         totalCallCount++;
     }
+    public void addRemainder()
+    {
+        Calendar beginTime = Calendar.getInstance();
+        beginTime.set(2017, 8, 6, 7, 30);
+        Calendar endTime = Calendar.getInstance();
+        endTime.set(2017, 8, 6, 8, 30);
+        Intent intent = new Intent(Intent.ACTION_INSERT)
+                .setData(Events.CONTENT_URI)
+                .putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, beginTime.getTimeInMillis())
+                .putExtra(CalendarContract.EXTRA_EVENT_END_TIME, endTime.getTimeInMillis())
+                .putExtra(Events.TITLE, "Yoga")
+                .putExtra(Events.DESCRIPTION, "Group class")
+                .putExtra(Events.EVENT_LOCATION, "The gym")
+                .putExtra(Events.AVAILABILITY, Events.AVAILABILITY_BUSY)
+                .putExtra(Intent.EXTRA_EMAIL, "rowan@example.com,trevor@example.com");
+        //startActivity(intent);
+
+    }
+
 }

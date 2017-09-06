@@ -18,6 +18,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -29,30 +30,34 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Locale;
 
+import static android.R.attr.path;
 import static android.R.attr.permission;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     private static final int MY_PERMISSIONS_REQUEST_CALL = 0;
+    private static final int FILE_SELECT_CODE = 0;
     private static String[] PERMISSIONS_STORAGE = {
             Manifest.permission.READ_EXTERNAL_STORAGE,
             Manifest.permission.WRITE_EXTERNAL_STORAGE
     };
     EditText txtGoogleId;
-    TextView txtStatus;
+    TextView txtStatus,lFileInput;
     String jName;
     Integer Callenabled;
     Button btnDownload,CallStop,CallContinue,UpdateCallStatus,Report;
+    ImageView SearchFile;
 
     JSONArray jA = new JSONArray();
     View vi;
     String GoogleId;
     TextToSpeech t1;
-    EditText ed1;
-    Button b1,b2;
+
+    Button b2;
     int i=0;
     int contact_count=0;
     public static final int REQUEST_CODE = 1;
     private static final int REQUEST_EXTERNAL_STORAGE = 1;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,6 +65,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         TelephonyManager telephonyManager = (TelephonyManager)getSystemService(
                 Context.TELEPHONY_SERVICE);
         vi = this.findViewById(android.R.id.content);
+
         Callenabled = 1;
         if (permission != PackageManager.PERMISSION_GRANTED) {
             // We don't have permission so prompt the user
@@ -83,8 +89,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 //                            Toast.LENGTH_LONG).show();
                 }
                 if(state==TelephonyManager.CALL_STATE_OFFHOOK){
-//                    Toast.makeText(getApplicationContext(),"Phone in a call or call picked",
-//                            Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(),"Phone in a call or call picked",
+                            Toast.LENGTH_LONG).show();
                 }
                 if(state==TelephonyManager.CALL_STATE_IDLE){
                     //phone is neither ringing nor in a call
@@ -131,6 +137,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         UpdateCallStatus.setOnClickListener(this);
         Report = (Button) findViewById(R.id.REPORT);
         Report.setOnClickListener(this);
+        lFileInput = (TextView)findViewById(R.id.LFileInput);
+        SearchFile = (ImageView)findViewById(R.id.GET_FILE);
+        SearchFile.setOnClickListener(this);
+
 
 
 
@@ -169,6 +179,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     }
 
+
     @Override
     public void onClick(View v) {
         Log.d("info","Button clicked:"+v.getId());
@@ -206,7 +217,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 k.putExtra("finalReport",FinalReport);
 
                 startActivity(k);
-
+                break;
+            case R.id.GET_FILE:
+                Intent i = new Intent(Intent.ACTION_GET_CONTENT);
+                i.setType("*/*");
+                startActivityForResult(i, 15);
+                break;
 
         }
 
@@ -317,6 +333,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         }
 
+
+
 public void callNow()
         {           Log.d("info","inside Call now");
 //
@@ -382,11 +400,6 @@ public void callNow()
                 TextView nameStatus = (TextView)findViewById(R.id.txtStatus);
                 nameStatus.setText("Update Call Status for "+jName);
 
-
-
-
-
-
             }
 
             //vi.addView(ly1, params1);
@@ -416,7 +429,7 @@ public void callNow()
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         Log.d("info","Inside OnActivityResult");
         //Log.d("info","I value="+i);
-
+        super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 1) {
 
            // repeatCall();
@@ -435,40 +448,44 @@ public void callNow()
 
 
             }
+
         }
+        if(requestCode == 15)
+        {
+            if(resultCode == RESULT_OK)
+            {
+           String path = getFilePath(data.getData().getPath());
+
+            lFileInput
+                    .setText(path);
+        }}
+
+
+        if (requestCode == FILE_SELECT_CODE){
+                if (resultCode == RESULT_OK) {
+                    // Get the Uri of the selected file
+                    Uri uri = data.getData();
+                    Log.d("info", "File Uri: " + uri.toString());
+                    // Get the path
+                    //String path = FileUtils.getPath(this, uri);
+                    Log.d("info", "File Path: " + path);
+                    // Get the file instance
+                    // File file = new File(path);
+                    // Initiate the upload
+                }
+
+        }
+        super.onActivityResult(requestCode, resultCode, data);
+
         }
 
-//        new Timer().schedule(new TimerTask() {
-//            @Override
-//            public void run() {
-//                // this code will be executed after 2 seconds
-//                if(i<contact_count){
-//                    repeatCall();
-//                }
-//            }
-//        }, 2000);
 
-////        if (requestCode == REQUEST_CODE) {
-//
-//            Log.d("info","I value inside if="+i);
-//             if(i<=1) {
-//        //          repeatCall();
-////                  i++;
-//            i++;
-//            Log.d("info","resultcode"+resultCode);
-//            if (resultCode == Activity.RESULT_OK) {
-//              //  int result = data.getIntExtra("pos");
-//                Log.d("info","Call ok");
-//                i++;
-//                repeatCall();
-//                // do something with the result
-//
-//            } else if (resultCode == Activity.RESULT_CANCELED) {
-//                // some stuff that will happen if there's no result
-//                Log.d("info","Call Cancelled");
-//                repeatCall();
-//            }
-//        }}
 
-    }
+        public String getFilePath(String path)
+        {
+            String[] words=path.split(":");
+            return words[1];
+        }
+
+}
 
