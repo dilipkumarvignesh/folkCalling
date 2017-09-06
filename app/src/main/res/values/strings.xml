@@ -56,6 +56,24 @@
         <item>Saturday</item>
         <item>Sunday</item>
     </string-array>
+    <string-array name="set_Pr">
+        <item>PR1</item>
+        <item>PR2</item>
+        <item>PR3</item>
+        <item>PR4</item>
+        <item>PR5</item>
+        <item>PR6</item>
+        <item>PR7</item>
+        <item>PR8</item>
+        <item>PR9</item>
+        <item>PR10</item>
+        <item>PR11</item>
+        <item>PR12</item>
+        <item>PR13</item>
+        <item>PR14</item>
+        <item>PR15</item>
 
+
+    </string-array>
 
 </resources>

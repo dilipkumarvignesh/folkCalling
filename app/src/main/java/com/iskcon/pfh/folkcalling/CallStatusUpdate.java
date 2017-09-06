@@ -46,8 +46,8 @@ public class CallStatusUpdate {
       //  Log.d("info","SDCARDPATH:"+SD_CARD_PATH,filename);
         //File yourFile = new File(SD_CARD_PATH, "/Music/.csv");
         //new File(SD_CARD_PATH + "/Music/" + "Contacts.csv");
-        String fname = filename +".csv";
-        String fname2 = filename+"1"+".csv";
+        String fname = filename;
+        String fname2 = "1"+".csv";
         try {
             File file = new File(SD_CARD_PATH, fname);
             File file1 = new File(SD_CARD_PATH, fname2);
@@ -205,7 +205,7 @@ public class CallStatusUpdate {
 //    }
     }
 
-    public JSONArray getCallDataStatus(String Status,Context Con,String Filename,String TeleCaller, String Day)
+    public JSONArray getCallDataStatus(String Status,Context Con,String Filename,String TeleCaller, String Day,String Program)
     {
         InputStream inputStream;
         String[] ids;

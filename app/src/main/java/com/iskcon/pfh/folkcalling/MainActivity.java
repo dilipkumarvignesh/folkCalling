@@ -89,8 +89,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 //                            Toast.LENGTH_LONG).show();
                 }
                 if(state==TelephonyManager.CALL_STATE_OFFHOOK){
-                    Toast.makeText(getApplicationContext(),"Phone in a call or call picked",
-                            Toast.LENGTH_LONG).show();
+//                    Toast.makeText(getApplicationContext(),"Phone in a call or call picked",
+//                            Toast.LENGTH_LONG).show();
                 }
                 if(state==TelephonyManager.CALL_STATE_IDLE){
                     //phone is neither ringing nor in a call
@@ -290,23 +290,37 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             String TeleCaller = TC.getSelectedItem().toString();
             Spinner Day = (Spinner)findViewById(R.id.updateDay);
             String DayValue = Day.getSelectedItem().toString();
+            Spinner PR = (Spinner)findViewById(R.id.updateProgram);
+            String PrValue = PR.getSelectedItem().toString();
 
             Log.d("info","SpinnerText:"+StatusValue);
             Log.d("info","TCValue:"+TeleCaller);
             Log.d("info","DayValue"+DayValue);
-            CallStatusUpdate CallData = new CallStatusUpdate();
-            jA = CallData.getCallDataStatus(StatusValue,this,csvFilename,TeleCaller,DayValue);
-            Toast.makeText(getApplicationContext(),
-                    jA.length()+" Contacts Downloaded", Toast.LENGTH_LONG).show();
-            contact_count = jA.length();
-            //int cou = contact_count - i;
-            String Status =  "0 Contacts Called " + contact_count+" Contacts Remaining";
-            txtStatus.setText(Status);
+
+            Intent k = new Intent(getApplicationContext(),Operations.class);
+            k.putExtra("LocalFile",true);
+            k.putExtra("Filename",csvFilename);
+            k.putExtra("StatusValue",StatusValue);
+            k.putExtra("TeleCaller",TeleCaller);
+            k.putExtra("DayValue",DayValue);
+            k.putExtra("PrValue",PrValue);
+            startActivity(k);
+
+
+//            CallStatusUpdate CallData = new CallStatusUpdate();
+//            jA = CallData.getCallDataStatus(StatusValue,this,csvFilename,TeleCaller,DayValue,PrValue);
+//            Toast.makeText(getApplicationContext(),
+//                    jA.length()+" Contacts Downloaded", Toast.LENGTH_LONG).show();
+//            contact_count = jA.length();
+//            //int cou = contact_count - i;
+//            String Status =  "0 Contacts Called " + contact_count+" Contacts Remaining";
+//            txtStatus.setText(Status);
 
         }
         else if(!GoogleId.equals(""))
         {
             String final_google_id = getGoogleId(GoogleId);
+
             Toast.makeText(getApplicationContext(),
                     "Downloading Excel. Please wait ...", Toast.LENGTH_LONG).show();
             DownloadWebpageTask dow = new DownloadWebpageTask(new AsyncResult() {

@@ -74,7 +74,12 @@
         android:layout_below="@+id/updateTC"
 
         android:entries="@array/set_Day" />
-
+    <Spinner
+        android:id="@+id/updateProgram"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/updateDay"
+        android:entries="@array/set_Pr" />
     <Button
         android:id="@+id/btnDownload"
         android:layout_width="wrap_content"
