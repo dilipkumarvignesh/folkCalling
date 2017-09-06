@@ -90,11 +90,11 @@ public class CallStatusUpdate {
                             finalReport[3]++;
                             break;
                         case "B":
-                            CallResponse ="InActive";
+                            CallResponse ="Inactive";
                             finalReport[4]++;
                             break;
                         case "C":
-                            CallResponse="InActive";
+                            CallResponse="Inactive";
                             finalReport[5]++;
                             break;
                         case "D":
@@ -102,11 +102,11 @@ public class CallStatusUpdate {
                             finalReport[6]++;
                             break;
                         case "E":
-                            CallResponse="InActive";
+                            CallResponse="Inactive";
                             finalReport[7]++;
                             break;
                         case "F":
-                            CallResponse="InActive";
+                            CallResponse="Inactive";
                             finalReport[8]++;
                             break;
                         case "G":
