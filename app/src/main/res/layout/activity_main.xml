@@ -41,7 +41,7 @@
             android:id="@+id/LFileInput"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/list_item_spacing" />
+            android:layout_marginBottom="5dp" />
 
         <ImageView
             android:id="@+id/GET_FILE"
@@ -55,43 +55,71 @@
 
     </RelativeLayout>
 
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dip"
+        android:layout_below="@id/FileSelectorLayout"
+        android:id="@+id/CallFilterText"
+        android:text="Category:"
+        android:layout_marginBottom="3dp"
+        />
 
     <Spinner
         android:id="@+id/spinner"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/FileSelectorLayout"
-        android:layout_marginBottom="@dimen/list_item_spacing"
+        android:layout_below="@+id/CallFilterText"
+        android:layout_marginBottom="5dp"
         android:background="@android:drawable/spinner_background"
         android:entries="@array/array_name" />
+
+    <TextView
+        android:id="@+id/TCspinnerText"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/spinner"
+        android:layout_marginBottom="3dp"
+        android:text="TeleCaller" />
 
     <Spinner
         android:id="@+id/updateTC"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-
         android:layout_alignParentStart="true"
-        android:layout_below="@+id/spinner"
-        android:layout_marginBottom="@dimen/list_item_spacing"
+        android:layout_below="@+id/TCspinnerText"
+        android:layout_marginBottom="5dp"
         android:background="@android:drawable/spinner_background"
         android:entries="@array/set_TC" />
-
+    <TextView
+        android:id="@+id/DayspinnerText"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/updateTC"
+        android:layout_marginBottom="3dp"
+        android:text="Day" />
     <Spinner
         android:id="@+id/updateDay"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/updateTC"
-
-        android:layout_marginBottom="@dimen/list_item_spacing"
+        android:layout_below="@+id/DayspinnerText"
+        android:layout_marginBottom="5dp"
         android:background="@android:drawable/spinner_background"
         android:entries="@array/set_Day" />
-
+    <TextView
+        android:id="@+id/ProgramspinnerText"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/updateDay"
+        android:layout_marginBottom="3dp"
+        android:text="Program" />
     <Spinner
         android:id="@+id/updateProgram"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
-        android:layout_below="@+id/updateDay"
+        android:layout_marginBottom="5dp"
+        android:layout_below="@+id/ProgramspinnerText"
         android:background="@android:drawable/spinner_background"
         android:entries="@array/set_Pr" />
 
@@ -101,7 +129,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/updateProgram"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="@dimen/list_item_spacing"
+        android:layout_marginTop="3dp"
         android:drawableLeft="@android:drawable/stat_sys_download"
         android:text="Download" />
 

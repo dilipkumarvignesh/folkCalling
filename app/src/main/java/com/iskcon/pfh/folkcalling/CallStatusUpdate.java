@@ -232,7 +232,7 @@ public class CallStatusUpdate {
                 ids = csvLine.split(",");
                 Log.d("info","Rowinfo:"+ids[2]);
                 Log.d("info","RowName:"+ids[0]);
-
+                Log.d("info","StatusValue:"+Status);
 
                 if (ids[8].equalsIgnoreCase(Status))
                 {
@@ -282,7 +282,10 @@ public class CallStatusUpdate {
                     }
                 }
                 else if(Status.equals("Recall Inactive Numbers")&&(ids[6].equals(TeleCaller)||TeleCaller.equals("ALL"))&&(ids[14].equals(Day)||Day.equals("ALL"))){
-                  if((ids[8].equals("B")||ids[8].equals("C")||ids[8].equals("Y2")||ids[8].equals("E")||ids[8].equals("F")||
+                  Log.d("info","Inside RecallInactive");
+                    Log.d("info","DateValue"+ids[11]);
+                    Log.d("info","TodayDate"+getDate());
+                    if((ids[8].equals("B")||ids[8].equals("C")||ids[8].equals("Y2")||ids[8].equals("E")||ids[8].equals("F")||
                     ids[8].equals("Y1")) && ids[11].equals(getDate()))
                     {
                         obj.put("Name", ids[0]);
@@ -305,7 +308,7 @@ public class CallStatusUpdate {
     {
         Calendar cal = Calendar.getInstance();
 
-        SimpleDateFormat format1 = new SimpleDateFormat("dd-MM-yyyy");
+        SimpleDateFormat format1 = new SimpleDateFormat("d/M/yy");
         System.out.println(cal.getTime());
 // Output "Wed Sep 26 14:23:28 EST 2012"
 
