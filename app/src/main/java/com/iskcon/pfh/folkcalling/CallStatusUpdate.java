@@ -233,19 +233,9 @@ public class CallStatusUpdate {
                 Log.d("info","Rowinfo:"+ids[2]);
                 Log.d("info","RowName:"+ids[0]);
                 Log.d("info","StatusValue:"+Status);
+                Log.d("info","ProgramDate:"+Program);
 
-                if (ids[8].equalsIgnoreCase(Status))
-                {
-//                    Toast.makeText(Con.getApplicationContext(), csvLine,
-//                        Toast.LENGTH_SHORT).show();
-
-                    obj.put("Name", ids[0]);
-                    obj.put("Number", ids[1]);
-                    jA.put(obj);
-                      Log.d("info","FileInfo:"+ids[1]+","+ids[2]);
-
-                }
-                else if(Status.equalsIgnoreCase("Fresh Calls"))
+                if(Status.equalsIgnoreCase("Fresh Calls"))
                 {
                     if(ids[8].equals("NA")&&(ids[6].equals(TeleCaller)||TeleCaller.equals("ALL"))&&(ids[14].equals(Day)||Day.equals("ALL")))
                     {

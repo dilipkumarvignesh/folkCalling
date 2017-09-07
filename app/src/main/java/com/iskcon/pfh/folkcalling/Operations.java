@@ -138,6 +138,7 @@ public class Operations extends AppCompatActivity implements View.OnClickListene
                 int FinalReport[] = updateCall.getFinalReport();
                 Intent k = new Intent(getApplicationContext(),StatusActivity.class);
                 k.putExtra("finalReport",FinalReport);
+                k.putExtra("filename",csvFilename);
 
                 startActivity(k);
                 break;
