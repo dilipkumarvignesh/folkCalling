@@ -60,6 +60,7 @@ public class Operations extends AppCompatActivity implements View.OnClickListene
                 repeatCall();
             }
         });
+
         t1=new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
             @Override
             public void onInit(int status) {
@@ -127,6 +128,26 @@ public class Operations extends AppCompatActivity implements View.OnClickListene
                     String comm = comments.getText().toString();
                     Log.d("info","StatusValue:"+StatusValue);
                     updateStatus(jNumber,StatusValue,comm);
+                    JSONObject NextCaller = jA.getJSONObject(i);
+                    String ProgramName = NextCaller.get("Program").toString();
+                    String SourceName = NextCaller.get("Source").toString();
+                    String CollegeName = NextCaller.get("College").toString();
+                    String CampaignedName = NextCaller.get("Campaigned").toString();
+                    String DOR = NextCaller.get("DOR").toString();
+                    String DOP = NextCaller.get("DOP").toString();
+                    TextView ProgName = (TextView)findViewById(R.id.txtProgramName);
+                    ProgName.setText(ProgramName);
+                    TextView SourName = (TextView)findViewById(R.id.txtSource);
+                    SourName.setText(SourceName);
+                    TextView CollName = (TextView)findViewById(R.id.txtCollege);
+                    CollName.setText(CollegeName);
+                    TextView Camp = (TextView)findViewById(R.id.txtCampaigned);
+                    Camp.setText(CampaignedName);
+                    TextView DORText = (TextView)findViewById(R.id.txtDOR);
+                    DORText.setText(DOR);
+                    TextView DOPName = (TextView)findViewById(R.id.txtProgramDate);
+                    DOPName.setText(DOP);
+
                     repeatCall();
                 }
                 catch (JSONException e){
@@ -170,7 +191,7 @@ public class Operations extends AppCompatActivity implements View.OnClickListene
                 String fNumber = jNumber;
                 intent.setData(Uri.parse("tel:" + fNumber));
                 // String na = name[i];
-               // t1.speak("Calling " + jName, TextToSpeech.QUEUE_FLUSH, null);
+                t1.speak("Calling " + jName, TextToSpeech.QUEUE_FLUSH, null);
                 intent.setData(Uri.parse("tel:" + jNumber));
                 startActivity(intent);
 

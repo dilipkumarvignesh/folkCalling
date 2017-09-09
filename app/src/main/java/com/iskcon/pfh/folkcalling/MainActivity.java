@@ -23,6 +23,8 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import net.gotev.speech.Speech;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -35,6 +37,7 @@ import static android.R.attr.permission;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     private static final int MY_PERMISSIONS_REQUEST_CALL = 0;
+    private static final int MY_PERMISSIONS_REQUEST_SEND_SMS = 0;
     private static final int FILE_SELECT_CODE = 0;
     private static String[] PERMISSIONS_STORAGE = {
             Manifest.permission.READ_EXTERNAL_STORAGE,
@@ -65,7 +68,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         TelephonyManager telephonyManager = (TelephonyManager)getSystemService(
                 Context.TELEPHONY_SERVICE);
         vi = this.findViewById(android.R.id.content);
-
+        Speech.init(this,getPackageName());
         Callenabled = 1;
         if (permission != PackageManager.PERMISSION_GRANTED) {
             // We don't have permission so prompt the user
@@ -80,6 +83,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             ActivityCompat.requestPermissions(this,
                     new String[]{Manifest.permission.CALL_PHONE},
                     MY_PERMISSIONS_REQUEST_CALL);
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.SEND_SMS},
+                    MY_PERMISSIONS_REQUEST_SEND_SMS);
         }
         PhoneStateListener callStateListener = new PhoneStateListener() {
             public void onCallStateChanged(int state, String incomingNumber){
@@ -176,6 +182,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
 
+        Speech.init(this,getPackageName());
 
     }
 
@@ -468,8 +475,10 @@ public void callNow()
         {
             if(resultCode == RESULT_OK)
             {
-           String path = getFilePath(data.getData().getPath());
-
+              String path = getFilePath(data.getData().getPath());
+                Log.d("info","Filepath:"+path);
+                Toast.makeText(getApplicationContext(),
+                        data+"Path of chosen File", Toast.LENGTH_LONG).show();
             lFileInput
                     .setText(path);
         }}

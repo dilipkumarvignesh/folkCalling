@@ -11,7 +11,8 @@
 
     <RelativeLayout
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:id="@+id/CallingLayout">
 
         <Button
             android:id="@+id/btn2"
@@ -42,7 +43,57 @@
     <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
+        android:layout_below="@+id/CallingLayout"
+        android:id="@+id/InfoLayout"
+        android:paddingLeft="10dp">
+
+        <TextView
+            android:id="@+id/txtProgramName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="ProgramName" />
+
+        <TextView
+            android:id="@+id/txtDOR"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/txtProgramName"
+
+            />
+
+        <TextView
+            android:id="@+id/txtProgramDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/txtDOR" />
+
+        <TextView
+            android:id="@+id/txtSource"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/txtProgramDate" />
+
+        <TextView
+            android:id="@+id/txtCollege"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/txtSource"
+
+            />
+
+        <TextView
+            android:id="@+id/txtCampaigned"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/txtCollege" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+        android:layout_below="@+id/InfoLayout"
         android:layout_centerVertical="true">
 
         <TextView
@@ -58,19 +109,35 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/txtStatus"
             android:entries="@array/set_status" />
-
+        <RelativeLayout
+            android:id="@+id/RemainderLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/updateSpinner">
         <EditText
             android:id="@+id/CallComment"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/updateSpinner" />
+            />
 
+            <ImageView
+                android:id="@+id/GET_FILE"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@+id/CallComment"
+                android:layout_alignRight="@+id/CallComment"
+                android:layout_alignTop="@+id/CallComment"
+                android:background="@android:color/holo_red_light"
+                android:padding="5dp"
+                android:paddingRight="5dp"
+                app:srcCompat="@android:drawable/ic_popup_reminder" />
+        </RelativeLayout>
 
         <Button
             android:id="@+id/UpdateCallStatus"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/CallComment"
+            android:layout_below="@+id/RemainderLayout"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="16dp"
             android:background="@drawable/roundedbutton"
