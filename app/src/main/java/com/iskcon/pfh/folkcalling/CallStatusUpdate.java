@@ -2,15 +2,14 @@ package com.iskcon.pfh.folkcalling;
 
 import android.Manifest;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Environment;
-import android.provider.CalendarContract;
-import android.provider.CalendarContract.Events;
+import android.telephony.SmsManager;
 import android.util.Log;
 import android.widget.Toast;
-import android.telephony.SmsManager;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -128,7 +127,7 @@ public class CallStatusUpdate {
                         case "Y3":
                             CallResponse="Inactive";
                             finalReport[12]++;
-                         //   addRemainder(ids[0],ids[1],comm);
+                           // addRemainder("Dilip","9663898009",comm);
                             Log.d("info","Y3 Response Selected");
                             break;
                         case "Z":
@@ -363,31 +362,7 @@ public class CallStatusUpdate {
         totalCallCount++;
     }
 
-    public void addRemainder(String name,String number,String day)
-    {
-        Calendar beginTime = Calendar.getInstance();
-        String [] time = day.split(" ");
-        int year = Integer.parseInt(time[2]) ;
-        int month = Integer.parseInt(time[1])-1;
-        int Cday = Integer.parseInt(time[0]);
-        int hour = Integer.parseInt(time[3]);
 
-        Log.d("info","Inside Remainder");
-        beginTime.set(year,month,Cday,hour,0);
-
-        Calendar endTime = Calendar.getInstance();
-        endTime.set(year,month,Cday,hour,5);
-        Intent intent = new Intent(Intent.ACTION_INSERT)
-                .setData(Events.CONTENT_URI)
-                .putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, beginTime.getTimeInMillis())
-                .putExtra(CalendarContract.EXTRA_EVENT_END_TIME, endTime.getTimeInMillis())
-                .putExtra(Events.TITLE, "Calling Remainder")
-                .putExtra(Events.DESCRIPTION, "Call "+name+" Number:"+number)
-                .putExtra(Events.AVAILABILITY, Events.AVAILABILITY_BUSY);
-               // .putExtra(Intent.EXTRA_EMAIL, "rowan@example.com,trevor@example.com");
-        this.Con.startActivity(intent);
-
-     }
 
      public void sendSms(String Message,String name,String number)
      {

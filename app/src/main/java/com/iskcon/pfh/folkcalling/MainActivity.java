@@ -86,6 +86,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             ActivityCompat.requestPermissions(this,
                     new String[]{Manifest.permission.SEND_SMS},
                     MY_PERMISSIONS_REQUEST_SEND_SMS);
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.READ_CALL_LOG},
+                    MY_PERMISSIONS_REQUEST_SEND_SMS);
         }
         PhoneStateListener callStateListener = new PhoneStateListener() {
             public void onCallStateChanged(int state, String incomingNumber){
@@ -474,7 +477,7 @@ public void callNow()
         if(requestCode == 15)
         {
             if(resultCode == RESULT_OK)
-            {
+            { Log.d("info","file:"+data.getData());
               String path = getFilePath(data.getData().getPath());
                 Log.d("info","Filepath:"+path);
                 Toast.makeText(getApplicationContext(),
@@ -506,6 +509,7 @@ public void callNow()
 
         public String getFilePath(String path)
         {
+            Log.d("info","FIleparts"+path);
             String[] words=path.split(":");
             return words[1];
         }

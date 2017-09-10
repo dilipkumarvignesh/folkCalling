@@ -1,9 +1,14 @@
 package com.iskcon.pfh.folkcalling;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.CalendarContract;
+import android.provider.CalendarContract.Events;
+import android.provider.CallLog;
 import android.speech.tts.TextToSpeech;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -20,6 +25,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Locale;
 
 public class Operations extends AppCompatActivity implements View.OnClickListener {
@@ -148,7 +154,7 @@ public class Operations extends AppCompatActivity implements View.OnClickListene
                     TextView DOPName = (TextView)findViewById(R.id.txtProgramDate);
                     DOPName.setText(DOP);
 
-                    repeatCall();
+
                 }
                 catch (JSONException e){
                     e.printStackTrace();
@@ -332,8 +338,102 @@ public class Operations extends AppCompatActivity implements View.OnClickListene
         //EditText cFilename = (EditText) findViewById(R.id.LFileInput);
        // String csvFilename = cFilename.getText().toString();
         CallStatusUpdate updateCall = new CallStatusUpdate();
-        updateCall.writeStatus(number,Status,comm,this,csvFilename);
-        Toast.makeText(getApplicationContext(),"Status Updated",
-                Toast.LENGTH_SHORT).show();
+        String status = updateCall.getStatus(Status);
+        if (status.equals("Y3"))
+        {
+            addRemainder("Dilip","9663898009","Hello");
+        }
+        else {
+            updateCall.writeStatus(number, Status, comm, this, csvFilename);
+            Toast.makeText(getApplicationContext(), "Status Updated",
+                    Toast.LENGTH_SHORT).show();
+            getLastOutgoingCallDuration(this);
+            repeatCall();
+        }
+
+
+    }
+
+    public void addRemainder(String name,String number,String day)
+    {
+        Calendar beginTime = Calendar.getInstance();
+        day="20 9 2017 7";
+        String [] time = day.split(" ");
+        Log.d("info","inside add Remainder");
+        int year = Integer.parseInt(time[2]) ;
+        int month = Integer.parseInt(time[1])-1;
+        int Cday = Integer.parseInt(time[0]);
+        int hour = Integer.parseInt(time[3]);
+
+        Log.d("info","Inside Remainder");
+        //Log.d("info","")
+        beginTime.set(year,month,Cday,hour,0);
+
+        Calendar endTime = Calendar.getInstance();
+        endTime.set(year,month,Cday,hour,5);
+        Intent intent = new Intent(Intent.ACTION_INSERT)
+                .setData(Events.CONTENT_URI)
+                .putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, beginTime.getTimeInMillis())
+                .putExtra(CalendarContract.EXTRA_EVENT_END_TIME, endTime.getTimeInMillis())
+                .putExtra(Events.TITLE, "Calling Remainder")
+                .putExtra(Events.DESCRIPTION, "Call "+name+" Number:"+number)
+                .putExtra(Events.AVAILABILITY, Events.AVAILABILITY_BUSY);
+        // .putExtra(Intent.EXTRA_EMAIL, "rowan@example.com,trevor@example.com");
+        this.startActivityForResult(intent,200);
+
+    }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        if(requestCode == 200)
+        {
+            repeatCall();
+        }
+
+    }
+
+//    public void getCallLog()
+//    {
+//        String number = "123456789";
+//        String whereClause = CallLog.Calls.NUMBER + " = " + number;
+//
+//        Cursor c =  getApplicationContext().getContentResolver().query(CallLog.Calls.CONTENT_URI, null, CallLog.Calls.NUMBER + " = ? " ,
+//                new String[]{number}, CallLog.Calls.DATE + " DESC");
+//    }
+    public String getLastOutgoingCallDuration(final Context context) {
+        String output = null;
+
+        final Uri callog = CallLog.Calls.CONTENT_URI;
+        Cursor cursor = null;
+
+        try {
+            // Query all the columns of the records that matches "type=2"
+            // (outgoing) and orders the results by "date"
+            cursor = context.getContentResolver().query(callog, null,
+                    CallLog.Calls.TYPE + "=" + CallLog.Calls.OUTGOING_TYPE,
+                    null, CallLog.Calls.DATE);
+            final int durationCol = cursor
+                    .getColumnIndex(CallLog.Calls.DURATION);
+            final int CallType = cursor.getColumnIndex(CallLog.Calls.TYPE);
+            Log.d("info","CallType:"+ CallType);
+            Log.d("info","CallDuration:"+durationCol);
+
+
+            // Retrieve only the last record to get the last outgoing call
+            if (cursor.moveToLast()) {
+                // Retrieve only the duration column
+                output = cursor.getString(durationCol);
+            }
+        } finally {
+            // Close the resources
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
+
+
+        return output;
     }
 }
+
+

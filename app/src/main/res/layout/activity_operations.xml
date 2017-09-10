@@ -14,16 +14,6 @@
         android:layout_height="wrap_content"
         android:id="@+id/CallingLayout">
 
-        <Button
-            android:id="@+id/btn2"
-            style="@style/Widget.AppCompat.Button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_below="@+id/btnDownload"
-            android:backgroundTint="@color/primary_light"
-            android:drawableLeft="@android:drawable/sym_action_call"
-            android:text="Start Calling" />
 
         <TextView
             android:id="@+id/Status"
@@ -149,42 +139,38 @@
 
     </RelativeLayout>
 
-    <RelativeLayout
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:background="@color/primary_light"
-        android:weightSum="1"
-        tools:layout_editor_absoluteX="8dp"
-        tools:layout_editor_absoluteY="0dp">
+        android:background="white">
 
         <Button
-            android:id="@+id/CALLSTOP"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.3"
-            android:background="@android:color/holo_red_light"
-            android:text="PAUSe" />
+            android:id="@+id/btn2"
+            style="@style/Widget.AppCompat.Button"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:background="@mipmap/call" />
+
+
 
         <Button
             android:id="@+id/REPORT"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
-            android:layout_weight="0.4"
+            android:layout_weight="1"
             android:background="@android:color/holo_blue_light"
             android:text="REPORT" />
 
         <Button
-            android:id="@+id/CALLCONTINUE"
+            android:id="@+id/CALLSTOP"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_weight="0.5"
+            android:background="@android:color/holo_red_light"
+            android:text="PAUSe" />
 
-            android:background="@android:color/holo_green_light"
-            android:text="CONTINUE" />
-    </RelativeLayout>
+    </LinearLayout>
 
 
 </RelativeLayout>
