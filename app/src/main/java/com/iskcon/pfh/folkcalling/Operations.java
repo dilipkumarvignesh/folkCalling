@@ -400,7 +400,7 @@ public class Operations extends AppCompatActivity implements View.OnClickListene
             addRemainder("Dilip","9663898009","Hello");
         }
         else {
-            updateCall.writeStatus(name,number, Status, comm, this, csvFilename);
+            updateCall.writeStatus(Name,number, Status, comm, this, csvFilename);
             Toast.makeText(getApplicationContext(), "Status Updated",
                     Toast.LENGTH_SHORT).show();
 //            getLastOutgoingCallDuration(this);
