@@ -1,11 +1,13 @@
 package com.iskcon.pfh.folkcalling;
 
 import android.Manifest;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.CalendarContract;
 import android.provider.CalendarContract.Events;
 import android.provider.CallLog;
@@ -13,6 +15,7 @@ import android.speech.tts.TextToSpeech;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -78,9 +81,9 @@ public class Operations extends AppCompatActivity implements View.OnClickListene
         Callenabled = 1;
         CallStop = (Button) findViewById(R.id.CALLSTOP);
         UpdateCallStatus = (Button)findViewById(R.id.UpdateCallStatus);
-        CallContinue = (Button) findViewById(R.id.CALLCONTINUE);
+       // CallContinue = (Button) findViewById(R.id.CALLCONTINUE);
         CallStop.setOnClickListener(this);
-        CallContinue.setOnClickListener(this);
+//        CallContinue.setOnClickListener(this);
         UpdateCallStatus.setOnClickListener(this);
         Report = (Button) findViewById(R.id.REPORT);
         Report.setOnClickListener(this);
@@ -114,11 +117,11 @@ public class Operations extends AppCompatActivity implements View.OnClickListene
     public void onClick(View v) {
         Log.d("info","Button clicked:"+v.getId());
         switch(v.getId()) {
-            case R.id.CALLCONTINUE:
-                Callenabled = 1;
-                Log.d("info","CallEnabled:"+"TRUE");
-                repeatCall();
-                break;
+//            case R.id.CALLCONTINUE:
+//                Callenabled = 1;
+//                Log.d("info","CallEnabled:"+"TRUE");
+//                repeatCall();
+//                break;
             case R.id.CALLSTOP:
                 Callenabled = 0;
                 Log.d("info","CallEnabled:"+"FALSE");
@@ -126,33 +129,36 @@ public class Operations extends AppCompatActivity implements View.OnClickListene
             case R.id.UpdateCallStatus:
                 try {
                     JSONObject objects = jA.getJSONObject(i-1);
-
+                    Log.d("info","CallRowNo:"+i);
+                    String name = objects.get("Name").toString();
                     String jNumber = objects.get("Number").toString();
                     Spinner sta = (Spinner) findViewById(R.id.updateSpinner);
                     EditText comments = (EditText)findViewById(R.id.CallComment);
                     String StatusValue = sta.getSelectedItem().toString();
                     String comm = comments.getText().toString();
                     Log.d("info","StatusValue:"+StatusValue);
-                    updateStatus(jNumber,StatusValue,comm);
-                    JSONObject NextCaller = jA.getJSONObject(i);
-                    String ProgramName = NextCaller.get("Program").toString();
-                    String SourceName = NextCaller.get("Source").toString();
-                    String CollegeName = NextCaller.get("College").toString();
-                    String CampaignedName = NextCaller.get("Campaigned").toString();
-                    String DOR = NextCaller.get("DOR").toString();
-                    String DOP = NextCaller.get("DOP").toString();
-                    TextView ProgName = (TextView)findViewById(R.id.txtProgramName);
-                    ProgName.setText(ProgramName);
-                    TextView SourName = (TextView)findViewById(R.id.txtSource);
-                    SourName.setText(SourceName);
-                    TextView CollName = (TextView)findViewById(R.id.txtCollege);
-                    CollName.setText(CollegeName);
-                    TextView Camp = (TextView)findViewById(R.id.txtCampaigned);
-                    Camp.setText(CampaignedName);
-                    TextView DORText = (TextView)findViewById(R.id.txtDOR);
-                    DORText.setText(DOR);
-                    TextView DOPName = (TextView)findViewById(R.id.txtProgramDate);
-                    DOPName.setText(DOP);
+                    updateStatus(name,jNumber,StatusValue,comm);
+                 //   EditText comments = (EditText)findViewById(R.id.CallComment);
+                    comments.setText("");
+//                    JSONObject NextCaller = jA.getJSONObject(i);
+//                    String ProgramName = NextCaller.get("Program").toString();
+//                    String SourceName = NextCaller.get("Source").toString();
+//                    String CollegeName = NextCaller.get("College").toString();
+//                    String CampaignedName = NextCaller.get("Campaigned").toString();
+//                    String DOR = NextCaller.get("DOR").toString();
+//                    String DOP = NextCaller.get("DOP").toString();
+//                    TextView ProgName = (TextView)findViewById(R.id.txtProgramName);
+//                    ProgName.setText(ProgramName);
+//                    TextView SourName = (TextView)findViewById(R.id.txtSource);
+//                    SourName.setText(SourceName);
+//                    TextView CollName = (TextView)findViewById(R.id.txtCollege);
+//                    CollName.setText(CollegeName);
+//                    TextView Camp = (TextView)findViewById(R.id.txtCampaigned);
+//                    Camp.setText(CampaignedName);
+//                    TextView DORText = (TextView)findViewById(R.id.txtDOR);
+//                    DORText.setText(DOR);
+//                    TextView DOPName = (TextView)findViewById(R.id.txtProgramDate);
+//                    DOPName.setText(DOP);
 
 
                 }
@@ -211,6 +217,14 @@ public class Operations extends AppCompatActivity implements View.OnClickListene
                 txtStatus.setText(Status);
                 TextView nameStatus = (TextView)findViewById(R.id.txtStatus);
                 nameStatus.setText("Update Call Status for "+jName);
+
+                Runnable showDialogRun = new Runnable() {
+                            public void run() {
+                                showDetailDialog();
+                            }
+                        };
+                        Handler h = new Handler();
+                        h.postDelayed(showDialogRun, 3000);
             }
 
             //vi.addView(ly1, params1);
@@ -224,6 +238,48 @@ public class Operations extends AppCompatActivity implements View.OnClickListene
 
 
 
+    }
+    private void showDetailDialog()
+    {
+        final Dialog d = new Dialog(this,R.style.CustomDialogTheme);
+            d.setContentView(R.layout.custom_dialog);
+            d.getWindow().setType(WindowManager.LayoutParams.TYPE_TOAST);
+            d.show();
+        try {
+            JSONObject NextCaller = jA.getJSONObject(i-1);
+            String PersonName = NextCaller.get("Name").toString();
+            TextView PersonNameText = (TextView) d.findViewById(R.id.PersonName);
+            PersonNameText.setText(PersonName);
+            String ProgramName = NextCaller.get("Program").toString();
+            TextView PRnametext = (TextView) d.findViewById(R.id.txtProgramName);
+            PRnametext.setText(ProgramName);
+            String SourceName = NextCaller.get("Source").toString();
+            TextView SourceText = (TextView) d.findViewById(R.id.txtSource);
+            SourceText.setText(SourceName);
+            String CollegeName = NextCaller.get("College").toString();
+            TextView CollegeNameText = (TextView) d.findViewById(R.id.txtCollege);
+            CollegeNameText.setText(CollegeName);
+            String CampaignedName = NextCaller.get("Campaigned").toString();
+            TextView CampaingendNameText = (TextView) d.findViewById(R.id.txtCampaigned);
+            CampaingendNameText.setText(CampaignedName);
+
+            String DOR = NextCaller.get("DOR").toString();
+            TextView DORtext = (TextView) d.findViewById(R.id.txtDOR);
+            DORtext.setText(DOR);
+            String DOP = NextCaller.get("DOP").toString();
+            TextView DOPText = (TextView) d.findViewById(R.id.txtProgramDate);
+            DOPText.setText(DOP);
+        }
+        catch(JSONException e)
+        {
+
+        }
+            Button close_btn = (Button) d.findViewById(R.id.dialogButtonOK);
+            close_btn.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View v) {
+                    d.dismiss();
+                }
+            });
     }
 
     private void download_excel() {
@@ -333,7 +389,7 @@ public class Operations extends AppCompatActivity implements View.OnClickListene
             e.printStackTrace();
         }
     }
-    public void updateStatus(String number, String Status,String comm)
+    public void updateStatus(String Name,String number, String Status,String comm)
     {
         //EditText cFilename = (EditText) findViewById(R.id.LFileInput);
        // String csvFilename = cFilename.getText().toString();
@@ -344,10 +400,10 @@ public class Operations extends AppCompatActivity implements View.OnClickListene
             addRemainder("Dilip","9663898009","Hello");
         }
         else {
-            updateCall.writeStatus(number, Status, comm, this, csvFilename);
+            updateCall.writeStatus(name,number, Status, comm, this, csvFilename);
             Toast.makeText(getApplicationContext(), "Status Updated",
                     Toast.LENGTH_SHORT).show();
-            getLastOutgoingCallDuration(this);
+//            getLastOutgoingCallDuration(this);
             repeatCall();
         }
 

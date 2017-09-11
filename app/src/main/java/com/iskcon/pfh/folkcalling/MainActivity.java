@@ -29,6 +29,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Locale;
 
@@ -41,7 +42,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private static final int FILE_SELECT_CODE = 0;
     private static String[] PERMISSIONS_STORAGE = {
             Manifest.permission.READ_EXTERNAL_STORAGE,
-            Manifest.permission.WRITE_EXTERNAL_STORAGE
+            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+            Manifest.permission.CALL_PHONE,
+            Manifest.permission.SEND_SMS,
+            Manifest.permission.READ_CALL_LOG
+
     };
     EditText txtGoogleId;
     TextView txtStatus,lFileInput;
@@ -79,16 +84,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
             );
-
-            ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.CALL_PHONE},
-                    MY_PERMISSIONS_REQUEST_CALL);
-            ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.SEND_SMS},
-                    MY_PERMISSIONS_REQUEST_SEND_SMS);
-            ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.READ_CALL_LOG},
-                    MY_PERMISSIONS_REQUEST_SEND_SMS);
+//
+//            ActivityCompat.requestPermissions(this,
+//                    new String[]{Manifest.permission.CALL_PHONE},
+//                    MY_PERMISSIONS_REQUEST_CALL);
+//            ActivityCompat.requestPermissions(this,
+//                    new String[]{Manifest.permission.SEND_SMS},
+//                    MY_PERMISSIONS_REQUEST_SEND_SMS);
+//            ActivityCompat.requestPermissions(this,
+//                    new String[]{Manifest.permission.READ_CALL_LOG},
+//                    MY_PERMISSIONS_REQUEST_SEND_SMS);
         }
         PhoneStateListener callStateListener = new PhoneStateListener() {
             public void onCallStateChanged(int state, String incomingNumber){
@@ -194,11 +199,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View v) {
         Log.d("info","Button clicked:"+v.getId());
         switch(v.getId()) {
-            case R.id.CALLCONTINUE:
-                Callenabled = 1;
-                Log.d("info","CallEnabled:"+"TRUE");
-                repeatCall();
-                break;
+//            case R.id.CALLCONTINUE:
+//                Callenabled = 1;
+//                Log.d("info","CallEnabled:"+"TRUE");
+//                repeatCall();
+//                break;
             case R.id.CALLSTOP:
                  Callenabled = 0;
                 Log.d("info","CallEnabled:"+"FALSE");
@@ -314,6 +319,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             k.putExtra("TeleCaller",TeleCaller);
             k.putExtra("DayValue",DayValue);
             k.putExtra("PrValue",PrValue);
+//            final Dialog d = new Dialog(this,R.style.CustomDialogTheme);
+//            d.setContentView(R.layout.custom_dialog);
+//            d.show();
+//
+//            Button close_btn = (Button) d.findViewById(R.id.dialogButtonOK);
+//            close_btn.setOnClickListener(new View.OnClickListener() {
+//                public void onClick(View v) {
+//                    d.dismiss();
+//                }
+//            });
             startActivity(k);
 
 
@@ -478,12 +493,14 @@ public void callNow()
         {
             if(resultCode == RESULT_OK)
             { Log.d("info","file:"+data.getData());
+                File file = new File(data.getData().toString());
+                Log.d("info","Filepath:"+file.getAbsolutePath());
               String path = getFilePath(data.getData().getPath());
                 Log.d("info","Filepath:"+path);
                 Toast.makeText(getApplicationContext(),
                         data+"Path of chosen File", Toast.LENGTH_LONG).show();
             lFileInput
-                    .setText(path);
+                    .setText(file.getAbsolutePath());
         }}
 
 

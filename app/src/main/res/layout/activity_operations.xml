@@ -5,21 +5,25 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/background2"
+    android:layout_margin="20dp"
     tools:context="com.iskcon.pfh.folkcalling.Operations"
     tools:layout_editor_absoluteX="8dp"
     tools:layout_editor_absoluteY="8dp">
 
-    <RelativeLayout
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/CallingLayout">
-
+        android:id="@+id/InfoLayout"
+        android:orientation="vertical"
+        android:padding="10dp"
+        android:background="@drawable/customtextbox"
+        android:paddingLeft="10dp">
 
         <TextView
             android:id="@+id/Status"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/btn2"
             android:text="Calling Status" />
 
         <TextView
@@ -28,122 +32,137 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/Status" />
 
-    </RelativeLayout>
+        <!--<TextView-->
+            <!--android:id="@+id/txtProgramName"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:text="ProgramName" />-->
+
+        <!--<TextView-->
+            <!--android:id="@+id/txtDOR"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_below="@id/txtProgramName"-->
+
+            <!--/>-->
+
+        <!--<TextView-->
+            <!--android:id="@+id/txtProgramDate"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_below="@id/txtDOR" />-->
+
+        <!--<TextView-->
+            <!--android:id="@+id/txtSource"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_below="@id/txtProgramDate" />-->
+
+        <!--<TextView-->
+            <!--android:id="@+id/txtCollege"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_below="@id/txtSource"-->
+
+            <!--/>-->
+
+        <!--<TextView-->
+            <!--android:id="@+id/txtCampaigned"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_below="@id/txtCollege" />-->
+    </LinearLayout>
+
 
     <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/CallingLayout"
-        android:id="@+id/InfoLayout"
-        android:paddingLeft="10dp">
-
-        <TextView
-            android:id="@+id/txtProgramName"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="ProgramName" />
-
-        <TextView
-            android:id="@+id/txtDOR"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/txtProgramName"
-
-            />
-
-        <TextView
-            android:id="@+id/txtProgramDate"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/txtDOR" />
-
-        <TextView
-            android:id="@+id/txtSource"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/txtProgramDate" />
-
-        <TextView
-            android:id="@+id/txtCollege"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/txtSource"
-
-            />
-
-        <TextView
-            android:id="@+id/txtCampaigned"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/txtCollege" />
-
-    </RelativeLayout>
-
-    <RelativeLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-
-        android:layout_below="@+id/InfoLayout"
-        android:layout_centerVertical="true">
+        android:layout_marginBottom="20dp"
+        android:layout_above="@+id/fixedButtons">
 
         <TextView
             android:id="@+id/txtStatus"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-
-            />
+            android:layout_height="wrap_content" />
 
         <Spinner
             android:id="@+id/updateSpinner"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/txtStatus"
+            android:layout_marginBottom="15dp"
+            android:background="@android:drawable/spinner_background"
             android:entries="@array/set_status" />
+
         <RelativeLayout
             android:id="@+id/RemainderLayout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/updateSpinner">
+
         <EditText
             android:id="@+id/CallComment"
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            />
+            android:layout_height="40dp"
+            android:hint="  Enter Comment"
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/customtextbox" />
 
-            <ImageView
-                android:id="@+id/GET_FILE"
+        <LinearLayout
+            android:id="@+id/threeButtons"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/CallComment"
+            android:gravity="center_horizontal">
+
+            <Button
+                android:id="@+id/PickDate"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignBottom="@+id/CallComment"
-                android:layout_alignRight="@+id/CallComment"
-                android:layout_alignTop="@+id/CallComment"
-                android:background="@android:color/holo_red_light"
-                android:padding="5dp"
-                android:paddingRight="5dp"
-                app:srcCompat="@android:drawable/ic_popup_reminder" />
+                android:text="Date" />
+
+            <Button
+                android:id="@+id/TimePick"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Time" />
+
+            <Button
+                android:id="@+id/CAL"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Calendar" />
+        </LinearLayout>
+
+            <Button
+                android:id="@+id/UpdateCallStatus"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/threeButtons"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/roundedbutton"
+                android:textColor="@color/background"
+                android:textStyle="bold"
+                android:textAllCaps="false"
+                android:paddingBottom="3dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginLeft="20dp"
+                android:paddingTop="3dp"
+                android:textSize="18dp"
+                android:text="Update Response" />
         </RelativeLayout>
-
-        <Button
-            android:id="@+id/UpdateCallStatus"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/RemainderLayout"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="16dp"
-            android:background="@drawable/roundedbutton"
-            android:paddingBottom="3dp"
-            android:paddingLeft="5dp"
-            android:paddingRight="5dp"
-            android:paddingTop="3dp"
-            android:text="Update Response" />
-
     </RelativeLayout>
 
     <LinearLayout
+        android:id="@+id/fixedButtons"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:background="white">
+        android:background="@color/background2"
+        android:gravity="center"
+        android:layout_marginTop="10dp"
+        android:paddingBottom="5dp"
+        android:layout_alignParentBottom="true">
 
         <Button
             android:id="@+id/btn2"
@@ -153,22 +172,19 @@
             android:background="@mipmap/call" />
 
 
+        <Button
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:id="@+id/CALLSTOP"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp"
+            android:background="@mipmap/play" />
 
         <Button
             android:id="@+id/REPORT"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_weight="1"
-            android:background="@android:color/holo_blue_light"
-            android:text="REPORT" />
-
-        <Button
-            android:id="@+id/CALLSTOP"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@android:color/holo_red_light"
-            android:text="PAUSe" />
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:background="@mipmap/report" />
 
     </LinearLayout>
 

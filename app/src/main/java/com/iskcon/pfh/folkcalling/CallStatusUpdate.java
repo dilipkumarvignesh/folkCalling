@@ -35,7 +35,7 @@ public class CallStatusUpdate {
             Manifest.permission.READ_EXTERNAL_STORAGE,
             Manifest.permission.WRITE_EXTERNAL_STORAGE
     };
-    public void writeStatus(String Number, String Status,String comm, Context con,String filename)
+    public void writeStatus(String Name,String Number, String Status,String comm, Context con,String filename)
     {
         InputStream inputStream;
         String[] ids;
@@ -65,7 +65,7 @@ public class CallStatusUpdate {
              //   ids[2]=Status;
                 Log.d("info","Write Number:"+Number);
                 String CallResponse ="";
-                if(ids[1].equalsIgnoreCase(Number))
+                if(ids[0].equalsIgnoreCase(Name)&&ids[1].equalsIgnoreCase(Number))
                 {
                     Log.d("info","Write Number Inside:"+Number);
                     String FinalStatus = getStatus(Status);
@@ -299,10 +299,10 @@ public class CallStatusUpdate {
                 }
                 else if(Status.equals("Recall Inactive Numbers")&&(ids[10].equals(TeleCaller)||TeleCaller.equals("ALL"))&&(ids[8].equals(Day)||Day.equals("ALL"))){
                   Log.d("info","Inside RecallInactive");
-                    Log.d("info","DateValue"+ids[11]);
+                    Log.d("info","DateValue"+ids[15]);
                     Log.d("info","TodayDate"+getDate());
                     if((ids[12].equals("B")||ids[12].equals("C")||ids[12].equals("Y2")||ids[12].equals("E")||ids[12].equals("F")||
-                    ids[12].equals("Y1")) && ids[11].equals(getDate()))
+                    ids[12].equals("Y1")) && ids[15].equals(getDate()))
                     {
                         obj.put("Name", ids[0]);
                         obj.put("Number", ids[1]);

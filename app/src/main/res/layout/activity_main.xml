@@ -124,13 +124,11 @@
 
     <Button
         android:id="@+id/btnDownload"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:layout_below="@+id/updateProgram"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="3dp"
-        android:drawableLeft="@android:drawable/stat_sys_download"
-        android:text="Download" />
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:background="@mipmap/download"/>
 
     <!--<Button-->
     <!--android:id="@+id/btn2"-->
