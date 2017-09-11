@@ -203,7 +203,7 @@ public class Operations extends AppCompatActivity implements View.OnClickListene
                 String fNumber = jNumber;
                 intent.setData(Uri.parse("tel:" + fNumber));
                 // String na = name[i];
-                t1.speak("Calling " + jName, TextToSpeech.QUEUE_FLUSH, null);
+                t1.speak(jName, TextToSpeech.QUEUE_FLUSH, null);
                 intent.setData(Uri.parse("tel:" + jNumber));
                 startActivity(intent);
 
