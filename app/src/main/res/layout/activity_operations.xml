@@ -117,21 +117,24 @@
 
             <Button
                 android:id="@+id/PickDate"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Date" />
+                android:layout_width="70dp"
+                android:layout_height="70dp"
+                android:layout_marginRight="20dp"
+                android:background="@mipmap/pick_date" />
 
             <Button
                 android:id="@+id/TimePick"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Time" />
+                android:layout_width="70dp"
+                android:layout_height="70dp"
+                android:background="@mipmap/time_picker"
+                />
 
             <Button
                 android:id="@+id/CAL"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Calendar" />
+                android:layout_width="70dp"
+                android:layout_height="70dp"
+                android:layout_marginLeft="20dp"
+                android:background="@mipmap/calendar" />
         </LinearLayout>
 
             <Button
@@ -178,7 +181,7 @@
             android:id="@+id/CALLSTOP"
             android:layout_marginLeft="30dp"
             android:layout_marginRight="30dp"
-            android:background="@mipmap/play" />
+            android:background="@mipmap/pause" />
 
         <Button
             android:id="@+id/REPORT"

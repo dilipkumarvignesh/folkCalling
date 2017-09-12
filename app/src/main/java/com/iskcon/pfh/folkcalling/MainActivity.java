@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -213,12 +214,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     JSONObject objects = jA.getJSONObject(i-1);
 
                     String jNumber = objects.get("Number").toString();
+                    String Name = objects.get("Name").toString();
                     Spinner sta = (Spinner) findViewById(R.id.updateSpinner);
                     EditText comments = (EditText)findViewById(R.id.CallComment);
                     String StatusValue = sta.getSelectedItem().toString();
                     String comm = comments.getText().toString();
                     Log.d("info","StatusValue:"+StatusValue);
-                    updateStatus(jNumber,StatusValue,comm);
+                    updateStatus(Name,jNumber,StatusValue,comm);
                     repeatCall();
                 }
                 catch (JSONException e){
@@ -454,12 +456,12 @@ public void callNow()
 
     }
 
-    public void updateStatus(String number, String Status,String comm)
+    public void updateStatus(String Name,String number, String Status,String comm)
     {
         EditText cFilename = (EditText) findViewById(R.id.LFileInput);
         String csvFilename = cFilename.getText().toString();
         CallStatusUpdate updateCall = new CallStatusUpdate();
-        updateCall.writeStatus(number,Status,comm,this,csvFilename);
+        updateCall.writeStatus(Name,number,Status,comm,this,csvFilename);
         Toast.makeText(getApplicationContext(),"Status Updated",
                             Toast.LENGTH_SHORT).show();
     }
@@ -489,20 +491,42 @@ public void callNow()
             }
 
         }
-        if(requestCode == 15)
-        {
-            if(resultCode == RESULT_OK)
-            { Log.d("info","file:"+data.getData());
-                File file = new File(data.getData().toString());
-                Log.d("info","Filepath:"+file.getAbsolutePath());
-              String path = getFilePath(data.getData().getPath());
-                Log.d("info","Filepath:"+path);
-                Toast.makeText(getApplicationContext(),
-                        data+"Path of chosen File", Toast.LENGTH_LONG).show();
-            lFileInput
-                    .setText(file.getAbsolutePath());
-        }}
+        if(requestCode == 15) {
+            if (resultCode == RESULT_OK) {
+                Log.d("info", "file:" + data.getData());
+                Uri uri = data.getData();
+                String uriString = uri.toString();
 
+                File file = new File(uriString);
+                Log.d("info", "Filepath:" + file.getAbsolutePath());
+                String path = file.getAbsolutePath();
+                String displayName = null;
+                if (uriString.startsWith("content://")) {
+                    Cursor cursor = null;
+                    try {
+                        final String column = "_data";
+                        final String[] projection = {
+                                column
+                        };
+                        cursor = this.getContentResolver().query(uri,projection, null, null, null);
+                        final int index = cursor.getColumnIndexOrThrow(column);
+                        if (cursor != null && cursor.moveToFirst()) {
+                            displayName = cursor.getString(index);
+                        }
+                    } finally {
+                        cursor.close();
+                    }
+                } else if (uriString.startsWith("file://")) {
+                    displayName = file.getName();
+                }
+
+                Log.d("info", "Filepath:" + path);
+                Toast.makeText(getApplicationContext(),
+                        data + "Path of chosen File", Toast.LENGTH_LONG).show();
+                lFileInput
+                        .setText(displayName);
+            }
+        }
 
         if (requestCode == FILE_SELECT_CODE){
                 if (resultCode == RESULT_OK) {

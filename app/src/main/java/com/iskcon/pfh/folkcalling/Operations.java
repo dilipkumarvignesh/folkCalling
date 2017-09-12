@@ -1,6 +1,6 @@
 package com.iskcon.pfh.folkcalling;
 
-import android.Manifest;
+import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
@@ -12,13 +12,13 @@ import android.provider.CalendarContract;
 import android.provider.CalendarContract.Events;
 import android.provider.CallLog;
 import android.speech.tts.TextToSpeech;
+import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -27,23 +27,20 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Locale;
 
 public class Operations extends AppCompatActivity implements View.OnClickListener {
-    private static final int MY_PERMISSIONS_REQUEST_CALL = 0;
-    private static final int FILE_SELECT_CODE = 0;
-    private static String[] PERMISSIONS_STORAGE = {
-            Manifest.permission.READ_EXTERNAL_STORAGE,
-            Manifest.permission.WRITE_EXTERNAL_STORAGE
-    };
-    EditText txtGoogleId;
+
+    EditText txtGoogleId,CallComment;
     TextView txtStatus,lFileInput;
     String jName,csvFilename;
     Integer Callenabled;
-    Button btnDownload,CallStop,CallContinue,UpdateCallStatus,Report;
-    ImageView SearchFile;
+    Button CallStop,UpdateCallStatus,Report,PickDate,PickTime,PickCalendar;
+
 
     JSONArray jA = new JSONArray();
     View vi;
@@ -53,10 +50,11 @@ public class Operations extends AppCompatActivity implements View.OnClickListene
     Button b2;
     int i=0;
     int contact_count=0;
-    public static final int REQUEST_CODE = 1;
-    private static final int REQUEST_EXTERNAL_STORAGE = 1;
+    Calendar dateSelected = Calendar.getInstance();
+    private DatePickerDialog datePickerDialog;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_operations);
         txtStatus = (TextView) findViewById(R.id.Status);
@@ -69,6 +67,25 @@ public class Operations extends AppCompatActivity implements View.OnClickListene
                 repeatCall();
             }
         });
+        PickDate= (Button) findViewById(R.id.PickDate);
+        PickTime = (Button) findViewById(R.id.TimePick);
+        PickCalendar = (Button) findViewById(R.id.CAL);
+        final Calendar myCalendar = Calendar.getInstance();
+        CallComment = (EditText)findViewById(R.id.CallComment);
+//        DatePickerDialog.OnDateSetListener date = new DatePickerDialog.OnDateSetListener() {
+//
+//            @Override
+//            public void onDateSet(DatePicker view, int year, int monthOfYear,
+//                                  int dayOfMonth) {
+//                // TODO Auto-generated method stub
+//                myCalendar.set(Calendar.YEAR, year);
+//                myCalendar.set(Calendar.MONTH, monthOfYear);
+//                myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+//                updateLabel();
+//            }
+//
+//        };
+
 
         t1=new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
             @Override
@@ -78,8 +95,20 @@ public class Operations extends AppCompatActivity implements View.OnClickListene
                 }
             }
         });
+
+
+//        PickDate.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                setDateTimeField() ;
+//            }
+//        });
+
+
+
         Callenabled = 1;
         CallStop = (Button) findViewById(R.id.CALLSTOP);
+
         UpdateCallStatus = (Button)findViewById(R.id.UpdateCallStatus);
        // CallContinue = (Button) findViewById(R.id.CALLCONTINUE);
         CallStop.setOnClickListener(this);
@@ -87,6 +116,9 @@ public class Operations extends AppCompatActivity implements View.OnClickListene
         UpdateCallStatus.setOnClickListener(this);
         Report = (Button) findViewById(R.id.REPORT);
         Report.setOnClickListener(this);
+        PickDate.setOnClickListener(this);
+        PickCalendar.setOnClickListener(this);
+        PickTime.setOnClickListener(this);
         Bundle extras = getIntent().getExtras();
         Boolean LFileCheck  = extras.getBoolean("LocalFile");
         if (LFileCheck == true)
@@ -112,7 +144,21 @@ public class Operations extends AppCompatActivity implements View.OnClickListene
         }
       //  Log.d("info","DownloadedLink"+link.toString());
     }
-
+//    private void setDateTimeField() {
+//        Calendar newCalendar = dateSelected;
+//        String myFormat = "MM/dd/yy";
+//        final SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
+//        datePickerDialog = new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
+//
+//            public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+//
+//                dateSelected.set(year, monthOfYear, dayOfMonth, 0, 0);
+//                   CallComment.setText(sdf.format(dateSelected.getTime()));
+//            }
+//
+//        }, newCalendar.get(Calendar.YEAR), newCalendar.get(Calendar.MONTH), newCalendar.get(Calendar.DAY_OF_MONTH));
+//        CallComment.setText(sdf.format(dateSelected.getTime()));
+//    }
     @Override
     public void onClick(View v) {
         Log.d("info","Button clicked:"+v.getId());
@@ -123,7 +169,17 @@ public class Operations extends AppCompatActivity implements View.OnClickListene
 //                repeatCall();
 //                break;
             case R.id.CALLSTOP:
-                Callenabled = 0;
+                if(Callenabled == 0)
+                {
+                    Callenabled = 1;
+                    CallStop.setBackgroundResource(R.mipmap.pause);
+                }
+                else
+                {
+                    Callenabled = 0;
+                    CallStop.setBackgroundResource(R.mipmap.play);
+
+                }
                 Log.d("info","CallEnabled:"+"FALSE");
                 break;
             case R.id.UpdateCallStatus:
@@ -181,10 +237,30 @@ public class Operations extends AppCompatActivity implements View.OnClickListene
                 startActivityForResult(i, 15);
                 break;
 
+            case R.id.PickDate:
+                DialogFragment newFragment = new DatePickerFragment();
+                newFragment.show(getSupportFragmentManager(), "datePicker");
+                break;
+
+            case R.id.TimePick:
+                DialogFragment newTimeFragment = new TimePickerFragment();
+                newTimeFragment.show(getSupportFragmentManager(), "datePicker");
+                break;
+
+//`               new DatePickerDialog(MainActivity.this, date, myCalendar
+//                    .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
+//                    myCalendar.get(Calendar.DAY_OF_MONTH)).show();
+//                break;
+
         }
 
     }
+    private void updateLabel() {
+        String myFormat = "MM/dd/yy"; //In which you need put here
+        SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
 
+      //  edittext.setText(sdf.format(myCalendar.getTime()));
+    }
     public void repeatCall()
     {
 //        Intent showDialogIntent = new Intent(this, DisplayMessageActivity.class);
@@ -490,6 +566,36 @@ public class Operations extends AppCompatActivity implements View.OnClickListene
 
         return output;
     }
+
+
+
+    public void getSelectedDate(int year, int month, int day)
+    {
+        String pickedDate = "Date : "+(day)+"/"+(month+1)+"/"+year;
+        CallComment.setText(pickedDate);
+        //selectedDate.setText(day+"."+month+"."+year);
+//        Gyear = year;
+//        Gmonth = month;
+//        Gday = day;
+//        Update fragment = (Update)getSupportFragmentManager().findFragmentByTag("update");
+//        try {
+//            fragment.setDate(year,month,day);
+//        } catch (ParseException e) {
+//            e.printStackTrace();
+//        }
+
+    }
+    public void getSelectedTime(int Hour,int minutes) throws ParseException
+    {
+         String pickedTime = ""+(Hour)+":"+minutes;
+         String commentText = CallComment.getText().toString();
+         commentText = commentText + " Time : "+pickedTime;
+         CallComment.setText(commentText);
+//        Settings fragment = (Settings)getSupportFragmentManager().findFragmentByTag("settings");
+//        //try {
+//        fragment.SetTime(Hour,minutes);
+////        } catch (ParseException e) {
+////            e.printStackTrace();
+////        }
+    }
 }
-
-
