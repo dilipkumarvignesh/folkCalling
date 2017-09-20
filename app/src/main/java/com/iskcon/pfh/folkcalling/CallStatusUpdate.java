@@ -28,14 +28,14 @@ import java.util.Calendar;
 public class CallStatusUpdate {
     private static final int REQUEST_EXTERNAL_STORAGE = 1;
     int finalReport[]={0,0,0,0,0,0,0,0,0,0,0,0,0,0};
-    int totalCallCount = -1;
+
     private Context Con;
     //  CSVWriter writer;
     private static String[] PERMISSIONS_STORAGE = {
             Manifest.permission.READ_EXTERNAL_STORAGE,
             Manifest.permission.WRITE_EXTERNAL_STORAGE
     };
-    public void writeStatus(String Name,String Number, String Status,String comm, Context con,String filename)
+    public void writeStatus(String Name,String Number, String Status,String comm, Context con,String filename,String SmsPrefix,String A1txt,Boolean A1Status,String A3txt,Boolean A3Status,String Inactivetxt,Boolean InactiveStatus)
     {
         InputStream inputStream;
         String[] ids;
@@ -45,10 +45,10 @@ public class CallStatusUpdate {
 
         File SD_CARD_PATH = Environment.getExternalStorageDirectory();
 
-        String fname = filename;
+
         String fname2 = "1"+".csv";
         try {
-            File file = new File(SD_CARD_PATH, fname);
+            File file = new File(SD_CARD_PATH, filename);
             File file1 = new File(SD_CARD_PATH, fname2);
             FileInputStream fIn = new FileInputStream(file);
             reader = new BufferedReader(new InputStreamReader(fIn));
@@ -58,8 +58,8 @@ public class CallStatusUpdate {
 
             while ((csvLine = reader.readLine()) != null) {
 
-                updateTotalCount();
-                totalCallCount++;
+
+                String FinalStatus="";
                 ids = csvLine.split(",");
 
              //   ids[2]=Status;
@@ -68,7 +68,7 @@ public class CallStatusUpdate {
                 if(ids[0].equalsIgnoreCase(Name)&&ids[1].equalsIgnoreCase(Number))
                 {
                     Log.d("info","Write Number Inside:"+Number);
-                    String FinalStatus = getStatus(Status);
+                    FinalStatus = getStatus(Status);
                    // csvLine=String.join(",",ids);
 
                     switch(FinalStatus){
@@ -127,7 +127,7 @@ public class CallStatusUpdate {
                         case "Y3":
                             CallResponse="Inactive";
                             finalReport[12]++;
-                           // addRemainder("Dilip","9663898009",comm);
+
                             Log.d("info","Y3 Response Selected");
                             break;
                         case "Z":
@@ -185,15 +185,31 @@ public class CallStatusUpdate {
 
                 Log.d("Collumn 1 ", "" + ids[0]+ids[1]);
                 //txtEd.setText(message);
+                if(FinalStatus.equals("A1") && A1Status == true)
+                {
+                    String finalMessage = constructMessage(SmsPrefix,ids[0],A1txt);
+                    sendSms(finalMessage,ids[1]);
+                }
 
+                if(FinalStatus.equals("A3") && A3Status == true)
+                {
+                    String finalMessage = constructMessage(SmsPrefix,ids[0],A3txt);
+                    sendSms(finalMessage,ids[1]);
+                }
 
+                if(CallResponse.equals("Inactive") && InactiveStatus == true)
+                {
+                    String finalMessage = constructMessage(SmsPrefix,ids[0],Inactivetxt);
+                    sendSms(finalMessage,ids[1]);
+                }
 
             }
+
             Log.d("info","After Writing 1");
             reader.close();
             bw.close();
             file.delete();
-            file1.renameTo(new File(SD_CARD_PATH, fname));
+            file1.renameTo(new File(SD_CARD_PATH, filename));
 
         }catch (Exception e) {
             Toast.makeText(con.getApplicationContext(), e.getMessage(),
@@ -201,7 +217,11 @@ public class CallStatusUpdate {
         }
 
     }
-
+    public String constructMessage(String Prefix,String name, String Message)
+    {
+        String finalMessage=Prefix+" "+name+","+Message;
+        return finalMessage;
+    }
     public JSONArray getCallDataStatus(String Status,Context Con,String Filename,String TeleCaller, String Day,String Program)
     {
         this.Con = Con;
@@ -300,6 +320,7 @@ public class CallStatusUpdate {
                 else if(Status.equals("Recall Inactive Numbers")&&(ids[10].equals(TeleCaller)||TeleCaller.equals("ALL"))&&(ids[8].equals(Day)||Day.equals("ALL"))){
                   Log.d("info","Inside RecallInactive");
                     Log.d("info","DateValue"+ids[15]);
+
                     Log.d("info","TodayDate"+getDate());
                     if((ids[12].equals("B")||ids[12].equals("C")||ids[12].equals("Y2")||ids[12].equals("E")||ids[12].equals("F")||
                     ids[12].equals("Y1")) && ids[15].equals(getDate()))
@@ -326,7 +347,7 @@ public class CallStatusUpdate {
         }
         return jA;
     }
-    public String getDate()
+    private String getDate()
     {
         Calendar cal = Calendar.getInstance();
 
@@ -336,7 +357,7 @@ public class CallStatusUpdate {
         Log.d("info","TodayDate:"+todayDate);
         return todayDate;
     }
-    public String currentTime(){
+    private String currentTime(){
 
 
             Calendar cal = Calendar.getInstance();
@@ -353,23 +374,17 @@ public class CallStatusUpdate {
         String[] status = Status.split("[(]");
         return status[0];
     }
-    public int[] getFinalReport ()
-    {
-        return finalReport;
-    }
-    public void updateTotalCount()
-    {
-        totalCallCount++;
-    }
 
 
 
-     public void sendSms(String Message,String name,String number)
+
+
+     public void sendSms(String Message,String number)
      {
          SmsManager smsManager = SmsManager.getDefault();
-         String message = Message;
-         message = message.replace("<name>", name);
-         smsManager.sendTextMessage(number, null, message, null, null);
+
+
+         smsManager.sendTextMessage(number, null, Message, null, null);
 
      }
 

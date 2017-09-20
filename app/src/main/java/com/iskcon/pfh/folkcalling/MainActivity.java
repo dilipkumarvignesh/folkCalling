@@ -5,7 +5,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -23,6 +22,7 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ToggleButton;
 
 import net.gotev.speech.Speech;
 
@@ -53,7 +53,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     TextView txtStatus,lFileInput;
     String jName;
     Integer Callenabled;
-    Button btnDownload,CallStop,CallContinue,UpdateCallStatus,Report;
+    Button btnDownload;
     ImageView SearchFile;
 
     JSONArray jA = new JSONArray();
@@ -64,7 +64,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     Button b2;
     int i=0;
     int contact_count=0;
-    public static final int REQUEST_CODE = 1;
+
     private static final int REQUEST_EXTERNAL_STORAGE = 1;
 
     @Override
@@ -85,17 +85,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
             );
-//
-//            ActivityCompat.requestPermissions(this,
-//                    new String[]{Manifest.permission.CALL_PHONE},
-//                    MY_PERMISSIONS_REQUEST_CALL);
-//            ActivityCompat.requestPermissions(this,
-//                    new String[]{Manifest.permission.SEND_SMS},
-//                    MY_PERMISSIONS_REQUEST_SEND_SMS);
-//            ActivityCompat.requestPermissions(this,
-//                    new String[]{Manifest.permission.READ_CALL_LOG},
-//                    MY_PERMISSIONS_REQUEST_SEND_SMS);
+
         }
+
+        ToggleButton toggle = (ToggleButton) findViewById(R.id.toggleButton);
+        ToggleButton A3toggle = (ToggleButton) findViewById(R.id.A3toggleButton);
+        ToggleButton Inactivetoggle = (ToggleButton) findViewById(R.id.toggleButton);
+
+
         PhoneStateListener callStateListener = new PhoneStateListener() {
             public void onCallStateChanged(int state, String incomingNumber){
                 if(state==TelephonyManager.CALL_STATE_RINGING){
@@ -144,14 +141,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 download_excel();
             }
         });
-//        CallStop = (Button) findViewById(R.id.CALLSTOP);
-//        UpdateCallStatus = (Button)findViewById(R.id.UpdateCallStatus);
-//        CallContinue = (Button) findViewById(R.id.CALLCONTINUE);
-//        CallStop.setOnClickListener(this);
-//        CallContinue.setOnClickListener(this);
-//        UpdateCallStatus.setOnClickListener(this);
-//        Report = (Button) findViewById(R.id.REPORT);
-//        Report.setOnClickListener(this);
+
         lFileInput = (TextView)findViewById(R.id.LFileInput);
         SearchFile = (ImageView)findViewById(R.id.GET_FILE);
         SearchFile.setOnClickListener(this);
@@ -159,23 +149,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
 
-//        Button fab = (Button) findViewById(R.id.btn1);
-//        fab.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//               callNow();
-//            }
-//        });
 
-//        b2=(Button)findViewById(R.id.btn2);
-//
-//        b2.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-////
-//                repeatCall();
-//            }
-//        });
         t1=new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
             @Override
             public void onInit(int status) {
@@ -184,12 +158,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
             }
         });
-
-//        ActivityCompat.requestPermissions(this,
-//                new String[]{Manifest.permission.CALL_PHONE},
-//                MY_PERMISSIONS_REQUEST_CALL);
-
-
 
         Speech.init(this,getPackageName());
 
@@ -200,11 +168,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View v) {
         Log.d("info","Button clicked:"+v.getId());
         switch(v.getId()) {
-//            case R.id.CALLCONTINUE:
-//                Callenabled = 1;
-//                Log.d("info","CallEnabled:"+"TRUE");
-//                repeatCall();
-//                break;
+
             case R.id.CALLSTOP:
                  Callenabled = 0;
                 Log.d("info","CallEnabled:"+"FALSE");
@@ -220,7 +184,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     String StatusValue = sta.getSelectedItem().toString();
                     String comm = comments.getText().toString();
                     Log.d("info","StatusValue:"+StatusValue);
-                    updateStatus(Name,jNumber,StatusValue,comm);
+                  //  updateStatus(Name,jNumber,StatusValue,comm);
                     repeatCall();
                 }
                 catch (JSONException e){
@@ -229,9 +193,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             case R.id.REPORT:
                 CallStatusUpdate updateCall = new CallStatusUpdate();
-                int FinalReport[] = updateCall.getFinalReport();
+
                 Intent k = new Intent(getApplicationContext(),StatusActivity.class);
-                k.putExtra("finalReport",FinalReport);
+
 
                 startActivity(k);
                 break;
@@ -310,6 +274,28 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             Spinner PR = (Spinner)findViewById(R.id.updateProgram);
             String PrValue = PR.getSelectedItem().toString();
 
+            ToggleButton A1toggle = (ToggleButton) findViewById(R.id.toggleButton);
+            Boolean A1SmsStatus = A1toggle.isChecked();
+            Log.d("info","A1SmsStatus:"+A1SmsStatus);
+
+            ToggleButton A3toggle = (ToggleButton) findViewById(R.id.A3toggleButton);
+            Boolean A3SmsStatus = A3toggle.isChecked();
+            Log.d("info","A3SmsStatus:"+A3SmsStatus);
+
+
+            ToggleButton Inactivetoggle = (ToggleButton) findViewById(R.id.toggleButton);
+            Boolean InactiveSmsStatus = Inactivetoggle.isChecked();
+            Log.d("info","InactiveSmsStatus:"+InactiveSmsStatus);
+
+            EditText PrefixMessage = (EditText) findViewById(R.id.SmsPrefix);
+            String Pretxt = PrefixMessage.getText().toString();
+            EditText A1txtMessage = (EditText) findViewById(R.id.A1txtMessage);
+            String A1txt = A1txtMessage.getText().toString();
+            EditText A3txtMessage =   (EditText) findViewById(R.id.A3txtMessage);
+            String A3txt = A3txtMessage.getText().toString();
+            EditText InactivetxtMessage = (EditText) findViewById(R.id.InactivetxtMessage);
+            String Inactivetxt = InactivetxtMessage.getText().toString();
+
             Log.d("info","SpinnerText:"+StatusValue);
             Log.d("info","TCValue:"+TeleCaller);
             Log.d("info","DayValue"+DayValue);
@@ -321,27 +307,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             k.putExtra("TeleCaller",TeleCaller);
             k.putExtra("DayValue",DayValue);
             k.putExtra("PrValue",PrValue);
-//            final Dialog d = new Dialog(this,R.style.CustomDialogTheme);
-//            d.setContentView(R.layout.custom_dialog);
-//            d.show();
-//
-//            Button close_btn = (Button) d.findViewById(R.id.dialogButtonOK);
-//            close_btn.setOnClickListener(new View.OnClickListener() {
-//                public void onClick(View v) {
-//                    d.dismiss();
-//                }
-//            });
+            k.putExtra("A1SmsStatus",A1SmsStatus);
+            k.putExtra("A3SmsStatus",A3SmsStatus);
+            k.putExtra("InactiveSmsStatus",InactiveSmsStatus);
+            k.putExtra("smsPrefix",Pretxt);
+            k.putExtra("A1txt",A1txt);
+            k.putExtra("A3txt",A3txt);
+            k.putExtra("Inactivetxt",Inactivetxt);
+
             startActivity(k);
 
-
-//            CallStatusUpdate CallData = new CallStatusUpdate();
-//            jA = CallData.getCallDataStatus(StatusValue,this,csvFilename,TeleCaller,DayValue,PrValue);
-//            Toast.makeText(getApplicationContext(),
-//                    jA.length()+" Contacts Downloaded", Toast.LENGTH_LONG).show();
-//            contact_count = jA.length();
-//            //int cou = contact_count - i;
-//            String Status =  "0 Contacts Called " + contact_count+" Contacts Remaining";
-//            txtStatus.setText(Status);
 
         }
         else if(!GoogleId.equals(""))
@@ -387,24 +362,7 @@ public void callNow()
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     Log.d("Info", "Call now");
-                       // repeatCall();
-                 //   repeatCall();
-//                    b2.setOnClickListener(new View.OnClickListener() {
-//                        @Override
-//                        public void onClick(View v) {
-////                            String toSpeak = ed1.getText().toString();
-////                            Toast.makeText(getApplicationContext(), toSpeak, Toast.LENGTH_SHORT).show();
-////                            t1.speak(toSpeak, TextToSpeech.QUEUE_FLUSH, null);
-//                             repeatCall();
-//                        }
-//                    });
-
-//        intent.setData(Uri.parse("tel:" + bundle.getString("mobilePhone")));
-//                    for(int i=0;i<3;i++) {
-//                       repeatCall();
-//                        Log.d("Info","Intent Call");
-//
-//                    }
+ 
                 }
                 }
         }
@@ -456,15 +414,15 @@ public void callNow()
 
     }
 
-    public void updateStatus(String Name,String number, String Status,String comm)
-    {
-        EditText cFilename = (EditText) findViewById(R.id.LFileInput);
-        String csvFilename = cFilename.getText().toString();
-        CallStatusUpdate updateCall = new CallStatusUpdate();
-        updateCall.writeStatus(Name,number,Status,comm,this,csvFilename);
-        Toast.makeText(getApplicationContext(),"Status Updated",
-                            Toast.LENGTH_SHORT).show();
-    }
+//    public void updateStatus(String Name,String number, String Status,String comm)
+//    {
+//        EditText cFilename = (EditText) findViewById(R.id.LFileInput);
+//        String csvFilename = cFilename.getText().toString();
+//        CallStatusUpdate updateCall = new CallStatusUpdate();
+//        updateCall.writeStatus(Name,number,Status,comm,this,csvFilename);
+//        Toast.makeText(getApplicationContext(),"Status Updated",
+//                            Toast.LENGTH_SHORT).show();
+//    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -501,30 +459,42 @@ public void callNow()
                 Log.d("info", "Filepath:" + file.getAbsolutePath());
                 String path = file.getAbsolutePath();
                 String displayName = null;
-                if (uriString.startsWith("content://")) {
-                    Cursor cursor = null;
-                    try {
-                        final String column = "_data";
-                        final String[] projection = {
-                                column
-                        };
-                        cursor = this.getContentResolver().query(uri,projection, null, null, null);
-                        final int index = cursor.getColumnIndexOrThrow(column);
-                        if (cursor != null && cursor.moveToFirst()) {
-                            displayName = cursor.getString(index);
-                        }
-                    } finally {
-                        cursor.close();
-                    }
+                if (uriString.startsWith("content:/")) {
+               //     Log.d("info","Inside Content"+getFilePath(file.getAbsolutePath().toString()));
+
+
+                    lFileInput.setText(getFilePath(uri.getPath(),false));
+//                    Cursor cursor = null;
+//                    try {
+//                        final String column = "_data";
+//                        final String[] projection = {
+//                                column
+//                        };
+//                        cursor = this.getContentResolver().query(uri,projection, null, null, null);
+//
+//                        final int index = cursor.getColumnIndexOrThrow(column);
+//                        if (cursor != null && cursor.moveToFirst()) {
+//                            displayName = cursor.getString(index);
+//                            Log.d("info","CursorValue:"+cursor.moveToFirst());
+//                            Log.d("info","CursorValue1"+cursor.getString(0));
+//                            Log.d("info","CursorValue2"+cursor.getString(1));
+//                            Log.d("info","CursorValue3"+cursor.getString(2));
+//
+//                        }
+//
+//                    } finally {
+//                        cursor.close();
+//                    }
+
                 } else if (uriString.startsWith("file://")) {
-                    displayName = file.getName();
+                    lFileInput.setText(getFilePath(data.getData().toString(),true));
                 }
 
                 Log.d("info", "Filepath:" + path);
-                Toast.makeText(getApplicationContext(),
-                        data + "Path of chosen File", Toast.LENGTH_LONG).show();
-                lFileInput
-                        .setText(displayName);
+//                Toast.makeText(getApplicationContext(),
+//                        data + "Path of chosen File", Toast.LENGTH_LONG).show();
+
+
             }
         }
 
@@ -548,12 +518,23 @@ public void callNow()
 
 
 
-        public String getFilePath(String path)
+        public String getFilePath(String path,Boolean type)
         {
-            Log.d("info","FIleparts"+path);
-            String[] words=path.split(":");
-            return words[1];
+            if(type == true)
+            {
+                String[] words = path.split("[0]");
+                Toast.makeText(getApplicationContext(),
+                        words[1]+ "Path of chosen File", Toast.LENGTH_LONG).show();
+                Log.d("info","words:"+words[0]+":::"+words[1]);
+                return words[1];
+            }
+            else {
+                Log.d("info", "FIleparts" + path);
+                String[] words = path.split(":");
+                return words[1];
+            }
         }
+
 
 }
 

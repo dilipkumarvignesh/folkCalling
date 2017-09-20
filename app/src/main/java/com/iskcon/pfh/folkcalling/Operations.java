@@ -9,7 +9,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.CalendarContract;
-import android.provider.CalendarContract.Events;
 import android.provider.CallLog;
 import android.speech.tts.TextToSpeech;
 import android.support.v4.app.DialogFragment;
@@ -22,14 +21,13 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
-
+import android.provider.CalendarContract.Events;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Locale;
 
@@ -37,7 +35,8 @@ public class Operations extends AppCompatActivity implements View.OnClickListene
 
     EditText txtGoogleId,CallComment;
     TextView txtStatus,lFileInput;
-    String jName,csvFilename;
+    String jName,csvFilename,SmsPrefix,A1txt,A3txt,Inactivetxt;
+    Boolean A1Status,A3Status,InactiveStatus;
     Integer Callenabled;
     Button CallStop,UpdateCallStatus,Report,PickDate,PickTime,PickCalendar;
 
@@ -72,20 +71,6 @@ public class Operations extends AppCompatActivity implements View.OnClickListene
         PickCalendar = (Button) findViewById(R.id.CAL);
         final Calendar myCalendar = Calendar.getInstance();
         CallComment = (EditText)findViewById(R.id.CallComment);
-//        DatePickerDialog.OnDateSetListener date = new DatePickerDialog.OnDateSetListener() {
-//
-//            @Override
-//            public void onDateSet(DatePicker view, int year, int monthOfYear,
-//                                  int dayOfMonth) {
-//                // TODO Auto-generated method stub
-//                myCalendar.set(Calendar.YEAR, year);
-//                myCalendar.set(Calendar.MONTH, monthOfYear);
-//                myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-//                updateLabel();
-//            }
-//
-//        };
-
 
         t1=new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
             @Override
@@ -96,23 +81,12 @@ public class Operations extends AppCompatActivity implements View.OnClickListene
             }
         });
 
-
-//        PickDate.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                setDateTimeField() ;
-//            }
-//        });
-
-
-
         Callenabled = 1;
         CallStop = (Button) findViewById(R.id.CALLSTOP);
 
         UpdateCallStatus = (Button)findViewById(R.id.UpdateCallStatus);
-       // CallContinue = (Button) findViewById(R.id.CALLCONTINUE);
         CallStop.setOnClickListener(this);
-//        CallContinue.setOnClickListener(this);
+
         UpdateCallStatus.setOnClickListener(this);
         Report = (Button) findViewById(R.id.REPORT);
         Report.setOnClickListener(this);
@@ -128,6 +102,13 @@ public class Operations extends AppCompatActivity implements View.OnClickListene
             String TeleCaller=extras.getString("TeleCaller");
             String DayValue=extras.getString("DayValue");
             String PrValue=extras.getString("PrValue");
+            SmsPrefix = extras.getString("smsPrefix");
+            A1txt = extras.getString("A1txt");
+            A3txt = extras.getString("A3txt");
+            Inactivetxt = extras.getString("Inactivetxt");
+            A1Status = extras.getBoolean("A1SmsStatus");
+            A3Status = extras.getBoolean("A3SmsStatus");
+            InactiveStatus = extras.getBoolean("InactiveSmsStatus");
             CallStatusUpdate CallData = new CallStatusUpdate();
             jA = CallData.getCallDataStatus(StatusValue,this,csvFilename,TeleCaller,DayValue,PrValue);
             Toast.makeText(getApplicationContext(),
@@ -144,21 +125,7 @@ public class Operations extends AppCompatActivity implements View.OnClickListene
         }
       //  Log.d("info","DownloadedLink"+link.toString());
     }
-//    private void setDateTimeField() {
-//        Calendar newCalendar = dateSelected;
-//        String myFormat = "MM/dd/yy";
-//        final SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
-//        datePickerDialog = new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
-//
-//            public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-//
-//                dateSelected.set(year, monthOfYear, dayOfMonth, 0, 0);
-//                   CallComment.setText(sdf.format(dateSelected.getTime()));
-//            }
-//
-//        }, newCalendar.get(Calendar.YEAR), newCalendar.get(Calendar.MONTH), newCalendar.get(Calendar.DAY_OF_MONTH));
-//        CallComment.setText(sdf.format(dateSelected.getTime()));
-//    }
+
     @Override
     public void onClick(View v) {
         Log.d("info","Button clicked:"+v.getId());
@@ -196,25 +163,6 @@ public class Operations extends AppCompatActivity implements View.OnClickListene
                     updateStatus(name,jNumber,StatusValue,comm);
                  //   EditText comments = (EditText)findViewById(R.id.CallComment);
                     comments.setText("");
-//                    JSONObject NextCaller = jA.getJSONObject(i);
-//                    String ProgramName = NextCaller.get("Program").toString();
-//                    String SourceName = NextCaller.get("Source").toString();
-//                    String CollegeName = NextCaller.get("College").toString();
-//                    String CampaignedName = NextCaller.get("Campaigned").toString();
-//                    String DOR = NextCaller.get("DOR").toString();
-//                    String DOP = NextCaller.get("DOP").toString();
-//                    TextView ProgName = (TextView)findViewById(R.id.txtProgramName);
-//                    ProgName.setText(ProgramName);
-//                    TextView SourName = (TextView)findViewById(R.id.txtSource);
-//                    SourName.setText(SourceName);
-//                    TextView CollName = (TextView)findViewById(R.id.txtCollege);
-//                    CollName.setText(CollegeName);
-//                    TextView Camp = (TextView)findViewById(R.id.txtCampaigned);
-//                    Camp.setText(CampaignedName);
-//                    TextView DORText = (TextView)findViewById(R.id.txtDOR);
-//                    DORText.setText(DOR);
-//                    TextView DOPName = (TextView)findViewById(R.id.txtProgramDate);
-//                    DOPName.setText(DOP);
 
 
                 }
@@ -224,17 +172,17 @@ public class Operations extends AppCompatActivity implements View.OnClickListene
                 break;
             case R.id.REPORT:
                 CallStatusUpdate updateCall = new CallStatusUpdate();
-                int FinalReport[] = updateCall.getFinalReport();
+
                 Intent k = new Intent(getApplicationContext(),StatusActivity.class);
-                k.putExtra("finalReport",FinalReport);
+
                 k.putExtra("filename",csvFilename);
 
                 startActivity(k);
                 break;
             case R.id.GET_FILE:
-                Intent i = new Intent(Intent.ACTION_GET_CONTENT);
-                i.setType("*/*");
-                startActivityForResult(i, 15);
+                Intent z = new Intent(Intent.ACTION_GET_CONTENT);
+                z.setType("*/*");
+                startActivityForResult(z, 15);
                 break;
 
             case R.id.PickDate:
@@ -246,6 +194,28 @@ public class Operations extends AppCompatActivity implements View.OnClickListene
                 DialogFragment newTimeFragment = new TimePickerFragment();
                 newTimeFragment.show(getSupportFragmentManager(), "datePicker");
                 break;
+            case R.id.CAL:
+                try {
+                    JSONObject objects = jA.getJSONObject(i);
+                    Log.d("info","CallRowNo:"+i);
+                    String name = objects.get("Name").toString();
+                    String jNumber = objects.get("Number").toString();
+                    Spinner sta = (Spinner) findViewById(R.id.updateSpinner);
+                    EditText comments = (EditText)findViewById(R.id.CallComment);
+                    String StatusValue = sta.getSelectedItem().toString();
+                    String comm = comments.getText().toString();
+                    Log.d("info","StatusValue:"+StatusValue);
+                   // updateStatus(name,jNumber,StatusValue,comm);
+                    //   EditText comments = (EditText)findViewById(R.id.CallComment);
+                    comments.setText("");
+                    addRemainder(name,jNumber,comm);
+
+                }
+                catch (JSONException e){
+                    e.printStackTrace();
+                }
+                break;
+
 
 //`               new DatePickerDialog(MainActivity.this, date, myCalendar
 //                    .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
@@ -358,113 +328,8 @@ public class Operations extends AppCompatActivity implements View.OnClickListene
             });
     }
 
-    private void download_excel() {
-        //  DownloadWebpageTask myTask = new DownloadWebpageTask();
-        i=0;
-        GoogleId = txtGoogleId.getText().toString();
-        EditText cFilename = (EditText) findViewById(R.id.LFileInput);
-        String csvFilename = cFilename.getText().toString();
-        if (!csvFilename.equals(""))
-        {
-            Spinner sta = (Spinner)findViewById(R.id.spinner);
-            String StatusValue = sta.getSelectedItem().toString();
-            Spinner TC = (Spinner)findViewById(R.id.updateTC);
-            String TeleCaller = TC.getSelectedItem().toString();
-            Spinner Day = (Spinner)findViewById(R.id.updateDay);
-            String DayValue = Day.getSelectedItem().toString();
-            String Program = "";
-
-            Log.d("info","SpinnerText:"+StatusValue);
-            Log.d("info","TCValue:"+TeleCaller);
-            Log.d("info","DayValue"+DayValue);
-            CallStatusUpdate CallData = new CallStatusUpdate();
-            jA = CallData.getCallDataStatus(StatusValue,this,csvFilename,TeleCaller,DayValue,Program);
-            Toast.makeText(getApplicationContext(),
-                    jA.length()+" Contacts Downloaded", Toast.LENGTH_LONG).show();
-            contact_count = jA.length();
-            //int cou = contact_count - i;
-            String Status =  "0 Contacts Called " + contact_count+" Contacts Remaining";
-            txtStatus.setText(Status);
-
-        }
-        else if(!GoogleId.equals(""))
-        {
-            String final_google_id = getGoogleId(GoogleId);
-            Toast.makeText(getApplicationContext(),
-                    "Downloading Excel. Please wait ...", Toast.LENGTH_LONG).show();
-            DownloadWebpageTask dow = new DownloadWebpageTask(new AsyncResult() {
-                @Override
-                public void onResult(JSONObject object) {
-                    //    ActivityCompat.requestPermissions(this,
-//                new String[]{Manifest.permission.CALL_PHONE},
-                    processJson(object);
-
-                }
-            });
-            // String final_google_id = "1C7XyjLQj0t6waLGlDWsvVdGtM0JWh24RFi0ZiR5L6w0";
-            dow.execute("https://spreadsheets.google.com/tq?key="+final_google_id);
-        }
 
 
-
-//         Toast.makeText(getApplicationContext(),
-//                 jA.length()+" Contacts Downloaded", Toast.LENGTH_LONG).show();
-
-
-        // String final_google_id  = getGoogleId(GoogleId);
-
-
-    }
-
-    private String getGoogleId(String goog)
-    {
-        // goog = "https://docs.google.com/spreadsheets/d/1xk8AY8MOWiqwC3qvFEyOVN-wBdMtDW8QtirmcUkocrU/edit#gid=0";
-        String[] words=goog.split("/");
-        return words[5];
-    }
-    private void processJson(JSONObject object) {
-
-        i=0;
-        jA= new JSONArray(new ArrayList<String>());
-        try {
-            JSONArray rows = object.getJSONArray("rows");
-
-            Spinner sta = (Spinner)findViewById(R.id.spinner);
-            String SpinnerValue = sta.getSelectedItem().toString();
-            //int cou = contact_count - i;
-
-
-            Log.d("info", "values_of_rows=" + rows);
-            for (int r = 0; r < rows.length(); ++r) {
-                JSONObject row = rows.getJSONObject(r);
-                JSONArray columns = row.getJSONArray("c");
-                JSONObject obj = new JSONObject();
-                Log.d("info", "Download row=" + row);
-                Log.d("info", "Download column=" + columns);
-//                int position = columns.getJSONObject(0).getInt("v");
-                String name = columns.getJSONObject(0).getString("v");
-                String number = columns.getJSONObject(1).getString("f");
-                String StatusValue = columns.getJSONObject(2).getString("v");
-                Log.d("info", "Name=" + name);
-                Log.d("info", "Number=" + number);
-                obj.put("Name", name);
-                obj.put("Number", number);
-                obj.put("Status",StatusValue);
-                if (StatusValue.equals(SpinnerValue)) {
-                    jA.put(obj);
-                }
-            }
-            Toast.makeText(getApplicationContext(),
-                    jA.length()+" Contacts Downloaded", Toast.LENGTH_LONG).show();
-            contact_count = jA.length();
-            String Status =  "0 Contacts Called " + contact_count+" Contacts Remaining";
-            txtStatus.setText(Status);
-            Log.d("info", "values=" + jA);
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-    }
     public void updateStatus(String Name,String number, String Status,String comm)
     {
         //EditText cFilename = (EditText) findViewById(R.id.LFileInput);
@@ -473,10 +338,10 @@ public class Operations extends AppCompatActivity implements View.OnClickListene
         String status = updateCall.getStatus(Status);
         if (status.equals("Y3"))
         {
-            addRemainder("Dilip","9663898009","Hello");
+           // addRemainder("Dilip","9663898009","Hello");
         }
         else {
-            updateCall.writeStatus(Name,number, Status, comm, this, csvFilename);
+            updateCall.writeStatus(Name,number, Status, comm, this, csvFilename,SmsPrefix,A1txt,A1Status,A3txt,A3Status,Inactivetxt,InactiveStatus);
             Toast.makeText(getApplicationContext(), "Status Updated",
                     Toast.LENGTH_SHORT).show();
 //            getLastOutgoingCallDuration(this);
@@ -488,21 +353,31 @@ public class Operations extends AppCompatActivity implements View.OnClickListene
 
     public void addRemainder(String name,String number,String day)
     {
+
         Calendar beginTime = Calendar.getInstance();
-        day="20 9 2017 7";
+
         String [] time = day.split(" ");
+        Log.d("info","TimeValue:"+time[2]);
+
+        Log.d("info","TimeValue2:"+time[5]);
         Log.d("info","inside add Remainder");
-        int year = Integer.parseInt(time[2]) ;
-        int month = Integer.parseInt(time[1])-1;
-        int Cday = Integer.parseInt(time[0]);
-        int hour = Integer.parseInt(time[3]);
+
+        String [] datesplit = time[2].split("/");
+        String[] timesplit = time[5].split(":");
+        int gday = Integer.parseInt(datesplit[0]);
+        int month = Integer.parseInt(datesplit[1])-1;
+        int year = Integer.parseInt(datesplit[2]);
+        int hour = Integer.parseInt(timesplit[0]);
+        int minu = Integer.parseInt(timesplit[1]);
+
+        Log.d("info","sendAlarm:"+gday+":"+month+":"+year+":"+hour+":"+minu);
 
         Log.d("info","Inside Remainder");
         //Log.d("info","")
-        beginTime.set(year,month,Cday,hour,0);
+        beginTime.set(year,month,gday,hour,minu);
 
         Calendar endTime = Calendar.getInstance();
-        endTime.set(year,month,Cday,hour,5);
+        endTime.set(year,month,gday,hour,minu+5);
         Intent intent = new Intent(Intent.ACTION_INSERT)
                 .setData(Events.CONTENT_URI)
                 .putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, beginTime.getTimeInMillis())
@@ -519,19 +394,14 @@ public class Operations extends AppCompatActivity implements View.OnClickListene
 
         if(requestCode == 200)
         {
-            repeatCall();
+           // repeatCall();
+            Toast.makeText(getApplicationContext(),
+                    "Remainder Successfully added", Toast.LENGTH_LONG).show();
         }
 
     }
 
-//    public void getCallLog()
-//    {
-//        String number = "123456789";
-//        String whereClause = CallLog.Calls.NUMBER + " = " + number;
-//
-//        Cursor c =  getApplicationContext().getContentResolver().query(CallLog.Calls.CONTENT_URI, null, CallLog.Calls.NUMBER + " = ? " ,
-//                new String[]{number}, CallLog.Calls.DATE + " DESC");
-//    }
+
     public String getLastOutgoingCallDuration(final Context context) {
         String output = null;
 
@@ -573,16 +443,6 @@ public class Operations extends AppCompatActivity implements View.OnClickListene
     {
         String pickedDate = "Date : "+(day)+"/"+(month+1)+"/"+year;
         CallComment.setText(pickedDate);
-        //selectedDate.setText(day+"."+month+"."+year);
-//        Gyear = year;
-//        Gmonth = month;
-//        Gday = day;
-//        Update fragment = (Update)getSupportFragmentManager().findFragmentByTag("update");
-//        try {
-//            fragment.setDate(year,month,day);
-//        } catch (ParseException e) {
-//            e.printStackTrace();
-//        }
 
     }
     public void getSelectedTime(int Hour,int minutes) throws ParseException
@@ -591,11 +451,6 @@ public class Operations extends AppCompatActivity implements View.OnClickListene
          String commentText = CallComment.getText().toString();
          commentText = commentText + " Time : "+pickedTime;
          CallComment.setText(commentText);
-//        Settings fragment = (Settings)getSupportFragmentManager().findFragmentByTag("settings");
-//        //try {
-//        fragment.SetTime(Hour,minutes);
-////        } catch (ParseException e) {
-////            e.printStackTrace();
-////        }
+
     }
 }

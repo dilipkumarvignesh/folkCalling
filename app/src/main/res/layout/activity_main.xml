@@ -3,6 +3,13 @@
     <!--xmlns:android="http://schemas.android.com/apk/res/android"-->
     <!--android:layout_width="fill_parent"-->
     <!--android:layout_height="fill_parent">-->
+
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/ScrollView01"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    android:scrollbars="none" >
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
@@ -122,110 +129,106 @@
         android:background="@android:drawable/spinner_background"
         android:entries="@array/set_Pr" />
 
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/updateProgram"
+        android:id="@+id/sms_layout">
+
+       <EditText
+           android:id="@+id/SmsPrefix"
+           android:layout_width="wrap_content"
+           android:layout_height="wrap_content"
+           android:hint="Enter Prefix for sending message"/>
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_below="@id/SmsPrefix"
+            android:id="@+id/ConfirmationSmsLayout">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Message for Confirmation Calls"
+           />
+
+            <ToggleButton
+                android:id="@+id/toggleButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true" />
+
+            <EditText
+                android:id="@+id/A1txtMessage"
+                android:layout_width="fill_parent"
+                android:layout_height="250px"
+                android:gravity="top"
+
+                />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_below="@id/ConfirmationSmsLayout"
+            android:id="@+id/A3SmsLayout">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Message for A3 Calls"
+                />
+
+            <ToggleButton
+                android:id="@+id/A3toggleButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true" />
+
+            <EditText
+                android:id="@+id/A3txtMessage"
+                android:layout_width="fill_parent"
+                android:layout_height="250px"
+                android:gravity="top"
+
+                />
+        </RelativeLayout>
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_below="@id/A3SmsLayout"
+            android:id="@+id/InactiveSmsLayout">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Message for Inactive Calls"
+                />
+
+            <ToggleButton
+                android:id="@+id/InactivetoggleButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true" />
+
+            <EditText
+                android:id="@+id/InactivetxtMessage"
+                android:layout_width="fill_parent"
+                android:layout_height="250px"
+                android:gravity="top"
+
+                />
+        </RelativeLayout>
+    </RelativeLayout>
+
     <Button
         android:id="@+id/btnDownload"
-        android:layout_below="@+id/updateProgram"
+        android:layout_below="@+id/sms_layout"
         android:layout_centerHorizontal="true"
         android:layout_width="70dp"
         android:layout_height="70dp"
         android:background="@mipmap/download"/>
-
-    <!--<Button-->
-    <!--android:id="@+id/btn2"-->
-    <!--style="@style/Widget.AppCompat.Button"-->
-    <!--android:layout_width="wrap_content"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:layout_alignParentLeft="true"-->
-    <!--android:layout_below="@+id/btnDownload"-->
-
-    <!--android:drawableLeft="@android:drawable/sym_action_call"-->
-    <!--android:backgroundTint="@color/primary_light"-->
-    <!--android:text="Start Calling" />-->
-
-    <!--<TextView-->
-    <!--android:id="@+id/Status"-->
-    <!--android:layout_width="fill_parent"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:layout_below="@+id/btn2"-->
-    <!--android:text="Calling Status" />-->
-
-    <!--<TextView-->
-    <!--android:id="@+id/UpdatedStatus1"-->
-    <!--android:layout_width="fill_parent"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:layout_below="@+id/Status" />-->
-
-
-    <!--<RelativeLayout-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:layout_below="@+id/UpdatedStatus1">-->
-
-    <!--<TextView-->
-    <!--android:id="@+id/txtStatus"-->
-    <!--android:layout_width="wrap_content"-->
-    <!--android:layout_height="wrap_content" />-->
-
-    <!--<Spinner-->
-    <!--android:id="@+id/updateSpinner"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:layout_below="@+id/txtStatus"-->
-
-    <!--android:entries="@array/set_status" />-->
-
-    <!--<EditText-->
-    <!--android:id="@+id/CallComment"-->
-    <!--android:layout_width="fill_parent"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:layout_below="@+id/updateSpinner" />-->
-
-
-    <!--<Button-->
-    <!--android:id="@+id/UpdateCallStatus"-->
-    <!--android:layout_width="wrap_content"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:layout_below="@+id/CallComment"-->
-    <!--android:layout_centerHorizontal="true"-->
-    <!--android:text="Update Call Status" />-->
-
-    <!--</RelativeLayout>-->
-
-    <!--<RelativeLayout-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:layout_alignParentBottom="true"-->
-    <!--android:background="@color/primary_light"-->
-    <!--android:weightSum="1">-->
-
-    <!--<Button-->
-    <!--android:id="@+id/CALLSTOP"-->
-    <!--android:layout_width="wrap_content"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:layout_weight="0.3"-->
-    <!--android:background="@android:color/holo_red_light"-->
-    <!--android:text="STOP" />-->
-
-    <!--<Button-->
-    <!--android:id="@+id/REPORT"-->
-    <!--android:layout_width="wrap_content"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:layout_weight="0.4"-->
-    <!--android:layout_centerHorizontal="true"-->
-    <!--android:background="@android:color/holo_blue_light"-->
-    <!--android:text="REPORT" />-->
-    <!--<Button-->
-    <!--android:id="@+id/CALLCONTINUE"-->
-    <!--android:layout_width="wrap_content"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:layout_alignParentRight="true"-->
-    <!--android:layout_weight="0.5"-->
-
-    <!--android:background="@android:color/holo_green_light"-->
-    <!--android:text="CONTINUE" />-->
-    <!--</RelativeLayout>-->
-
 </RelativeLayout>
 
 
-    <!--</ScrollView>-->
+    </ScrollView>
