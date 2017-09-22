@@ -167,6 +167,7 @@ public class CallStatusUpdate {
                     }
                     Log.d("info","105");
                     ids[13]= CallResponse;
+                    comm = comm.replace(',','.');
                     ids[14]=comm;
                     ids[15] = getDate();
                     ids[16] = currentTime();
@@ -191,7 +192,7 @@ public class CallStatusUpdate {
                     sendSms(finalMessage,ids[1]);
                 }
 
-                if(FinalStatus.equals("A3") && A3Status == true)
+                if(FinalStatus.equals("A4") && A3Status == true)
                 {
                     String finalMessage = constructMessage(SmsPrefix,ids[0],A3txt);
                     sendSms(finalMessage,ids[1]);
@@ -388,4 +389,32 @@ public class CallStatusUpdate {
 
      }
 
-}
+     public void finalReport(String filename) {
+         File SD_CARD_PATH = Environment.getExternalStorageDirectory();
+         String[] ids;
+         FileInputStream iStream;
+         BufferedReader reader;
+
+         String csvLine;
+         try {
+             File file = new File(SD_CARD_PATH, filename);
+             FileInputStream fIn = new FileInputStream(file);
+             reader = new BufferedReader(new InputStreamReader(fIn));
+
+             while ((csvLine = reader.readLine()) != null) {
+//                Toast.makeText(Con.getApplicationContext(), csvLine,
+//                Toast.LENGTH_SHORT).show();
+
+                 JSONObject obj = new JSONObject();
+                 ids = csvLine.split(",");
+                 if(ids[1] == "HI")
+                 {
+
+                 }
+             }
+
+         } catch (Exception e) {
+             Toast.makeText(Con.getApplicationContext(), e.getMessage(),
+                     Toast.LENGTH_SHORT).show();
+         }
+     }}

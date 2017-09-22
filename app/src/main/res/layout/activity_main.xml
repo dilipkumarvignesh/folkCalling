@@ -177,7 +177,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Message for A3 Calls"
+                android:text="Message for A4 Calls"
                 />
 
             <ToggleButton

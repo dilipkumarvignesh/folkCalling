@@ -342,9 +342,10 @@ public class Operations extends AppCompatActivity implements View.OnClickListene
         }
         else {
             updateCall.writeStatus(Name,number, Status, comm, this, csvFilename,SmsPrefix,A1txt,A1Status,A3txt,A3Status,Inactivetxt,InactiveStatus);
+            Log.d("info","SmsStatus: Inactive Status :"+InactiveStatus+" A3 Status:"+A3Status);
             Toast.makeText(getApplicationContext(), "Status Updated",
                     Toast.LENGTH_SHORT).show();
-//            getLastOutgoingCallDuration(this);
+            getLastOutgoingCallDuration(this);
             repeatCall();
         }
 
@@ -418,7 +419,20 @@ public class Operations extends AppCompatActivity implements View.OnClickListene
                     .getColumnIndex(CallLog.Calls.DURATION);
             final int CallType = cursor.getColumnIndex(CallLog.Calls.TYPE);
             Log.d("info","CallType:"+ CallType);
-            Log.d("info","CallDuration:"+durationCol);
+
+            if(CallType == CallLog.Calls.MISSED_TYPE)
+            {
+                Toast.makeText(getApplicationContext(),
+                        "Missed Call", Toast.LENGTH_LONG).show();
+                Log.d("info","CallDuration:"+durationCol);
+            }
+            else if(CallType == CallLog.Calls.OUTGOING_TYPE)
+            {
+                Toast.makeText(getApplicationContext(),
+                        "OutGoing Call "+durationCol, Toast.LENGTH_LONG).show();
+            }
+
+
 
 
             // Retrieve only the last record to get the last outgoing call

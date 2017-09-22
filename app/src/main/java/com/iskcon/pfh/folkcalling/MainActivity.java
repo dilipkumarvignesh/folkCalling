@@ -283,7 +283,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             Log.d("info","A3SmsStatus:"+A3SmsStatus);
 
 
-            ToggleButton Inactivetoggle = (ToggleButton) findViewById(R.id.toggleButton);
+            ToggleButton Inactivetoggle = (ToggleButton) findViewById(R.id.InactivetoggleButton);
             Boolean InactiveSmsStatus = Inactivetoggle.isChecked();
             Log.d("info","InactiveSmsStatus:"+InactiveSmsStatus);
 
