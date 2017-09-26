@@ -18,6 +18,7 @@ import java.io.FileWriter;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 
 /**
@@ -216,7 +217,7 @@ public class CallStatusUpdate {
         return finalMessage;
     }
 
-    public JSONArray getCallDataStatus(String Status, Context Con, String Filename, String TeleCaller, String Day, String Program) {
+    public JSONArray getCallDataStatus(String Status, Context Con, String Filename, String TeleCaller, String Day, String Program, ArrayList<String> selectedPrograms) {
         this.Con = Con;
         InputStream inputStream;
         String[] ids;
@@ -245,8 +246,9 @@ public class CallStatusUpdate {
                 Log.d("info", "RowName:" + ids[0]);
                 Log.d("info", "StatusValue:" + Status);
                 Log.d("info", "ProgramDate:" + Program);
-
-                if (Status.equalsIgnoreCase("Fresh Calls")) {
+                if (selectedPrograms.contains(ids[2]))
+                {
+                    if (Status.equalsIgnoreCase("Fresh Calls")) {
                     if (ids[12].equals("NA") && (ids[10].equals(TeleCaller) || TeleCaller.equals("ALL")) && (ids[8].equals(Day) || Day.equals("ALL"))) {
                         obj.put("Name", ids[0]);
 
@@ -321,7 +323,7 @@ public class CallStatusUpdate {
                 }
 
 
-            }
+            }}
             Log.d("info", "Downloaded Info Data:" + jA);
         } catch (Exception e) {
             Toast.makeText(Con.getApplicationContext(), e.getMessage(),

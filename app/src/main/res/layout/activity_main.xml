@@ -119,13 +119,20 @@
         android:layout_below="@+id/updateDay"
         android:layout_marginBottom="3dp"
         android:text="Program" />
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Choose Programs"
+        android:id="@+id/ChooseProgram"
+        android:layout_below="@+id/ProgramspinnerText"
+        android:layout_marginBottom="3dp"/>
     <Spinner
         android:id="@+id/updateProgram"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_marginBottom="5dp"
-        android:layout_below="@+id/ProgramspinnerText"
+        android:layout_below="@+id/ChooseProgram"
         android:background="@android:drawable/spinner_background"
         android:entries="@array/set_Pr" />
 

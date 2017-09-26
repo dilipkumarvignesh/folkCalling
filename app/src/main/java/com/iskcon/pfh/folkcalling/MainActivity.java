@@ -2,7 +2,9 @@ package com.iskcon.pfh.folkcalling;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
@@ -19,6 +21,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -49,6 +52,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             Manifest.permission.READ_CALL_LOG
 
     };
+    ArrayList<String> selectedPrograms = new ArrayList<>();
     EditText txtGoogleId;
     TextView txtStatus,lFileInput;
     String jName;
@@ -61,7 +65,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     String GoogleId;
     TextToSpeech t1;
 
-    Button b2;
+    Button chooseProgram;
     int i=0;
     int contact_count=0;
 
@@ -91,7 +95,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         ToggleButton toggle = (ToggleButton) findViewById(R.id.toggleButton);
         ToggleButton A3toggle = (ToggleButton) findViewById(R.id.A3toggleButton);
         ToggleButton Inactivetoggle = (ToggleButton) findViewById(R.id.toggleButton);
-
+        chooseProgram = (Button)findViewById(R.id.ChooseProgram);
+        chooseProgram.setOnClickListener(this);
 
         PhoneStateListener callStateListener = new PhoneStateListener() {
             public void onCallStateChanged(int state, String incomingNumber){
@@ -198,13 +203,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
                 startActivity(k);
-                break;
+
+
             case R.id.GET_FILE:
                 Intent i = new Intent(Intent.ACTION_GET_CONTENT);
                 i.setType("*/*");
                 startActivityForResult(i, 15);
                 break;
-
+            case R.id.ChooseProgram:
+                selectPrograms();
         }
 
     }
@@ -307,6 +314,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             k.putExtra("TeleCaller",TeleCaller);
             k.putExtra("DayValue",DayValue);
             k.putExtra("PrValue",PrValue);
+            k.putStringArrayListExtra("PrValues",selectedPrograms);
             k.putExtra("A1SmsStatus",A1SmsStatus);
             k.putExtra("A3SmsStatus",A3SmsStatus);
             k.putExtra("InactiveSmsStatus",InactiveSmsStatus);
@@ -534,7 +542,35 @@ public void callNow()
                 return words[1];
             }
         }
+    public void selectPrograms()
+    {
+        final String[] items = {"PR1","PR2","PR3","PR4","PR5","PR6","PR7","PR8","PR9","PR10","PR11","PR12","PR13","PR14","PR15"};
 
+        AlertDialog.Builder builder =
+                new AlertDialog.Builder(this);
+
+        builder.setTitle("Select Programs")
+                .setMultiChoiceItems(items, null,
+                        new DialogInterface.OnMultiChoiceClickListener() {
+                            public void onClick(DialogInterface dialog, int item, boolean isChecked) {
+
+                                selectedPrograms.add(items[item]);
+                            }
+                        });
+
+        builder.setPositiveButton("OK",
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        ListView list = ((android.app.AlertDialog) dialog).getListView();
+                        //ListView has boolean array like {1=true, 3=true}, that shows checked items
+
+                        //
+                    }
+                });
+        builder.show();
+    }
 
 }
 

@@ -9,6 +9,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.CalendarContract;
+import android.provider.CalendarContract.Events;
 import android.provider.CallLog;
 import android.speech.tts.TextToSpeech;
 import android.support.v4.app.DialogFragment;
@@ -21,13 +22,14 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.provider.CalendarContract.Events;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Locale;
 
@@ -39,7 +41,7 @@ public class Operations extends AppCompatActivity implements View.OnClickListene
     Boolean A1Status,A3Status,InactiveStatus;
     Integer Callenabled;
     Button CallStop,UpdateCallStatus,Report,PickDate,PickTime,PickCalendar;
-
+    ArrayList<String> selectedPrograms = new ArrayList<>();
 
     JSONArray jA = new JSONArray();
     View vi;
@@ -102,6 +104,8 @@ public class Operations extends AppCompatActivity implements View.OnClickListene
             String TeleCaller=extras.getString("TeleCaller");
             String DayValue=extras.getString("DayValue");
             String PrValue=extras.getString("PrValue");
+            ArrayList<String> selectedPrograms = extras.getStringArrayList("PrValues");
+            Log.d("info","SelPrograms:"+selectedPrograms);
             SmsPrefix = extras.getString("smsPrefix");
             A1txt = extras.getString("A1txt");
             A3txt = extras.getString("A3txt");
@@ -110,7 +114,7 @@ public class Operations extends AppCompatActivity implements View.OnClickListene
             A3Status = extras.getBoolean("A3SmsStatus");
             InactiveStatus = extras.getBoolean("InactiveSmsStatus");
             CallStatusUpdate CallData = new CallStatusUpdate();
-            jA = CallData.getCallDataStatus(StatusValue,this,csvFilename,TeleCaller,DayValue,PrValue);
+            jA = CallData.getCallDataStatus(StatusValue,this,csvFilename,TeleCaller,DayValue,PrValue,selectedPrograms);
             Toast.makeText(getApplicationContext(),
                     jA.length()+" Contacts Downloaded", Toast.LENGTH_LONG).show();
             contact_count = jA.length();
@@ -179,6 +183,10 @@ public class Operations extends AppCompatActivity implements View.OnClickListene
 
                 startActivity(k);
                 break;
+
+
+
+
             case R.id.GET_FILE:
                 Intent z = new Intent(Intent.ACTION_GET_CONTENT);
                 z.setType("*/*");
@@ -225,6 +233,7 @@ public class Operations extends AppCompatActivity implements View.OnClickListene
         }
 
     }
+
     private void updateLabel() {
         String myFormat = "MM/dd/yy"; //In which you need put here
         SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
