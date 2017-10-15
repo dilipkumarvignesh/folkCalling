@@ -1,9 +1,118 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/ScrollView01"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    android:scrollbars="none" >
+<RelativeLayout
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.iskcon.pfh.folkcalling.StatusActivity">
+    android:background="@color/background2"
+    android:layout_margin="20dp"
+    tools:context="com.iskcon.pfh.folkcalling.StatusActivity"
+    tools:layout_editor_absoluteX="8dp"
+    tools:layout_editor_absoluteY="8dp">
+    <TextView
+        android:id="@+id/TCspinnerText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="TeleCaller"
+        tools:layout_editor_absoluteY="0dp"
+        tools:layout_editor_absoluteX="0dp" />
 
-</android.support.constraint.ConstraintLayout>
+    <Spinner
+        android:id="@+id/updateTC"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/TCspinnerText"
+        android:background="@android:drawable/spinner_background"
+        android:entries="@array/set_TC"
+        />
+
+    <TextView
+        android:id="@+id/ProgramspinnerText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/updateTC"
+        android:text="Program"
+       />
+
+    <!--<Spinner-->
+    <!--android:id="@+id/updateProgram"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_alignParentStart="true"-->
+        <!--android:layout_below="@+id/ProgramspinnerText"-->
+    <!--android:background="@android:drawable/spinner_background"-->
+    <!--android:entries="@array/set_Pr"-->
+       <!--/>-->
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Choose Programs"
+        android:id="@+id/ChooseProgram"
+        android:layout_below="@+id/ProgramspinnerText"
+        android:layout_marginBottom="3dp"/>
+
+    <CheckBox
+        android:id="@+id/checkBox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/ChooseProgram"
+        android:text="Today" />
+    <Button
+        android:id="@+id/btnStatus"
+        android:layout_below="@+id/ChooseProgram"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:background="@mipmap/report"/>
+
+
+
+    <TextView
+        android:id="@+id/report"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/btnStatus"
+        android:textSize="18sp"
+        android:textStyle="bold" />
+
+    <LinearLayout
+        android:id="@+id/fixedButtons"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/background2"
+        android:gravity="center"
+        android:layout_marginTop="2dp"
+        android:layout_below="@+id/report"
+      >
+
+        <Button
+            android:id="@+id/shrFile"
+            style="@style/Widget.AppCompat.Button"
+            android:layout_width="wrap_content"
+            android:layout_height="70dp"
+            android:text="Share File"
+            />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="70dp"
+            android:id="@+id/shrReport"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp"
+            android:text="Share Report"
+             />
+
+
+    </LinearLayout>
+
+</RelativeLayout>
+</ScrollView>

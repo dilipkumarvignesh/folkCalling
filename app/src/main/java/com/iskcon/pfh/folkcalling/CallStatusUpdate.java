@@ -20,6 +20,7 @@ import java.io.InputStreamReader;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 
 /**
  * Created by i308830 on 8/8/17.
@@ -28,7 +29,7 @@ import java.util.Calendar;
 
 public class CallStatusUpdate {
     private static final int REQUEST_EXTERNAL_STORAGE = 1;
-    int finalReport[] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+
 
     private Context Con;
     //  CSVWriter writer;
@@ -74,65 +75,65 @@ public class CallStatusUpdate {
                     switch (FinalStatus) {
                         case "A1":
                             CallResponse = "Active";
-                            finalReport[0]++;
+
                             break;
                         case "A2":
                             CallResponse = "Active";
-                            finalReport[1]++;
+
                             break;
                         case "A3":
                             CallResponse = "Active";
-                            finalReport[2]++;
+
                             break;
                         case "A4":
                             CallResponse = "Active";
-                            finalReport[3]++;
+
                             break;
                         case "B":
                             CallResponse = "Inactive";
-                            finalReport[4]++;
+
                             break;
                         case "C":
                             CallResponse = "Inactive";
-                            finalReport[5]++;
+
                             break;
                         case "D":
                             CallResponse = "Drop";
-                            finalReport[6]++;
+
                             break;
                         case "E":
                             CallResponse = "Inactive";
-                            finalReport[7]++;
+
                             break;
                         case "F":
                             CallResponse = "Inactive";
-                            finalReport[8]++;
+
                             break;
                         case "G":
                             CallResponse = "Drop";
-                            finalReport[9]++;
+
                             break;
                         case "X":
                             CallResponse = "Drop";
-                            finalReport[9]++;
+
                             break;
                         case "Y1":
                             CallResponse = "Inactive";
-                            finalReport[10]++;
+
                             break;
                         case "Y2":
                             CallResponse = "Inactive";
-                            finalReport[11]++;
+
                             break;
                         case "Y3":
                             CallResponse = "Inactive";
-                            finalReport[12]++;
+
 
                             Log.d("info", "Y3 Response Selected");
                             break;
                         case "Z":
                             CallResponse = "Drop";
-                            finalReport[12]++;
+
                             break;
 
 
@@ -217,7 +218,7 @@ public class CallStatusUpdate {
         return finalMessage;
     }
 
-    public JSONArray getCallDataStatus(String Status, Context Con, String Filename, String TeleCaller, String Day, String Program, ArrayList<String> selectedPrograms) {
+    public JSONArray getCallDataStatus(String Status, Context Con, String Filename, String TeleCaller, String Day, ArrayList<String> selectedPrograms) {
         this.Con = Con;
         InputStream inputStream;
         String[] ids;
@@ -245,7 +246,7 @@ public class CallStatusUpdate {
                 Log.d("info", "Rowinfo:" + ids[2]);
                 Log.d("info", "RowName:" + ids[0]);
                 Log.d("info", "StatusValue:" + Status);
-                Log.d("info", "ProgramDate:" + Program);
+
                 if (selectedPrograms.contains(ids[2]))
                 {
                     if (Status.equalsIgnoreCase("Fresh Calls")) {
@@ -368,12 +369,15 @@ public class CallStatusUpdate {
 
     }
 
-    public void finalReport(String filename) {
+    public HashMap finalReport(String filename, String TeleCaller, ArrayList<String> Program, Boolean Date) {
         File SD_CARD_PATH = Environment.getExternalStorageDirectory();
         String[] ids;
         FileInputStream iStream;
         BufferedReader reader;
+        HashMap<String, Integer> map = new HashMap<String, Integer>();
 
+        int totalNoOfPeople=0,totalNoOfCalls=0,A1=0,Z=0,active = 0,inActive = 0,drop = 0,
+                A2=0,A3=0,A4=0,B=0,C=0,D=0,E=0,F=0,G=0,X=0,Y1=0,Y2=0,Y3=0;
         String csvLine;
         try {
             File file = new File(SD_CARD_PATH, filename);
@@ -381,20 +385,123 @@ public class CallStatusUpdate {
             reader = new BufferedReader(new InputStreamReader(fIn));
 
             while ((csvLine = reader.readLine()) != null) {
-//                Toast.makeText(Con.getApplicationContext(), csvLine,
-//                Toast.LENGTH_SHORT).show();
 
-                JSONObject obj = new JSONObject();
                 ids = csvLine.split(",");
-                if (ids[1] == "") {
+                Log.d("info","People:"+ids[0]);
+                Log.d("info","SelectedPrograms:"+Program);
+                if ((TeleCaller.equals(ids[10])||(TeleCaller.equals("ALL")))&&(Program.contains(ids[2])))
+                {
+                    if( ((Date==true) && ids[15].equals(getDate())) || (Date==false) )
+                    {
+                    Log.d("info","SelectedPeople:"+ids[0]);
+                     totalNoOfPeople++;
+                        totalNoOfCalls = totalNoOfCalls + Integer.parseInt(ids[17]);
+                    switch (ids[12]) {
+                        case "A1":
+                            A1++;
 
-                }
+                            break;
+                        case "A2":
+                           A2++;
+
+                            break;
+                        case "A3":
+                            A3++;
+                            break;
+                        case "A4":
+                            A4++;
+
+                            break;
+                        case "B":
+                            B++;
+                            break;
+                        case "C":
+                           C++;
+
+                            break;
+                        case "D":
+                            D++;
+                            break;
+                        case "E":
+                            E++;
+                            break;
+                        case "F":
+                       F++;
+                            break;
+                        case "G":
+                           G++;
+                            break;
+                        case "X":
+                           X++;
+
+                            break;
+                        case "Y1":
+                            Y1++;
+
+                            break;
+                        case "Y2":
+                           Y2++;
+
+                            break;
+                        case "Y3":
+                          Y3++;
+
+
+                            Log.d("info", "Y3 Response Selected");
+                            break;
+                        case "Z":
+                          Z++;
+
+                            break;
+
+
+                    }
+
+                    if(ids[13].equals("Active"))
+                    {
+                        active++;
+                    }
+                    if(ids[13].equals("Inactive"))
+                    {
+                        inActive++;
+                    }
+                    if(ids[13].equals("Drop"))
+                    {
+                        drop++;
+                    }
+                }}
             }
 
         } catch (Exception e) {
-            Toast.makeText(Con.getApplicationContext(), e.getMessage(),
-                    Toast.LENGTH_SHORT).show();
+//            Toast.makeText(Con.getApplicationContext(), e.getMessage(),
+//                    Toast.LENGTH_SHORT).show();
         }
+        Log.d("info","TotalNoOfPeopleCalls:"+totalNoOfPeople);
+        map.put("A1",A1);
+        map.put("A2",A2);
+        map.put("A3",A3);
+        map.put("A4",A4);
+        map.put("B",B);
+        map.put("C",C);
+        map.put("D",D);
+        map.put("E",E);
+        map.put("F",F);
+        map.put("G",G);
+        map.put("X",X);
+        map.put("Y1",Y1);
+        map.put("Y2",Y2);
+        map.put("Y3",Y3);
+
+
+        map.put("Z",Z);
+        map.put("Inactive",inActive);
+        map.put("Drop",drop);
+        map.put("Active",active);
+        map.put("NoOfPeople",totalNoOfPeople);
+        map.put("NoOfCalls",totalNoOfCalls);
+
+        return map;
+
     }
 
     public String convertStatus(String sta) {

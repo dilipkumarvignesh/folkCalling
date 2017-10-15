@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -32,45 +36,6 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/Status" />
 
-        <!--<TextView-->
-            <!--android:id="@+id/txtProgramName"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:text="ProgramName" />-->
-
-        <!--<TextView-->
-            <!--android:id="@+id/txtDOR"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_below="@id/txtProgramName"-->
-
-            <!--/>-->
-
-        <!--<TextView-->
-            <!--android:id="@+id/txtProgramDate"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_below="@id/txtDOR" />-->
-
-        <!--<TextView-->
-            <!--android:id="@+id/txtSource"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_below="@id/txtProgramDate" />-->
-
-        <!--<TextView-->
-            <!--android:id="@+id/txtCollege"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_below="@id/txtSource"-->
-
-            <!--/>-->
-
-        <!--<TextView-->
-            <!--android:id="@+id/txtCampaigned"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_below="@id/txtCollege" />-->
     </LinearLayout>
 
 
@@ -78,7 +43,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="20dp"
-        android:layout_above="@+id/fixedButtons">
+        android:layout_below="@+id/InfoLayout"
+        android:id="@+id/UpdateLayout"
+        >
 
         <TextView
             android:id="@+id/txtStatus"
@@ -156,7 +123,11 @@
                 android:text="Update Response" />
         </RelativeLayout>
     </RelativeLayout>
-
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/UpdateLayout"
+        android:id="@+id/btnLayout1">
     <LinearLayout
         android:id="@+id/fixedButtons"
         android:layout_width="match_parent"
@@ -190,6 +161,22 @@
             android:background="@mipmap/report" />
 
     </LinearLayout>
+    </RelativeLayout>
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/btnLayout1">
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/RC"
+        android:orientation="vertical"
+        >
 
+
+    </LinearLayout>
+
+    </RelativeLayout>
 
 </RelativeLayout>
+    </ScrollView>

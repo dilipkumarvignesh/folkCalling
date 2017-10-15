@@ -278,8 +278,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             String TeleCaller = TC.getSelectedItem().toString();
             Spinner Day = (Spinner)findViewById(R.id.updateDay);
             String DayValue = Day.getSelectedItem().toString();
-            Spinner PR = (Spinner)findViewById(R.id.updateProgram);
-            String PrValue = PR.getSelectedItem().toString();
+//            Spinner PR = (Spinner)findViewById(R.id.updateProgram);
+//            String PrValue = PR.getSelectedItem().toString();
 
             ToggleButton A1toggle = (ToggleButton) findViewById(R.id.toggleButton);
             Boolean A1SmsStatus = A1toggle.isChecked();
@@ -313,7 +313,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             k.putExtra("StatusValue",StatusValue);
             k.putExtra("TeleCaller",TeleCaller);
             k.putExtra("DayValue",DayValue);
-            k.putExtra("PrValue",PrValue);
+//            k.putExtra("PrValue",PrValue);
             k.putStringArrayListExtra("PrValues",selectedPrograms);
             k.putExtra("A1SmsStatus",A1SmsStatus);
             k.putExtra("A3SmsStatus",A3SmsStatus);
@@ -545,7 +545,7 @@ public void callNow()
     public void selectPrograms()
     {
         final String[] items = {"PR1","PR2","PR3","PR4","PR5","PR6","PR7","PR8","PR9","PR10","PR11","PR12","PR13","PR14","PR15"};
-
+        selectedPrograms.clear();
         AlertDialog.Builder builder =
                 new AlertDialog.Builder(this);
 
