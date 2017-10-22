@@ -3,9 +3,9 @@ package com.iskcon.pfh.folkcalling;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -61,11 +61,12 @@ public class ItemFragment extends Fragment {
         if (view instanceof RecyclerView) {
             Context context = view.getContext();
             RecyclerView recyclerView = (RecyclerView) view;
-            if (mColumnCount <= 1) {
-                recyclerView.setLayoutManager(new LinearLayoutManager(context));
-            } else {
-                recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
-            }
+            recyclerView.setLayoutManager( new LinearLayoutManager(context));
+//            if (mColumnCount <= 1) {
+//                recyclerView.setLayoutManager(new LinearLayoutManager(context));
+//            } else {
+//                recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
+//            }
             ArrayList CallList = new ArrayList();
 
 //            CallUpdate obj = new CallUpdate("21","MA","DA","SB","JapaRounds","RMin");
@@ -86,8 +87,9 @@ public class ItemFragment extends Fragment {
 //            obj = new CallUpdate("21","MA2","DA2","SB","JapaRounds","RMin");
 //            CallList.add(obj);
 
-
-            recyclerView.setAdapter(new MyItemRecyclerViewAdapter(CallList, mListener));
+            CallStatusUpdate updateCall = new CallStatusUpdate();
+            Log.d("info","ArrayList:"+updateCall.CallList);
+            recyclerView.setAdapter(new MyItemRecyclerViewAdapter(updateCall.CallArrayList(), mListener));
         }
         return view;
     }

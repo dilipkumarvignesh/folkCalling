@@ -79,12 +79,6 @@ public class Operations extends AppCompatActivity implements View.OnClickListene
 //        for (int i = 0; i < 100; i++) {
 //            input.add("Test" + i);
 //        }// define an adapter
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        ItemFragment hello = new ItemFragment();
-        fragmentManager.beginTransaction().add(R.id.RC, hello,"Hello").commit();
-
-
-
 
        // recyclerView.setAdapter(mAdapter);
         txtStatus = (TextView) findViewById(R.id.Status);
@@ -154,6 +148,10 @@ public class Operations extends AppCompatActivity implements View.OnClickListene
 
         }
         //  Log.d("info","DownloadedLink"+link.toString());
+
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        ItemFragment hello = new ItemFragment();
+        fragmentManager.beginTransaction().add(R.id.RC, hello,"Hello").commit();
     }
 
     @Override
