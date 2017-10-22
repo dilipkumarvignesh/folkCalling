@@ -258,6 +258,21 @@ public class Operations extends AppCompatActivity implements View.OnClickListene
         //  edittext.setText(sdf.format(myCalendar.getTime()));
     }
 
+    public void makeCall(String name,String number)
+    {
+        try{
+            Intent intent = new Intent(Intent.ACTION_CALL);
+
+            // String na = name[i];
+            t1.speak(jName, TextToSpeech.QUEUE_FLUSH, null);
+            intent.setData(Uri.parse("tel:" + number));
+            startActivity(intent);
+        }
+        catch(SecurityException s){
+
+    }
+    }
+
     public void repeatCall() {
 //        Intent showDialogIntent = new Intent(this, DisplayMessageActivity.class);
 //        startActivity(showDialogIntent);
@@ -273,11 +288,12 @@ public class Operations extends AppCompatActivity implements View.OnClickListene
                 Log.d("info", "CalledName:" + jName);
                 String jNumber = objects.get("Number").toString();
                 String fNumber = jNumber;
-                intent.setData(Uri.parse("tel:" + fNumber));
-                // String na = name[i];
-                t1.speak(jName, TextToSpeech.QUEUE_FLUSH, null);
-                intent.setData(Uri.parse("tel:" + jNumber));
-                startActivity(intent);
+                makeCall(jName,fNumber);
+//                intent.setData(Uri.parse("tel:" + fNumber));
+//                // String na = name[i];
+//                t1.speak(jName, TextToSpeech.QUEUE_FLUSH, null);
+//                intent.setData(Uri.parse("tel:" + jNumber));
+//                startActivity(intent);
 
                 //startActivityForResult(intent, REQUEST_CODE);
 
@@ -481,6 +497,7 @@ public class Operations extends AppCompatActivity implements View.OnClickListene
     @Override
     public void onListFragmentInteraction(CallUpdate item)
     {
+        makeCall(item.name,item.number);
         Toast.makeText(getApplicationContext(), "History Fragment",
                 Toast.LENGTH_LONG).show();
     }

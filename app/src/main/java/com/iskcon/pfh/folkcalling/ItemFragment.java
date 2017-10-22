@@ -69,23 +69,7 @@ public class ItemFragment extends Fragment {
 //            }
             ArrayList CallList = new ArrayList();
 
-//            CallUpdate obj = new CallUpdate("21","MA","DA","SB","JapaRounds","RMin");
-//            CallList.add(obj);
-//
-//            obj = new CallUpdate("21","MA2","DA2","SB","JapaRounds","RMin");
-//            CallList.add(obj);
-//
-//            obj = new CallUpdate("21","MA2","DA2","SB","JapaRounds","RMin");
-//            CallList.add(obj);
-//
-//            obj = new CallUpdate("21","MA2","DA2","SB","JapaRounds","RMin");
-//            CallList.add(obj);
-//
-//            obj = new CallUpdate("21","MA2","DA2","SB","JapaRounds","RMin");
-//            CallList.add(obj);
-//
-//            obj = new CallUpdate("21","MA2","DA2","SB","JapaRounds","RMin");
-//            CallList.add(obj);
+
 
             CallStatusUpdate updateCall = new CallStatusUpdate();
             Log.d("info","ArrayList:"+updateCall.CallList);
