@@ -29,7 +29,7 @@ import java.util.HashMap;
 
 public class CallStatusUpdate {
     private static final int REQUEST_EXTERNAL_STORAGE = 1;
-
+    public ArrayList CallList;
 
     private Context Con;
     //  CSVWriter writer;
@@ -38,12 +38,17 @@ public class CallStatusUpdate {
             Manifest.permission.WRITE_EXTERNAL_STORAGE
     };
 
+    public ArrayList CallArrayList()
+    {
+      return CallList;
+    }
     public void writeStatus(String Name, String Number, String Status, String comm, Context con, String filename, String SmsPrefix, String A1txt, Boolean A1Status, String A3txt, Boolean A3Status, String Inactivetxt, Boolean InactiveStatus) {
         InputStream inputStream;
         String[] ids;
         FileInputStream iStream;
         BufferedReader reader;
         String message;
+
 
         File SD_CARD_PATH = Environment.getExternalStorageDirectory();
 
@@ -246,7 +251,8 @@ public class CallStatusUpdate {
                 Log.d("info", "Rowinfo:" + ids[2]);
                 Log.d("info", "RowName:" + ids[0]);
                 Log.d("info", "StatusValue:" + Status);
-
+                CallUpdate obj1 = new CallUpdate(ids[0],ids[1]);
+                CallList.add(obj1);
                 if (selectedPrograms.contains(ids[2]))
                 {
                     if (Status.equalsIgnoreCase("Fresh Calls")) {

@@ -68,23 +68,25 @@ public class ItemFragment extends Fragment {
             }
             ArrayList CallList = new ArrayList();
 
-            CallUpdate obj = new CallUpdate("21","MA","DA","SB","JapaRounds","RMin");
-            CallList.add(obj);
+//            CallUpdate obj = new CallUpdate("21","MA","DA","SB","JapaRounds","RMin");
+//            CallList.add(obj);
+//
+//            obj = new CallUpdate("21","MA2","DA2","SB","JapaRounds","RMin");
+//            CallList.add(obj);
+//
+//            obj = new CallUpdate("21","MA2","DA2","SB","JapaRounds","RMin");
+//            CallList.add(obj);
+//
+//            obj = new CallUpdate("21","MA2","DA2","SB","JapaRounds","RMin");
+//            CallList.add(obj);
+//
+//            obj = new CallUpdate("21","MA2","DA2","SB","JapaRounds","RMin");
+//            CallList.add(obj);
+//
+//            obj = new CallUpdate("21","MA2","DA2","SB","JapaRounds","RMin");
+//            CallList.add(obj);
 
-            obj = new CallUpdate("21","MA2","DA2","SB","JapaRounds","RMin");
-            CallList.add(obj);
 
-            obj = new CallUpdate("21","MA2","DA2","SB","JapaRounds","RMin");
-            CallList.add(obj);
-
-            obj = new CallUpdate("21","MA2","DA2","SB","JapaRounds","RMin");
-            CallList.add(obj);
-
-            obj = new CallUpdate("21","MA2","DA2","SB","JapaRounds","RMin");
-            CallList.add(obj);
-
-            obj = new CallUpdate("21","MA2","DA2","SB","JapaRounds","RMin");
-            CallList.add(obj);
             recyclerView.setAdapter(new MyItemRecyclerViewAdapter(CallList, mListener));
         }
         return view;
