@@ -166,7 +166,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/btnLayout1">
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Enter Search Text"
+            android:id="@+id/SearchText"/>
     <LinearLayout
+        android:layout_below="@+id/SearchText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/RC"

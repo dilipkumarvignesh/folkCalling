@@ -3,6 +3,7 @@ package com.iskcon.pfh.folkcalling;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -58,10 +59,14 @@ public class ItemFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_item_list, container, false);
 
         // Set the adapter
+
+
         if (view instanceof RecyclerView) {
             Context context = view.getContext();
             RecyclerView recyclerView = (RecyclerView) view;
             recyclerView.setLayoutManager( new LinearLayoutManager(context));
+
+
 //            if (mColumnCount <= 1) {
 //                recyclerView.setLayoutManager(new LinearLayoutManager(context));
 //            } else {
@@ -74,6 +79,8 @@ public class ItemFragment extends Fragment {
             CallStatusUpdate updateCall = new CallStatusUpdate();
             Log.d("info","ArrayList:"+updateCall.CallList);
             recyclerView.setAdapter(new MyItemRecyclerViewAdapter(updateCall.CallArrayList(), mListener));
+            recyclerView.addItemDecoration(new DividerItemDecoration(ContextCompat.getDrawable(context.getApplicationContext(),
+                    R.drawable.itemdecorator)));
         }
         return view;
     }
@@ -110,4 +117,6 @@ public class ItemFragment extends Fragment {
         // TODO: Update argument type and name
         void onListFragmentInteraction(CallUpdate item);
     }
+
+
 }

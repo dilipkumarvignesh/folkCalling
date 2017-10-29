@@ -7,15 +7,15 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
 import android.provider.CalendarContract;
 import android.provider.CalendarContract.Events;
 import android.provider.CallLog;
 import android.speech.tts.TextToSpeech;
 import android.support.v4.app.DialogFragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
@@ -24,7 +24,7 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
-
+import android.os.Handler;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -36,8 +36,9 @@ import java.util.Calendar;
 import java.util.Locale;
 
 public class Operations extends AppCompatActivity implements View.OnClickListener, ItemFragment.OnListFragmentInteractionListener {
-
-    EditText txtGoogleId, CallComment;
+    Boolean updateList;
+    CallUpdate item;
+    EditText txtGoogleId, CallComment,SearchText;
     TextView txtStatus, lFileInput;
     String jName, csvFilename, SmsPrefix, A1txt, A3txt, Inactivetxt;
     Boolean A1Status, A3Status, InactiveStatus;
@@ -66,19 +67,6 @@ public class Operations extends AppCompatActivity implements View.OnClickListene
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_operations);
 
-      //  RecyclerView recyclerView = (RecyclerView) findViewById(R.id.my_recycler_view);
-        // use this setting to
-        // improve performance if you know that changes
-        // in content do not change the layout size
-        // of the RecyclerView
-//        recyclerView.setHasFixedSize(true);
-//        // use a linear layout manager
-//        layoutManager = new LinearLayoutManager(this);
-//        recyclerView.setLayoutManager(layoutManager);
-//        List<String> input = new ArrayList<>();
-//        for (int i = 0; i < 100; i++) {
-//            input.add("Test" + i);
-//        }// define an adapter
 
        // recyclerView.setAdapter(mAdapter);
         txtStatus = (TextView) findViewById(R.id.Status);
@@ -111,6 +99,29 @@ public class Operations extends AppCompatActivity implements View.OnClickListene
 
         UpdateCallStatus = (Button) findViewById(R.id.UpdateCallStatus);
         CallStop.setOnClickListener(this);
+        SearchText = (EditText)findViewById(R.id.SearchText);
+        SearchText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+                // TODO Auto-generated method stub
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                // TODO Auto-generated method stub
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+                // filter your list from your input
+                Toast.makeText(getApplicationContext(),s.toString(),Toast.LENGTH_SHORT).show();
+                filter(s.toString());
+                //you can use runnable postDelayed like 500 ms to delay search text
+            }
+        });
 
         UpdateCallStatus.setOnClickListener(this);
         Report = (Button) findViewById(R.id.REPORT);
@@ -149,9 +160,23 @@ public class Operations extends AppCompatActivity implements View.OnClickListene
         }
         //  Log.d("info","DownloadedLink"+link.toString());
 
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        ItemFragment hello = new ItemFragment();
-        fragmentManager.beginTransaction().add(R.id.RC, hello,"Hello").commit();
+//        FragmentManager fragmentManager = getSupportFragmentManager();
+//        ItemFragment hello = new ItemFragment();
+//        fragmentManager.beginTransaction().add(R.id.RC, hello,"Hello").commit();
+    }
+
+    void filter(String text){
+        ArrayList<CallUpdate> temp = new ArrayList();
+      //  ArrayList CallList =
+//        for(DataHolder d: displayedList){
+//            //or use .equal(text) with you want equal match
+//            //use .toLowerCase() for better matches
+//            if(d.getEnglish().contains(text)){
+//                temp.add(d);
+//            }
+//        }
+//        //update recyclerview
+//        disp_adapter.updateList(temp);
     }
 
     @Override
@@ -176,16 +201,25 @@ public class Operations extends AppCompatActivity implements View.OnClickListene
                 break;
             case R.id.UpdateCallStatus:
                 try {
-                    JSONObject objects = jA.getJSONObject(i - 1);
-                    Log.d("info", "CallRowNo:" + i);
-                    String name = objects.get("Name").toString();
-                    String jNumber = objects.get("Number").toString();
                     Spinner sta = (Spinner) findViewById(R.id.updateSpinner);
                     EditText comments = (EditText) findViewById(R.id.CallComment);
                     String StatusValue = sta.getSelectedItem().toString();
                     String comm = comments.getText().toString();
+                    if(updateList == false) {
+                    JSONObject objects = jA.getJSONObject(i - 1);
+                    Log.d("info", "CallRowNo:" + i);
+                    String name = objects.get("Name").toString();
+                    String jNumber = objects.get("Number").toString();
+
                     Log.d("info", "StatusValue:" + StatusValue);
-                    updateStatus(name, jNumber, StatusValue, comm);
+
+                        updateStatus(name, jNumber, StatusValue, comm);
+                    }
+                    else
+                    {
+                        updateStatus(item.name,item.number,StatusValue,comm);
+                        updateList = false;
+                    }
                     //   EditText comments = (EditText)findViewById(R.id.CallComment);
                     comments.setText("");
 
@@ -264,7 +298,7 @@ public class Operations extends AppCompatActivity implements View.OnClickListene
             Intent intent = new Intent(Intent.ACTION_CALL);
 
             // String na = name[i];
-            t1.speak(jName, TextToSpeech.QUEUE_FLUSH, null);
+            t1.speak(name, TextToSpeech.QUEUE_FLUSH, null);
             intent.setData(Uri.parse("tel:" + number));
             startActivity(intent);
         }
@@ -288,23 +322,26 @@ public class Operations extends AppCompatActivity implements View.OnClickListene
                 Log.d("info", "CalledName:" + jName);
                 String jNumber = objects.get("Number").toString();
                 String fNumber = jNumber;
-                makeCall(jName,fNumber);
-//                intent.setData(Uri.parse("tel:" + fNumber));
-//                // String na = name[i];
-//                t1.speak(jName, TextToSpeech.QUEUE_FLUSH, null);
-//                intent.setData(Uri.parse("tel:" + jNumber));
-//                startActivity(intent);
+                TextView nameStatus = (TextView) findViewById(R.id.txtStatus);
+                nameStatus.setText("Update Call Status for " + jName);
+       //         makeCall(jName,fNumber);
+                intent.setData(Uri.parse("tel:" + fNumber));
+                // String na = name[i];
+                t1.speak(jName, TextToSpeech.QUEUE_FLUSH, null);
+                intent.setData(Uri.parse("tel:" + jNumber));
+                startActivity(intent);
 
                 //startActivityForResult(intent, REQUEST_CODE);
 
                 Toast.makeText(getApplicationContext(),
                         "Calling " + jName, Toast.LENGTH_LONG).show();
-                i++;
-                int cou = contact_count - i;
-                String Status = i + " Contacts Called " + cou + " Contacts Remaining";
-                txtStatus.setText(Status);
-                TextView nameStatus = (TextView) findViewById(R.id.txtStatus);
-                nameStatus.setText("Update Call Status for " + jName);
+//                if(updateList!=true) {
+//                    i++;
+//                    int cou = contact_count - i;
+//                    String Status = i + " Contacts Called " + cou + " Contacts Remaining";
+//                    txtStatus.setText(Status);
+//                }
+
 
                 Runnable showDialogRun = new Runnable() {
                     public void run() {
@@ -379,7 +416,9 @@ public class Operations extends AppCompatActivity implements View.OnClickListene
             Toast.makeText(getApplicationContext(), "Status Updated",
                     Toast.LENGTH_SHORT).show();
             getLastOutgoingCallDuration(this);
-            repeatCall();
+            if(updateList == false) {
+                repeatCall();
+            }
         }
 
 
@@ -495,11 +534,16 @@ public class Operations extends AppCompatActivity implements View.OnClickListene
 
 
     @Override
-    public void onListFragmentInteraction(CallUpdate item)
-    {
+    public void onListFragmentInteraction(CallUpdate ite)
+    {   updateList = true;
+        this.item = ite;
         makeCall(item.name,item.number);
+        TextView nameStatus = (TextView) findViewById(R.id.txtStatus);
+        nameStatus.setText("Update Call Status for " + item.name);
         Toast.makeText(getApplicationContext(), "History Fragment",
                 Toast.LENGTH_LONG).show();
+
+
     }
 
 }
