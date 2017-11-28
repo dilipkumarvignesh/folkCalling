@@ -13,7 +13,6 @@ import android.provider.CalendarContract.Events;
 import android.provider.CallLog;
 import android.speech.tts.TextToSpeech;
 import android.support.v4.app.DialogFragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -79,10 +78,10 @@ public class Operations extends AppCompatActivity implements View.OnClickListene
 //        for (int i = 0; i < 100; i++) {
 //            input.add("Test" + i);
 //        }// define an adapter
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        ItemFragment hello = new ItemFragment();
-        fragmentManager.beginTransaction().add(R.id.RC, hello,"Hello").commit();
-
+//        FragmentManager fragmentManager = getSupportFragmentManager();
+//        ItemFragment hello = new ItemFragment();
+//        fragmentManager.beginTransaction().add(R.id.RC, hello,"Hello").commit();
+//
 
 
 
