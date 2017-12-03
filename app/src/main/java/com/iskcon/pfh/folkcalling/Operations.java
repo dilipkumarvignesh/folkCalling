@@ -29,6 +29,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -39,7 +41,7 @@ public class Operations extends AppCompatActivity implements View.OnClickListene
 
     EditText txtGoogleId, CallComment;
     TextView txtStatus, lFileInput;
-    String jName, csvFilename, SmsPrefix, A1txt, A3txt, Inactivetxt;
+    String jName, csvFilename, SmsPrefix, A1txt, A3txt, Inactivetxt,jNumber;
     Boolean A1Status, A3Status, InactiveStatus;
     Integer Callenabled;
     Button CallStop, UpdateCallStatus, Report, PickDate, PickTime, PickCalendar;
@@ -141,21 +143,24 @@ public class Operations extends AppCompatActivity implements View.OnClickListene
             A1Status = extras.getBoolean("A1SmsStatus");
             A3Status = extras.getBoolean("A3SmsStatus");
             InactiveStatus = extras.getBoolean("InactiveSmsStatus");
-            CallStatusUpdate CallData = new CallStatusUpdate();
-            jA = CallData.getCallDataStatus(StatusValue, this, csvFilename, TeleCaller, DayValue, selectedPrograms);
+//            CallStatusUpdate CallData = new CallStatusUpdate();
+//            jA = CallData.getCallDataStatus(StatusValue, this, csvFilename, TeleCaller, DayValue, selectedPrograms);
 
             try {
                 ExcelAccess EA = new ExcelAccess();
-                contacts = EA.fileResource(csvFilename, this);
+                contacts = EA.fileResource(StatusValue, this, csvFilename, TeleCaller, DayValue, selectedPrograms);
+
             }
             catch(FileNotFoundException e){
                 e.printStackTrace();
                 Log.d("info","FileNotFound Excel");
+                Toast.makeText(getApplicationContext(),e.getMessage(),Toast.LENGTH_LONG);
+
             }
             Toast.makeText(getApplicationContext(),
-                    jA.length() + " Contacts Downloaded", Toast.LENGTH_LONG).show();
-            contact_count = jA.length();
-            Log.d("info", "DownloadedData:" + jA);
+                    contacts.size() + " Contacts Downloaded", Toast.LENGTH_LONG).show();
+            contact_count = contacts.size();
+          //  Log.d("info", "DownloadedData:" + jA);
             //int cou = contact_count - i;
             String Status = "0 Contacts Called " + contact_count + " Contacts Remaining";
             txtStatus.setText(Status);
@@ -186,11 +191,12 @@ public class Operations extends AppCompatActivity implements View.OnClickListene
                 Log.d("info", "CallEnabled:" + "FALSE");
                 break;
             case R.id.UpdateCallStatus:
-                try {
-                    JSONObject objects = jA.getJSONObject(i - 1);
+
+                   // JSONObject objects = jA.getJSONObject(i - 1);
+                    Contact con = contacts.get(i-1);
                     Log.d("info", "CallRowNo:" + i);
-                    String name = objects.get("Name").toString();
-                    String jNumber = objects.get("Number").toString();
+                    String name = con.name;
+                    String jNumber = con.number;
                     Spinner sta = (Spinner) findViewById(R.id.updateSpinner);
                     EditText comments = (EditText) findViewById(R.id.CallComment);
                     String StatusValue = sta.getSelectedItem().toString();
@@ -201,12 +207,10 @@ public class Operations extends AppCompatActivity implements View.OnClickListene
                     comments.setText("");
 
 
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
+
                 break;
             case R.id.REPORT:
-                CallStatusUpdate updateCall = new CallStatusUpdate();
+              //  CallStatusUpdate updateCall = new CallStatusUpdate();
 
                 Intent k = new Intent(getApplicationContext(), StatusActivity.class);
 
@@ -232,24 +236,23 @@ public class Operations extends AppCompatActivity implements View.OnClickListene
                 newTimeFragment.show(getSupportFragmentManager(), "datePicker");
                 break;
             case R.id.CAL:
-                try {
-                    JSONObject objects = jA.getJSONObject(i);
+
+                   // JSONObject objects = jA.getJSONObject(i);
+                     con = contacts.get(i-1);
                     Log.d("info", "CallRowNo:" + i);
-                    String name = objects.get("Name").toString();
-                    String jNumber = objects.get("Number").toString();
-                    Spinner sta = (Spinner) findViewById(R.id.updateSpinner);
-                    EditText comments = (EditText) findViewById(R.id.CallComment);
-                    String StatusValue = sta.getSelectedItem().toString();
-                    String comm = comments.getText().toString();
+                     name = con.name;
+                    jNumber = con.number;
+                    sta = (Spinner) findViewById(R.id.updateSpinner);
+                    comments = (EditText) findViewById(R.id.CallComment);
+                    StatusValue = sta.getSelectedItem().toString();
+                    comm = comments.getText().toString();
                     Log.d("info", "StatusValue:" + StatusValue);
-                    // updateStatus(name,jNumber,StatusValue,comm);
+                    updateStatus(name,jNumber,StatusValue,comm);
                     //   EditText comments = (EditText)findViewById(R.id.CallComment);
                     comments.setText("");
                     addRemainder(name, jNumber, comm);
 
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
+
                 break;
 
 
@@ -275,18 +278,22 @@ public class Operations extends AppCompatActivity implements View.OnClickListene
 
         Log.d("info", "Connecting Call");
         Intent intent = new Intent(Intent.ACTION_CALL);
-        try {
+
             if (Callenabled == 1 && i < contact_count) {
 
-                JSONObject objects = jA.getJSONObject(i);
+                Contact contact = contacts.get(i);
+                jName = contact.name;
+                jNumber = contact.number;
 
-                jName = objects.get("Name").toString();
-                Log.d("info", "CalledName:" + jName);
-                String jNumber = objects.get("Number").toString();
-                String fNumber = jNumber;
-                intent.setData(Uri.parse("tel:" + fNumber));
+//                JSONObject objects = jA.getJSONObject(i);
+//
+//                jName = objects.get("Name").toString();
+//                Log.d("info", "CalledName:" + jName);
+//                String jNumber = objects.get("Number").toString();
+//                String fNumber = jNumber;
+             //   intent.setData(Uri.parse("tel:" + jNumber));
                 // String na = name[i];
-                t1.speak(jName, TextToSpeech.QUEUE_FLUSH, null);
+             //   t1.speak(jName, TextToSpeech.QUEUE_FLUSH, null);
                 intent.setData(Uri.parse("tel:" + jNumber));
                 startActivity(intent);
 
@@ -313,9 +320,7 @@ public class Operations extends AppCompatActivity implements View.OnClickListene
             //vi.addView(ly1, params1);
 
 
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+
 
 
     }
@@ -325,33 +330,33 @@ public class Operations extends AppCompatActivity implements View.OnClickListene
         d.setContentView(R.layout.custom_dialog);
         d.getWindow().setType(WindowManager.LayoutParams.TYPE_TOAST);
         d.show();
-        try {
-            JSONObject NextCaller = jA.getJSONObject(i - 1);
-            String PersonName = NextCaller.get("Name").toString();
+
+            Contact NextCaller = contacts.get(i-1);
+          //  JSONObject NextCaller = jA.getJSONObject(i - 1);
+           // String PersonName = NextCaller.get("Name").toString();
+            String PersonName = NextCaller.name;
             TextView PersonNameText = (TextView) d.findViewById(R.id.PersonName);
             PersonNameText.setText(PersonName);
-            String ProgramName = NextCaller.get("Program").toString();
+            String ProgramName = NextCaller.program;
             TextView PRnametext = (TextView) d.findViewById(R.id.txtProgramName);
             PRnametext.setText(ProgramName);
-            String SourceName = NextCaller.get("Source").toString();
+            String SourceName = NextCaller.source;
             TextView SourceText = (TextView) d.findViewById(R.id.txtSource);
             SourceText.setText(SourceName);
-            String CollegeName = NextCaller.get("College").toString();
+            String CollegeName = NextCaller.ColCompany;
             TextView CollegeNameText = (TextView) d.findViewById(R.id.txtCollege);
             CollegeNameText.setText(CollegeName);
-            String CampaignedName = NextCaller.get("Campaigned").toString();
+            String CampaignedName = NextCaller.campaignedBy;
             TextView CampaingendNameText = (TextView) d.findViewById(R.id.txtCampaigned);
             CampaingendNameText.setText(CampaignedName);
 
-            String DOR = NextCaller.get("DOR").toString();
+            String DOR = NextCaller.dor;
             TextView DORtext = (TextView) d.findViewById(R.id.txtDOR);
             DORtext.setText(DOR);
-            String DOP = NextCaller.get("DOP").toString();
+            String DOP = NextCaller.dop;
             TextView DOPText = (TextView) d.findViewById(R.id.txtProgramDate);
             DOPText.setText(DOP);
-        } catch (JSONException e) {
 
-        }
         Button close_btn = (Button) d.findViewById(R.id.dialogButtonOK);
         close_btn.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -368,10 +373,15 @@ public class Operations extends AppCompatActivity implements View.OnClickListene
         if (status.equals("Y3")) {
             // addRemainder("Dilip","9663898009","Hello");
         } else {
-            updateCall.writeStatus(Name, number, Status, comm, this, csvFilename, SmsPrefix, A1txt, A1Status, A3txt, A3Status, Inactivetxt, InactiveStatus);
+            Contact contac = contacts.get(i-1);
+            Log.d("info","excelUpdatedName:"+contac.name);
+            ExcelAccess EA = new ExcelAccess();
+            EA.onWriteClick(contac,Name, number, Status, comm, this, csvFilename, SmsPrefix, A1txt, A1Status, A3txt, A3Status, Inactivetxt, InactiveStatus);
+          //  updateCall.writeStatus(Name, number, Status, comm, this, csvFilename, SmsPrefix, A1txt, A1Status, A3txt, A3Status, Inactivetxt, InactiveStatus);
             Log.d("info", "SmsStatus: Inactive Status :" + InactiveStatus + " A3 Status:" + A3Status);
             Toast.makeText(getApplicationContext(), "Status Updated",
                     Toast.LENGTH_SHORT).show();
+
           //  getLastOutgoingCallDuration(this);
             repeatCall();
         }
