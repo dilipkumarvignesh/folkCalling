@@ -174,9 +174,6 @@ public class ExcelAccess {
 
 
 
-//        } catch (Exception e) {
-//            /* proper exception handling to be here */
-//            printlnToUser(e.toString());
 //        }
     }
 

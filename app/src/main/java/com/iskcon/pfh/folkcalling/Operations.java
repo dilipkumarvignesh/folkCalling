@@ -28,6 +28,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.FileNotFoundException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -43,7 +44,7 @@ public class Operations extends AppCompatActivity implements View.OnClickListene
     Integer Callenabled;
     Button CallStop, UpdateCallStatus, Report, PickDate, PickTime, PickCalendar;
     ArrayList<String> selectedPrograms = new ArrayList<>();
-
+    ArrayList <Contact> contacts;
     JSONArray jA = new JSONArray();
     View vi;
     String GoogleId;
@@ -142,6 +143,15 @@ public class Operations extends AppCompatActivity implements View.OnClickListene
             InactiveStatus = extras.getBoolean("InactiveSmsStatus");
             CallStatusUpdate CallData = new CallStatusUpdate();
             jA = CallData.getCallDataStatus(StatusValue, this, csvFilename, TeleCaller, DayValue, selectedPrograms);
+
+            try {
+                ExcelAccess EA = new ExcelAccess();
+                contacts = EA.fileResource(csvFilename, this);
+            }
+            catch(FileNotFoundException e){
+                e.printStackTrace();
+                Log.d("info","FileNotFound Excel");
+            }
             Toast.makeText(getApplicationContext(),
                     jA.length() + " Contacts Downloaded", Toast.LENGTH_LONG).show();
             contact_count = jA.length();
@@ -352,8 +362,7 @@ public class Operations extends AppCompatActivity implements View.OnClickListene
 
 
     public void updateStatus(String Name, String number, String Status, String comm) {
-        //EditText cFilename = (EditText) findViewById(R.id.LFileInput);
-        // String csvFilename = cFilename.getText().toString();
+
         CallStatusUpdate updateCall = new CallStatusUpdate();
         String status = updateCall.getStatus(Status);
         if (status.equals("Y3")) {
@@ -363,7 +372,7 @@ public class Operations extends AppCompatActivity implements View.OnClickListene
             Log.d("info", "SmsStatus: Inactive Status :" + InactiveStatus + " A3 Status:" + A3Status);
             Toast.makeText(getApplicationContext(), "Status Updated",
                     Toast.LENGTH_SHORT).show();
-            getLastOutgoingCallDuration(this);
+          //  getLastOutgoingCallDuration(this);
             repeatCall();
         }
 
@@ -420,48 +429,48 @@ public class Operations extends AppCompatActivity implements View.OnClickListene
     }
 
 
-    public String getLastOutgoingCallDuration(final Context context) {
-        String output = null;
-
-        final Uri callog = CallLog.Calls.CONTENT_URI;
-        Cursor cursor = null;
-
-        try {
-            // Query all the columns of the records that matches "type=2"
-            // (outgoing) and orders the results by "date"
-            cursor = context.getContentResolver().query(callog, null,
-                    CallLog.Calls.TYPE + "=" + CallLog.Calls.OUTGOING_TYPE,
-                    null, CallLog.Calls.DATE);
-            final int durationCol = cursor
-                    .getColumnIndex(CallLog.Calls.DURATION);
-            final int CallType = cursor.getColumnIndex(CallLog.Calls.TYPE);
-            Log.d("info", "CallType:" + CallType);
-
-            if (CallType == CallLog.Calls.MISSED_TYPE) {
-                Toast.makeText(getApplicationContext(),
-                        "Missed Call", Toast.LENGTH_LONG).show();
-                Log.d("info", "CallDuration:" + durationCol);
-            } else if (CallType == CallLog.Calls.OUTGOING_TYPE) {
-                Toast.makeText(getApplicationContext(),
-                        "OutGoing Call " + durationCol, Toast.LENGTH_LONG).show();
-            }
-
-
-            // Retrieve only the last record to get the last outgoing call
-            if (cursor.moveToLast()) {
-                // Retrieve only the duration column
-                output = cursor.getString(durationCol);
-            }
-        } finally {
-            // Close the resources
-            if (cursor != null) {
-                cursor.close();
-            }
-        }
-
-
-        return output;
-    }
+//    public String getLastOutgoingCallDuration(final Context context) {
+//        String output = null;
+//
+//        final Uri callog = CallLog.Calls.CONTENT_URI;
+//        Cursor cursor = null;
+//
+//        try {
+//            // Query all the columns of the records that matches "type=2"
+//            // (outgoing) and orders the results by "date"
+//            cursor = context.getContentResolver().query(callog, null,
+//                    CallLog.Calls.TYPE + "=" + CallLog.Calls.OUTGOING_TYPE,
+//                    null, CallLog.Calls.DATE);
+//            final int durationCol = cursor
+//                    .getColumnIndex(CallLog.Calls.DURATION);
+//            final int CallType = cursor.getColumnIndex(CallLog.Calls.TYPE);
+//            Log.d("info", "CallType:" + CallType);
+//
+//            if (CallType == CallLog.Calls.MISSED_TYPE) {
+//                Toast.makeText(getApplicationContext(),
+//                        "Missed Call", Toast.LENGTH_LONG).show();
+//                Log.d("info", "CallDuration:" + durationCol);
+//            } else if (CallType == CallLog.Calls.OUTGOING_TYPE) {
+//                Toast.makeText(getApplicationContext(),
+//                        "OutGoing Call " + durationCol, Toast.LENGTH_LONG).show();
+//            }
+//
+//
+//            // Retrieve only the last record to get the last outgoing call
+//            if (cursor.moveToLast()) {
+//                // Retrieve only the duration column
+//                output = cursor.getString(durationCol);
+//            }
+//        } finally {
+//            // Close the resources
+//            if (cursor != null) {
+//                cursor.close();
+//            }
+//        }
+//
+//
+//        return output;
+//    }
 
 
     public void getSelectedDate(int year, int month, int day) {
