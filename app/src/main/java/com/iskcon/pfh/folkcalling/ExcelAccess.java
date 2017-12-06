@@ -31,6 +31,7 @@ import java.util.HashMap;
  */
 
 public class ExcelAccess {
+    ArrayList<Contact> contacts = new ArrayList<Contact>();
     private static String[] PERMISSIONS_STORAGE = {
             Manifest.permission.READ_EXTERNAL_STORAGE,
             Manifest.permission.WRITE_EXTERNAL_STORAGE,
@@ -45,7 +46,7 @@ public class ExcelAccess {
         ContentResolver cr = cont.getContentResolver();
 
         //Log.d("info","Input Stream:"+is);
-        ArrayList<Contact> contacts = new ArrayList<Contact>();
+
 
         try {
             File SD_CARD_PATH = Environment.getExternalStorageDirectory();
@@ -64,7 +65,8 @@ public class ExcelAccess {
                 Contact con = new Contact();
 
                 Cell NameCell = sheet.getRow(r).getCell(0,row.CREATE_NULL_AS_BLANK);
-                con.name = NameCell.getStringCellValue().toString();
+              //  con.name = NameCell.getStringCellValue().toString();
+                con.name = formatter.formatCellValue(NameCell);
                 Log.d("info","Row name:"+con.name);
 
                 String value = getCellAsString(row, 1, formulaEvaluator);
@@ -79,42 +81,53 @@ public class ExcelAccess {
                 con.number = num;
 
                 Cell ProgramCell = sheet.getRow(r).getCell(2,row.CREATE_NULL_AS_BLANK);
-                con.program = ProgramCell.getStringCellValue().toString();
+            //    con.program = ProgramCell.getStringCellValue().toString();
+                con.program = formatter.formatCellValue(ProgramCell);
                 Log.d("info","Row program:"+con.program);
+
                 Cell SourceCell = sheet.getRow(r).getCell(3,row.CREATE_NULL_AS_BLANK);
-                con.source = SourceCell.getStringCellValue().toString();
+               // con.source = SourceCell.getStringCellValue().toString();
+                con.source = formatter.formatCellValue(SourceCell);
                 Log.d("info","Row source:"+con.source);
 
                 Cell CollCompanyCell = sheet.getRow(r).getCell(4,row.CREATE_NULL_AS_BLANK);
-                con.ColCompany = CollCompanyCell.getStringCellValue();
+              //  con.ColCompany = CollCompanyCell.getStringCellValue();
+                con.ColCompany = formatter.formatCellValue(CollCompanyCell);
                 Log.d("info","Row source:"+con.source);
 
                 Cell CampaignedCell = sheet.getRow(r).getCell(5,row.CREATE_NULL_AS_BLANK);
-                con.campaignedBy = CampaignedCell.getStringCellValue().toString();
+               // con.campaignedBy = CampaignedCell.getStringCellValue().toString();
+                con.campaignedBy = formatter.formatCellValue(CampaignedCell);
                 Log.d("info","Row campaigned:"+con.campaignedBy);
 
                 Cell DORCell = sheet.getRow(r).getCell(6,row.CREATE_NULL_AS_BLANK);
-                con.dor = DORCell.getStringCellValue().toString();
+             //   con.dor = DORCell.getStringCellValue().toString();
+                con.dor = formatter.formatCellValue(DORCell);
                 Log.d("info","Row dor:"+con.dor);
 
                 Cell DOPCell = sheet.getRow(r).getCell(7,row.CREATE_NULL_AS_BLANK);
-                con.dop = DOPCell.getStringCellValue().toString();
+               // con.dop = DOPCell.getStringCellValue().toString();
+                con.dop = formatter.formatCellValue(DOPCell);
                 Log.d("info","Row DOP:"+con.dop);
 
                 Cell DateOfCallingCell = sheet.getRow(r).getCell(8,row.CREATE_NULL_AS_BLANK);
-                con.date_of_Calling = DateOfCallingCell.getStringCellValue().toString();
+             //   con.date_of_Calling = DateOfCallingCell.getStringCellValue().toString();
+                con.date_of_Calling = formatter.formatCellValue(DateOfCallingCell);
                 Log.d("info","Row date_of_Calling:"+con.date_of_Calling);
 
                 Cell TimeOfCallingCell = sheet.getRow(r).getCell(9,row.CREATE_NULL_AS_BLANK);
-                con.toc = TimeOfCallingCell.getStringCellValue().toString();
+               // con.toc = TimeOfCallingCell.getStringCellValue().toString();
+                con.toc = formatter.formatCellValue(TimeOfCallingCell);
                 Log.d("info","Row TimeOfCalling:"+con.toc);
 
                 Cell TCCell = sheet.getRow(r).getCell(10,row.CREATE_NULL_AS_BLANK);
-                con.tc = TCCell.getStringCellValue().toString();
+               // con.tc = TCCell.getStringCellValue().toString();
+                con.tc = formatter.formatCellValue(TCCell);
                 Log.d("info","Row TC:"+con.tc);
 
                 Cell CallResponseCell = sheet.getRow(r).getCell(12,row.CREATE_NULL_AS_BLANK);
-                con.CallResponse = CallResponseCell.getStringCellValue().toString();
+              //  con.CallResponse = CallResponseCell.getStringCellValue().toString();
+                con.CallResponse = formatter.formatCellValue(CallResponseCell);
                 Log.d("info","Row Response:"+con.CallResponse);
                 if (selectedPrograms.contains(con.program))
                 {
@@ -388,7 +401,7 @@ public class ExcelAccess {
                     remainderDateCell.setCellValue(contac.RemainderDay);
                     remainderTimeCell.setCellValue(contac.RemainderTime);
 
-
+                   break;
                 }
 
 

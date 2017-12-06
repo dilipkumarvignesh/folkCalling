@@ -38,7 +38,7 @@ import java.util.Calendar;
 import java.util.Locale;
 
 public class Operations extends AppCompatActivity implements View.OnClickListener, ItemFragment.OnListFragmentInteractionListener {
-
+    ExcelAccess EA;
     EditText txtGoogleId, CallComment;
     TextView txtStatus, lFileInput;
     String jName, csvFilename, SmsPrefix, A1txt, A3txt, Inactivetxt,jNumber;
@@ -67,7 +67,7 @@ public class Operations extends AppCompatActivity implements View.OnClickListene
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_operations);
-
+        EA = new ExcelAccess();
       //  RecyclerView recyclerView = (RecyclerView) findViewById(R.id.my_recycler_view);
         // use this setting to
         // improve performance if you know that changes
@@ -147,7 +147,7 @@ public class Operations extends AppCompatActivity implements View.OnClickListene
 //            jA = CallData.getCallDataStatus(StatusValue, this, csvFilename, TeleCaller, DayValue, selectedPrograms);
 
             try {
-                ExcelAccess EA = new ExcelAccess();
+
                 contacts = EA.fileResource(StatusValue, this, csvFilename, TeleCaller, DayValue, selectedPrograms);
 
             }
@@ -379,7 +379,7 @@ public class Operations extends AppCompatActivity implements View.OnClickListene
 
             Contact contac = contacts.get(i-1);
             Log.d("info","excelUpdatedName:"+contac.name);
-            ExcelAccess EA = new ExcelAccess();
+
             EA.onWriteClick(contac,Name, number, Status, comm, this, csvFilename, SmsPrefix, A1txt, A1Status, A3txt, A3Status, Inactivetxt, InactiveStatus);
           //  updateCall.writeStatus(Name, number, Status, comm, this, csvFilename, SmsPrefix, A1txt, A1Status, A3txt, A3Status, Inactivetxt, InactiveStatus);
             Log.d("info", "SmsStatus: Inactive Status :" + InactiveStatus + " A3 Status:" + A3Status);
