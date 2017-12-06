@@ -4,52 +4,134 @@
     android:layout_height="wrap_content"
     android:padding="20dp"
     >
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:id="@+id/PersonLayout">
+        <TextView
+            android:text="Name : "
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            />
     <TextView
         android:id="@+id/PersonName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         />
+    </LinearLayout>
 
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_below="@id/PersonLayout"
+        android:id="@+id/ProgramLayout">
+    <TextView
+        android:text="Program : "
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        />
     <TextView
         android:id="@+id/txtProgramName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
 
-        android:layout_below="@id/PersonName" />
+        />
+    </LinearLayout>
 
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_below="@id/ProgramLayout"
+        android:id="@+id/DORLayout">
+    <TextView
+        android:text="Date of Registration : "
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        />
     <TextView
         android:id="@+id/txtDOR"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/txtProgramName"
+
 
         />
+    </LinearLayout>
 
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_below="@id/DORLayout"
+        android:id="@+id/DOPLayout">
+    <TextView
+        android:text="Date of Program : "
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        />
     <TextView
         android:id="@+id/txtProgramDate"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/txtDOR" />
-
+       />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_below="@id/DOPLayout"
+        android:id="@+id/SourceLayout">
+    <TextView
+        android:text="Source : "
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        />
     <TextView
         android:id="@+id/txtSource"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/txtProgramDate" />
-
-    <TextView
-        android:id="@+id/txtCollege"
+       />
+    </LinearLayout>
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/txtSource"
-
+        android:orientation="horizontal"
+        android:layout_below="@id/SourceLayout"
+        android:id="@+id/CollegeLayout">
+    <TextView
+        android:text="College/Company: "
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         />
+        <TextView
+            android:id="@+id/txtCollege"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
 
+
+            />
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_below="@id/CollegeLayout"
+        android:id="@+id/CampaingnedLayout">
+    <TextView
+        android:text="Campaigned By "
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        />
     <TextView
         android:id="@+id/txtCampaigned"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/txtCollege" />
+       />
+    </LinearLayout>
     <Button
         android:id="@+id/dialogButtonOK"
         android:layout_width="wrap_content"
@@ -57,7 +139,7 @@
         android:text=" Ok "
         android:layout_marginTop="5dp"
         android:layout_marginRight="5dp"
-        android:layout_below="@+id/txtCampaigned"
+        android:layout_below="@+id/CampaingnedLayout"
 
         />
 

@@ -19,6 +19,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -103,9 +104,16 @@ public class StatusActivity extends AppCompatActivity {
         String TeleCaller = TC.getSelectedItem().toString();
         CheckBox date = (CheckBox)findViewById(R.id.checkBox);
         Boolean today = date.isChecked();
-        Log.d("info","TodayDate123:"+today);
-        CallStatusUpdate cs = new CallStatusUpdate();
-        HashMap fR = cs.finalReport(csvFilename,TeleCaller,selectedPrograms,today);
+
+        ExcelAccess EA = new ExcelAccess();
+        try {
+            HashMap fR = EA.finalReport(csvFilename,TeleCaller,selectedPrograms,today);
+
+         Log.d("info","TodayDate123:"+today);
+//        CallStatusUpdate cs = new CallStatusUpdate();
+//        HashMap fR = cs.finalReport(csvFilename,TeleCaller,selectedPrograms,today);
+
+
         Object totalPeople = fR.get("NoOfPeople");
         Log.d("info","TotalPeople:"+totalPeople);
         Object totalCalls = fR.get("NoOfCalls");
@@ -153,6 +161,9 @@ public class StatusActivity extends AppCompatActivity {
                     "Inactive: "+Inactive.toString()+" Drop: "+Drop.toString()+"\n"+
                     "Active: "+Active.toString());
 
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

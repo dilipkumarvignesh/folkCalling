@@ -20,9 +20,11 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 
 /**
  * Created by i308830 on 11/13/17.
@@ -54,6 +56,7 @@ public class ExcelAccess {
             XSSFSheet sheet = workbook.getSheetAt(0);
             int rowsCount = sheet.getPhysicalNumberOfRows();
             Log.d("info","Row Count:"+rowsCount);
+            DataFormatter formatter = new DataFormatter();
             FormulaEvaluator formulaEvaluator = workbook.getCreationHelper().createFormulaEvaluator();
             for (int r = 1; r<rowsCount; r++) {
                 Row row = sheet.getRow(r);
@@ -80,27 +83,35 @@ public class ExcelAccess {
                 Log.d("info","Row program:"+con.program);
                 Cell SourceCell = sheet.getRow(r).getCell(3,row.CREATE_NULL_AS_BLANK);
                 con.source = SourceCell.getStringCellValue().toString();
+                Log.d("info","Row source:"+con.source);
 
                 Cell CollCompanyCell = sheet.getRow(r).getCell(4,row.CREATE_NULL_AS_BLANK);
                 con.ColCompany = CollCompanyCell.getStringCellValue();
+                Log.d("info","Row source:"+con.source);
 
                 Cell CampaignedCell = sheet.getRow(r).getCell(5,row.CREATE_NULL_AS_BLANK);
                 con.campaignedBy = CampaignedCell.getStringCellValue().toString();
+                Log.d("info","Row campaigned:"+con.campaignedBy);
 
                 Cell DORCell = sheet.getRow(r).getCell(6,row.CREATE_NULL_AS_BLANK);
                 con.dor = DORCell.getStringCellValue().toString();
+                Log.d("info","Row dor:"+con.dor);
 
                 Cell DOPCell = sheet.getRow(r).getCell(7,row.CREATE_NULL_AS_BLANK);
                 con.dop = DOPCell.getStringCellValue().toString();
+                Log.d("info","Row DOP:"+con.dop);
 
                 Cell DateOfCallingCell = sheet.getRow(r).getCell(8,row.CREATE_NULL_AS_BLANK);
                 con.date_of_Calling = DateOfCallingCell.getStringCellValue().toString();
+                Log.d("info","Row date_of_Calling:"+con.date_of_Calling);
 
                 Cell TimeOfCallingCell = sheet.getRow(r).getCell(9,row.CREATE_NULL_AS_BLANK);
                 con.toc = TimeOfCallingCell.getStringCellValue().toString();
+                Log.d("info","Row TimeOfCalling:"+con.toc);
 
                 Cell TCCell = sheet.getRow(r).getCell(10,row.CREATE_NULL_AS_BLANK);
                 con.tc = TCCell.getStringCellValue().toString();
+                Log.d("info","Row TC:"+con.tc);
 
                 Cell CallResponseCell = sheet.getRow(r).getCell(12,row.CREATE_NULL_AS_BLANK);
                 con.CallResponse = CallResponseCell.getStringCellValue().toString();
@@ -364,6 +375,9 @@ public class ExcelAccess {
                     Cell dateCell = row.getCell(15, row.CREATE_NULL_AS_BLANK);
                     Cell timeCell = row.getCell(16, row.CREATE_NULL_AS_BLANK);
                     Cell nocCell = row.getCell(17, row.CREATE_NULL_AS_BLANK);
+                    Cell remainderDateCell = row.getCell(18, row.CREATE_NULL_AS_BLANK);
+                    Cell remainderTimeCell = row.getCell(19, row.CREATE_NULL_AS_BLANK);
+
                     previousResponseCell.setCellValue(contac.pResponse);
                     CallResponseCell.setCellValue(contac.CallResponse);
                     CallStatusCell.setCellValue(contac.CallStatus);
@@ -371,6 +385,9 @@ public class ExcelAccess {
                     dateCell.setCellValue(contac.date_of_Calling);
                     timeCell.setCellValue(contac.dTime);
                     nocCell.setCellValue(contac.noc);
+                    remainderDateCell.setCellValue(contac.RemainderDay);
+                    remainderTimeCell.setCellValue(contac.RemainderTime);
+
 
                 }
 
@@ -470,6 +487,175 @@ public class ExcelAccess {
         Log.d("info", "TodayTime:" + currentTime);
         return currentTime;
 
+
+    }
+
+    public HashMap finalReport(String filename, String TeleCaller, ArrayList<String> Program, Boolean Date) throws IOException {
+
+        File SD_CARD_PATH = Environment.getExternalStorageDirectory();
+        File file = new File(SD_CARD_PATH, filename);
+        FileInputStream fIn = null;
+        try {
+            fIn = new FileInputStream(file);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        // InputStream is = cr.openInputStream(fIn);
+        XSSFWorkbook workbook = new XSSFWorkbook(fIn);
+        XSSFSheet sheet = workbook.getSheetAt(0);
+        int rowsCount = sheet.getPhysicalNumberOfRows();
+        Log.d("info","Row Count:"+rowsCount);
+        FormulaEvaluator formulaEvaluator = workbook.getCreationHelper().createFormulaEvaluator();
+
+
+
+
+        HashMap<String, Integer> map = new HashMap<String, Integer>();
+
+        int totalNoOfPeople=0,totalNoOfCalls=0,A1=0,Z=0,active = 0,inActive = 0,drop = 0,
+                A2=0,A3=0,A4=0,B=0,C=0,D=0,E=0,F=0,G=0,X=0,Y1=0,Y2=0,Y3=0;
+
+        try {
+
+
+            for (int r = 1; r<rowsCount; r++) {
+                Row row = sheet.getRow(r);
+                Cell ProgramCell = sheet.getRow(r).getCell(2,row.CREATE_NULL_AS_BLANK);
+                String ProgramName = ProgramCell.getStringCellValue().toString();
+                Log.d("info","Rows program:"+ProgramName);
+
+                Cell TCCell = sheet.getRow(r).getCell(10,row.CREATE_NULL_AS_BLANK);
+                String TCaller = TCCell.getStringCellValue().toString();
+                Log.d("info","Report telecaller:"+TCaller);
+
+                Cell DateCell = sheet.getRow(r).getCell(15,row.CREATE_NULL_AS_BLANK);
+                String DateofCall = DateCell.getStringCellValue().toString();
+                Log.d("info","Report Date:"+DateofCall);
+                Log.d("info","Report Today Date:"+getDate());
+                Cell CallResponseCell = sheet.getRow(r).getCell(12,row.CREATE_NULL_AS_BLANK);
+                String CallResponse = CallResponseCell.getStringCellValue().toString();
+
+                Cell NoOfCallsCell = sheet.getRow(r).getCell(17,row.CREATE_NULL_AS_BLANK);
+                String NoOfCalls = NoOfCallsCell.getStringCellValue().toString();
+
+                Cell CallStatusCell = sheet.getRow(r).getCell(13,row.CREATE_NULL_AS_BLANK);
+                String CallStatus = CallStatusCell.getStringCellValue().toString();
+                Log.d("info","SelectedPrograms:"+Program);
+
+
+                if ((TeleCaller.equals("TC1")||(TeleCaller.equals("ALL")))&&(Program.contains(ProgramName)))
+                {
+                    if( ((Date==true) && DateofCall.equals(getDate())) || (Date==false) )
+                    {
+                     //   Log.d("info","SelectedPeople:"+ids[0]);
+                        Log.d("info","Inside Report Conditions");
+                        totalNoOfPeople++;
+                        totalNoOfCalls = totalNoOfCalls + Integer.parseInt(NoOfCalls);
+                        switch (CallResponse) {
+                            case "A1":
+                                A1++;
+
+                                break;
+                            case "A2":
+                                A2++;
+
+                                break;
+                            case "A3":
+                                A3++;
+                                break;
+                            case "A4":
+                                A4++;
+
+                                break;
+                            case "B":
+                                B++;
+                                break;
+                            case "C":
+                                C++;
+
+                                break;
+                            case "D":
+                                D++;
+                                break;
+                            case "E":
+                                E++;
+                                break;
+                            case "F":
+                                F++;
+                                break;
+                            case "G":
+                                G++;
+                                break;
+                            case "X":
+                                X++;
+
+                                break;
+                            case "Y1":
+                                Y1++;
+
+                                break;
+                            case "Y2":
+                                Y2++;
+
+                                break;
+                            case "Y3":
+                                Y3++;
+
+
+                                Log.d("info", "Y3 Response Selected");
+                                break;
+                            case "Z":
+                                Z++;
+
+                                break;
+
+
+                        }
+
+                        if(CallStatus.equals("Active"))
+                        {
+                            active++;
+                        }
+                        if(CallStatus.equals("Inactive"))
+                        {
+                            inActive++;
+                        }
+                        if(CallStatus.equals("Drop"))
+                        {
+                            drop++;
+                        }
+                    }}
+            }
+
+        } catch (Exception e) {
+//            Toast.makeText(Con.getApplicationContext(), e.getMessage(),
+//                    Toast.LENGTH_SHORT).show();
+        }
+        Log.d("info","TotalNoOfPeopleCalls:"+totalNoOfPeople);
+        map.put("A1",A1);
+        map.put("A2",A2);
+        map.put("A3",A3);
+        map.put("A4",A4);
+        map.put("B",B);
+        map.put("C",C);
+        map.put("D",D);
+        map.put("E",E);
+        map.put("F",F);
+        map.put("G",G);
+        map.put("X",X);
+        map.put("Y1",Y1);
+        map.put("Y2",Y2);
+        map.put("Y3",Y3);
+
+
+        map.put("Z",Z);
+        map.put("Inactive",inActive);
+        map.put("Drop",drop);
+        map.put("Active",active);
+        map.put("NoOfPeople",totalNoOfPeople);
+        map.put("NoOfCalls",totalNoOfCalls);
+
+        return map;
 
     }
 

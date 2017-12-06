@@ -247,10 +247,15 @@ public class Operations extends AppCompatActivity implements View.OnClickListene
                     StatusValue = sta.getSelectedItem().toString();
                     comm = comments.getText().toString();
                     Log.d("info", "StatusValue:" + StatusValue);
+                    String timeSchedule[] = calDayTime(comm);
+                    con.RemainderDay = timeSchedule[0];
+                    con.RemainderTime = timeSchedule[1];
+
                     updateStatus(name,jNumber,StatusValue,comm);
+                    addRemainder(name, jNumber, comm);
                     //   EditText comments = (EditText)findViewById(R.id.CallComment);
                     comments.setText("");
-                    addRemainder(name, jNumber, comm);
+
 
 
                 break;
@@ -302,6 +307,7 @@ public class Operations extends AppCompatActivity implements View.OnClickListene
                 Toast.makeText(getApplicationContext(),
                         "Calling " + jName, Toast.LENGTH_LONG).show();
                 i++;
+
                 int cou = contact_count - i;
                 String Status = i + " Contacts Called " + cou + " Contacts Remaining";
                 txtStatus.setText(Status);
@@ -370,9 +376,7 @@ public class Operations extends AppCompatActivity implements View.OnClickListene
 
         CallStatusUpdate updateCall = new CallStatusUpdate();
         String status = updateCall.getStatus(Status);
-        if (status.equals("Y3")) {
-            // addRemainder("Dilip","9663898009","Hello");
-        } else {
+
             Contact contac = contacts.get(i-1);
             Log.d("info","excelUpdatedName:"+contac.name);
             ExcelAccess EA = new ExcelAccess();
@@ -383,12 +387,39 @@ public class Operations extends AppCompatActivity implements View.OnClickListene
                     Toast.LENGTH_SHORT).show();
 
           //  getLastOutgoingCallDuration(this);
+            if(!status.equals("Y3"))
+            {
             repeatCall();
-        }
+            }
 
 
     }
 
+    public String[] calDayTime(String day)
+    {
+        Calendar beginTime = Calendar.getInstance();
+
+        String[] time = day.split(" ");
+        Log.d("info", "TimeValue:" + time[2]);
+
+        Log.d("info", "TimeValue2:" + time[5]);
+        Log.d("info", "inside add Remainder");
+
+        String[] datesplit = time[2].split("/");
+        String[] timesplit = time[5].split(":");
+        int gday = Integer.parseInt(datesplit[0]);
+        int month = Integer.parseInt(datesplit[1]) - 1;
+        int year = Integer.parseInt(datesplit[2]);
+        int hour = Integer.parseInt(timesplit[0]);
+        int minu = Integer.parseInt(timesplit[1]);
+
+        String dayt = gday+"/"+month+"/"+year;
+        String timet = hour+":"+minu;
+
+        String ret[] = {dayt,timet};
+
+       return ret;
+    }
     public void addRemainder(String name, String number, String day) {
 
         Calendar beginTime = Calendar.getInstance();
@@ -431,9 +462,10 @@ public class Operations extends AppCompatActivity implements View.OnClickListene
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
         if (requestCode == 200) {
-            // repeatCall();
+
             Toast.makeText(getApplicationContext(),
                     "Remainder Successfully added", Toast.LENGTH_LONG).show();
+            repeatCall();
         }
 
     }
