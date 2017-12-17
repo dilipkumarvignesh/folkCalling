@@ -5,7 +5,6 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.os.Environment;
 import android.util.Log;
-import android.widget.Toast;
 
 import org.apache.poi.hssf.usermodel.HSSFDateUtil;
 import org.apache.poi.ss.usermodel.Cell;
@@ -46,7 +45,7 @@ public class ExcelAccess {
         ContentResolver cr = cont.getContentResolver();
 
         //Log.d("info","Input Stream:"+is);
-
+        Log.d("info","Day of Calling Excel:"+Day);
 
         try {
             File SD_CARD_PATH = Environment.getExternalStorageDirectory();
@@ -110,50 +109,69 @@ public class ExcelAccess {
                 con.dop = formatter.formatCellValue(DOPCell);
                 Log.d("info","Row DOP:"+con.dop);
 
-                Cell DateOfCallingCell = sheet.getRow(r).getCell(8,row.CREATE_NULL_AS_BLANK);
-             //   con.date_of_Calling = DateOfCallingCell.getStringCellValue().toString();
-                con.date_of_Calling = formatter.formatCellValue(DateOfCallingCell);
-                Log.d("info","Row date_of_Calling:"+con.date_of_Calling);
+                Cell DayOfCallingCell = sheet.getRow(r).getCell(8,row.CREATE_NULL_AS_BLANK);
+                // con.dop = DOPCell.getStringCellValue().toString();
+                con.doc = formatter.formatCellValue(DayOfCallingCell);
+                Log.d("info","Row DOC:"+con.doc);
 
                 Cell TimeOfCallingCell = sheet.getRow(r).getCell(9,row.CREATE_NULL_AS_BLANK);
-               // con.toc = TimeOfCallingCell.getStringCellValue().toString();
+                // con.toc = TimeOfCallingCell.getStringCellValue().toString();
                 con.toc = formatter.formatCellValue(TimeOfCallingCell);
                 Log.d("info","Row TimeOfCalling:"+con.toc);
 
                 Cell TCCell = sheet.getRow(r).getCell(10,row.CREATE_NULL_AS_BLANK);
-               // con.tc = TCCell.getStringCellValue().toString();
+                // con.tc = TCCell.getStringCellValue().toString();
                 con.tc = formatter.formatCellValue(TCCell);
                 Log.d("info","Row TC:"+con.tc);
 
+                Cell PreviousResCell = sheet.getRow(r).getCell(11,row.CREATE_NULL_AS_BLANK);
+                // con.tc = TCCell.getStringCellValue().toString();
+                con.pResponse = formatter.formatCellValue(PreviousResCell);
+                Log.d("info","Previous Res :"+con.pResponse);
+
                 Cell CallResponseCell = sheet.getRow(r).getCell(12,row.CREATE_NULL_AS_BLANK);
-              //  con.CallResponse = CallResponseCell.getStringCellValue().toString();
+                //  con.CallResponse = CallResponseCell.getStringCellValue().toString();
                 con.CallResponse = formatter.formatCellValue(CallResponseCell);
                 Log.d("info","Row Response:"+con.CallResponse);
-                if (selectedPrograms.contains(con.program))
+
+                Cell NoOfCallsCell = sheet.getRow(r).getCell(17,row.CREATE_NULL_AS_BLANK);
+                //  con.CallResponse = CallResponseCell.getStringCellValue().toString();
+                con.noc = formatter.formatCellValue(NoOfCallsCell);
+                Log.d("info","No of Calls Row Response:"+con.noc);
+
+                Cell DateOfCallingCell = sheet.getRow(r).getCell(15,row.CREATE_NULL_AS_BLANK);
+             //   con.date_of_Calling = DateOfCallingCell.getStringCellValue().toString();
+                con.date_of_Calling = formatter.formatCellValue(DateOfCallingCell);
+                Log.d("info","Row date_of_Calling:"+con.date_of_Calling);
+
+
+
+
+                if (selectedPrograms.contains(con.program)&&(Day.equals(con.doc)||Day.equals("ALL")))
                 {
                     if (Status.equalsIgnoreCase("Fresh Calls")) {
-                        if (con.CallResponse.equals("NA") && (con.tc.equals(TeleCaller) || TeleCaller.equals("ALL")) && (con.date_of_Calling.equals(Day) || Day.equals("ALL"))) {
+                        if (con.CallResponse.equals("NA") && (con.tc.equals(TeleCaller) || TeleCaller.equals("ALL"))) {
                           contacts.add(con);
                             // sendSms("Hare Krishna <name>. Thank you for your confirmation for attending YFH",ids[0],ids[1]);
                         }
-                    } else if (Status.equals("Confirmation Calls") && (con.tc.equals(TeleCaller) || TeleCaller.equals("ALL")) && (con.date_of_Calling.equals(Day) || Day.equals("ALL"))) {
+                    } else if (Status.equals("Confirmation Calls") && (con.tc.equals(TeleCaller) || TeleCaller.equals("ALL")) ) {
                         if (con.CallResponse.equals("A1")) {
                             contacts.add(con);
                         }
-                    } else if (Status.equals("Inactive Calls") && (con.tc.equals(TeleCaller) || TeleCaller.equals("ALL")) && (con.date_of_Calling.equals(Day) || Day.equals("ALL"))) {
+                    } else if (Status.equals("Inactive Calls") && (con.tc.equals(TeleCaller) || TeleCaller.equals("ALL")) ) {
                         if (con.CallResponse.equals("B") || con.CallResponse.equals("C") || con.CallResponse.equals("Y2") || con.CallResponse.equals("E") || con.CallResponse.equals("F") ||
                                 con.CallResponse.equals("Y1")) {
                             contacts.add(con);
                         }
-                    } else if (Status.equals("Tentative") && (con.tc.equals(TeleCaller) || TeleCaller.equals("ALL")) && (con.date_of_Calling.equals(Day) || Day.equals("ALL"))) {
+                    } else if (Status.equals("Tentative") && (con.tc.equals(TeleCaller) || TeleCaller.equals("ALL")) ) {
                         if (con.CallResponse.equals("A4") || con.CallResponse.equals("Y1") || con.CallResponse.equals("Y2")) {
                         contacts.add(con);
                         }
-                    } else if (Status.equals("Recall Inactive Numbers") && (con.tc.equals(TeleCaller) || TeleCaller.equals("ALL")) && (con.date_of_Calling.equals(Day) || Day.equals("ALL"))) {
+                    } else if (Status.equals("Recall Inactive Numbers") && (con.tc.equals(TeleCaller) || TeleCaller.equals("ALL")) && con.date_of_Calling.equals(getDate())) {
                         Log.d("info", "Inside RecallInactive");
 
                         if ((con.CallResponse.equals("B") || con.CallResponse.equals("C") || con.CallResponse.equals("Y2") || con.CallResponse.equals("E") || con.CallResponse.equals("F") ||
-                                con.CallResponse.equals("Y1")) && con.CallResponse.equals(getDate())) {
+                                con.CallResponse.equals("Y1")) ) {
                         contacts.add(con);
                         }
                     }
@@ -230,7 +248,7 @@ public class ExcelAccess {
 //        }
     }
 
-    public void onWriteClick(Contact contac,String Name, String Number, String Status, String comm, Context con, String filename, String SmsPrefix, String A1txt, Boolean A1Status, String A3txt, Boolean A3Status, String Inactivetxt, Boolean InactiveStatus) {
+    public void onWriteClick(Contact contac, String Status, String comm, Context con, String filename, String SmsPrefix, String A1txt, Boolean A1Status, String A3txt, Boolean A3Status, String Inactivetxt, Boolean InactiveStatus) {
         printlnToUser("writing xlsx file");
         File SD_CARD_PATH = Environment.getExternalStorageDirectory();
 
@@ -267,7 +285,7 @@ public class ExcelAccess {
                 String name = formatter.formatCellValue(sheet.getRow(i).getCell(0));
 
                 Log.d("info", "Excel Mum:" + number);
-                Log.d("info", "Input Num:" + Number);
+             //   Log.d("info", "Input Num:" + Number);
 
 
                 // String numberValue=number.getStringCellValue();
@@ -365,10 +383,13 @@ public class ExcelAccess {
 
                     }
                     if (getDate().equals(contac.date_of_Calling)) {
-                        Log.d("info", "102");
+                        Log.d("info","CallUpdateNo's:");
                         int call = Integer.parseInt(contac.noc);
+                        Log.d("info","CallUpdateNumberss:"+call);
                         call = call + 1;
                         contac.noc = Integer.toString(call);
+                        Log.d("info","CallUpdateNumberssToString:"+call);
+                        Log.d("info", "102");
 
                     } else {
                         Log.d("info", "104");
@@ -377,7 +398,7 @@ public class ExcelAccess {
                     }
                     Log.d("info", "105");
                     contac.CallStatus = CallResponse;
-                    comm = comm.replace(',', '.');
+
                     contac.Comments = comm;
                     contac.date_of_Calling = getDate();
                     contac.dTime = currentTime();
@@ -417,7 +438,7 @@ public class ExcelAccess {
         } catch (Exception e) {
             /* proper exception handling to be here */
             printlnToUser(e.toString());
-            Toast.makeText(con,"error in exel:"+e.toString() , Toast.LENGTH_LONG).show();
+//            Toast.makeText(con,"error in exel:"+e.toString() , Toast.LENGTH_LONG).show();
         }
     }
 
@@ -520,7 +541,7 @@ public class ExcelAccess {
         Log.d("info","Row Count:"+rowsCount);
         FormulaEvaluator formulaEvaluator = workbook.getCreationHelper().createFormulaEvaluator();
 
-
+        DataFormatter formatter = new DataFormatter();
 
 
         HashMap<String, Integer> map = new HashMap<String, Integer>();
@@ -534,29 +555,30 @@ public class ExcelAccess {
             for (int r = 1; r<rowsCount; r++) {
                 Row row = sheet.getRow(r);
                 Cell ProgramCell = sheet.getRow(r).getCell(2,row.CREATE_NULL_AS_BLANK);
-                String ProgramName = ProgramCell.getStringCellValue().toString();
+                formatter.formatCellValue(ProgramCell);
+                String ProgramName = formatter.formatCellValue(ProgramCell);
                 Log.d("info","Rows program:"+ProgramName);
 
                 Cell TCCell = sheet.getRow(r).getCell(10,row.CREATE_NULL_AS_BLANK);
-                String TCaller = TCCell.getStringCellValue().toString();
+                String TCaller =  formatter.formatCellValue(TCCell);
                 Log.d("info","Report telecaller:"+TCaller);
 
                 Cell DateCell = sheet.getRow(r).getCell(15,row.CREATE_NULL_AS_BLANK);
-                String DateofCall = DateCell.getStringCellValue().toString();
+                String DateofCall = formatter.formatCellValue(DateCell);
                 Log.d("info","Report Date:"+DateofCall);
                 Log.d("info","Report Today Date:"+getDate());
                 Cell CallResponseCell = sheet.getRow(r).getCell(12,row.CREATE_NULL_AS_BLANK);
-                String CallResponse = CallResponseCell.getStringCellValue().toString();
+                String CallResponse =  formatter.formatCellValue(CallResponseCell);
 
                 Cell NoOfCallsCell = sheet.getRow(r).getCell(17,row.CREATE_NULL_AS_BLANK);
-                String NoOfCalls = NoOfCallsCell.getStringCellValue().toString();
+                String NoOfCalls =  formatter.formatCellValue(NoOfCallsCell);
 
                 Cell CallStatusCell = sheet.getRow(r).getCell(13,row.CREATE_NULL_AS_BLANK);
-                String CallStatus = CallStatusCell.getStringCellValue().toString();
+                String CallStatus =  formatter.formatCellValue(CallStatusCell);
                 Log.d("info","SelectedPrograms:"+Program);
 
 
-                if ((TeleCaller.equals("TC1")||(TeleCaller.equals("ALL")))&&(Program.contains(ProgramName)))
+                if ((TeleCaller.equals(TCaller)||(TeleCaller.equals("ALL")))&&(Program.contains(ProgramName)))
                 {
                     if( ((Date==true) && DateofCall.equals(getDate())) || (Date==false) )
                     {

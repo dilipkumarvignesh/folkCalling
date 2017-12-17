@@ -4,13 +4,11 @@ import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.CalendarContract;
 import android.provider.CalendarContract.Events;
-import android.provider.CallLog;
 import android.speech.tts.TextToSpeech;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
@@ -25,12 +23,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.security.GeneralSecurityException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -130,11 +124,11 @@ public class Operations extends AppCompatActivity implements View.OnClickListene
         Boolean LFileCheck = extras.getBoolean("LocalFile");
         if (LFileCheck == true) {
             csvFilename = extras.getString("Filename");
-            String StatusValue = extras.getString("StatusValue");
-            String TeleCaller = extras.getString("TeleCaller");
-            String DayValue = extras.getString("DayValue");
+            final String  StatusValue = extras.getString("StatusValue");
+            final String TeleCaller = extras.getString("TeleCaller");
+            final String DayValue = extras.getString("DayValue");
 //            String PrValue=extras.getString("PrValue");
-            ArrayList<String> selectedPrograms = extras.getStringArrayList("PrValues");
+            final ArrayList<String> selectedPrograms = extras.getStringArrayList("PrValues");
             Log.d("info", "SelPrograms:" + selectedPrograms);
             SmsPrefix = extras.getString("smsPrefix");
             A1txt = extras.getString("A1txt");
@@ -145,17 +139,22 @@ public class Operations extends AppCompatActivity implements View.OnClickListene
             InactiveStatus = extras.getBoolean("InactiveSmsStatus");
 //            CallStatusUpdate CallData = new CallStatusUpdate();
 //            jA = CallData.getCallDataStatus(StatusValue, this, csvFilename, TeleCaller, DayValue, selectedPrograms);
+            final Context co = this;
 
+//            new Thread(new Runnable() {
+//                public void run() {
+//                    try {
+//                        contacts = EA.fileResource(StatusValue, co, csvFilename, TeleCaller, DayValue, selectedPrograms);
+//                    } catch (FileNotFoundException e) {
+//                        e.printStackTrace();
+//                    }
+//                }
+//
+//            }).start();
             try {
-
-                contacts = EA.fileResource(StatusValue, this, csvFilename, TeleCaller, DayValue, selectedPrograms);
-
-            }
-            catch(FileNotFoundException e){
+                contacts = EA.fileResource(StatusValue, co, csvFilename, TeleCaller, DayValue, selectedPrograms);
+            } catch (FileNotFoundException e) {
                 e.printStackTrace();
-                Log.d("info","FileNotFound Excel");
-                Toast.makeText(getApplicationContext(),e.getMessage(),Toast.LENGTH_LONG);
-
             }
             Toast.makeText(getApplicationContext(),
                     contacts.size() + " Contacts Downloaded", Toast.LENGTH_LONG).show();
@@ -251,7 +250,7 @@ public class Operations extends AppCompatActivity implements View.OnClickListene
                     con.RemainderDay = timeSchedule[0];
                     con.RemainderTime = timeSchedule[1];
 
-                    updateStatus(name,jNumber,StatusValue,comm);
+                  //  updateStatus(name,jNumber,StatusValue,comm);
                     addRemainder(name, jNumber, comm);
                     //   EditText comments = (EditText)findViewById(R.id.CallComment);
                     comments.setText("");
@@ -376,21 +375,41 @@ public class Operations extends AppCompatActivity implements View.OnClickListene
 
         CallStatusUpdate updateCall = new CallStatusUpdate();
         String status = updateCall.getStatus(Status);
+        final String com = comm;
+        final String Stat = Status;
+        final Context co = this;
+        new Thread(new Runnable() {
+            public void run() {
 
-            Contact contac = contacts.get(i-1);
-            Log.d("info","excelUpdatedName:"+contac.name);
+                Contact contac = contacts.get(i-1);
+                EA.onWriteClick(contac, Stat, com, co, csvFilename, SmsPrefix, A1txt, A1Status, A3txt, A3Status, Inactivetxt, InactiveStatus);
+            }
 
-            EA.onWriteClick(contac,Name, number, Status, comm, this, csvFilename, SmsPrefix, A1txt, A1Status, A3txt, A3Status, Inactivetxt, InactiveStatus);
+        }).start();
+
+//        Runnable updateExcel = new Runnable() {
+//            public void run() {
+//                Contact contac = contacts.get(i-1);
+//                EA.onWriteClick(contac, Stat, com, co, csvFilename, SmsPrefix, A1txt, A1Status, A3txt, A3Status, Inactivetxt, InactiveStatus);
+//            }
+//        };
+//        Handler h = new Handler();
+////        h.postDelayed(showDialogRun,100);
+//        h.post(updateExcel);
+
           //  updateCall.writeStatus(Name, number, Status, comm, this, csvFilename, SmsPrefix, A1txt, A1Status, A3txt, A3Status, Inactivetxt, InactiveStatus);
             Log.d("info", "SmsStatus: Inactive Status :" + InactiveStatus + " A3 Status:" + A3Status);
             Toast.makeText(getApplicationContext(), "Status Updated",
                     Toast.LENGTH_SHORT).show();
 
+            Log.d("info","CallStatusOperations:"+status);
           //  getLastOutgoingCallDuration(this);
-            if(!status.equals("Y3"))
-            {
-            repeatCall();
-            }
+        repeatCall();
+//            if(!(status.equals("Y3")))
+//            {
+//                Log.d("info","Inside CallCheck");
+//            repeatCall();
+//            }
 
 
     }
@@ -465,7 +484,7 @@ public class Operations extends AppCompatActivity implements View.OnClickListene
 
             Toast.makeText(getApplicationContext(),
                     "Remainder Successfully added", Toast.LENGTH_LONG).show();
-            repeatCall();
+         //   repeatCall();
         }
 
     }

@@ -153,11 +153,12 @@ public class StatusActivity extends AppCompatActivity {
         rep.setText("Selected Programs: "+listString+ "\n Date: "+dat+"\nTeleCaller: "+TeleCaller+"\n\n\n"+
                 "Total People: "+totalPeople.toString()+"\n"+
 
+
                     "Total Calls: "+totalCalls.toString()+"\n"+
-                    "A1: "+A1.toString()+" A2: "+A2.toString()+ " A3: "+A3.toString()+"\n"+
-                    "A4: "+A4.toString()+" B: "+B.toString()+" C: "+C.toString()+" D: "+D.toString()+"\n"+
-                    "E: "+E.toString()+" F: "+F.toString()+ " G: "+G.toString()+ " X: "+X.toString()+"\n"+
-                    "Y1: "+Y1.toString()+" Y2: "+Y2.toString()+" Y3: "+Y3.toString()+" Z: "+Z.toString()+"\n"+
+                    "A1(Conformation Calls): "+A1.toString()+" A2(Not Interested): "+A2.toString()+ " A3(Interested and Not coming): "+A3.toString()+"\n"+
+                    "A4(Tentative): "+A4.toString()+" B(Ringing but not picking): "+B.toString()+" C(Busy): "+C.toString()+" D(Invalid No/Out of Service): "+D.toString()+"\n"+
+                    "E(Switched Off): "+E.toString()+" F(Not Reachable): "+F.toString()+ " G(Relocated to Out of Bangalore): "+G.toString()+ " X(Age > 30 or Female): "+X.toString()+"\n"+
+                    "Y1(Call After few minutes): "+Y1.toString()+" Y2(Call Later): "+Y2.toString()+" Y3(Call on a particular Date): "+Y3.toString()+" Z(Already Attended): "+Z.toString()+"\n"+
                     "Inactive: "+Inactive.toString()+" Drop: "+Drop.toString()+"\n"+
                     "Active: "+Active.toString());
 
