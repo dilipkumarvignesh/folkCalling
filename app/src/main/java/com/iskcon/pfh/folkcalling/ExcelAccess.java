@@ -31,6 +31,7 @@ import java.util.HashMap;
 
 public class ExcelAccess {
     ArrayList<Contact> contacts = new ArrayList<Contact>();
+    ArrayList<Contact> whatsappContacts = new ArrayList<Contact>();
     private static String[] PERMISSIONS_STORAGE = {
             Manifest.permission.READ_EXTERNAL_STORAGE,
             Manifest.permission.WRITE_EXTERNAL_STORAGE,
@@ -41,6 +42,36 @@ public class ExcelAccess {
             Manifest.permission.SYSTEM_ALERT_WINDOW
 
     };
+
+    public ArrayList<Contact> getWhatsappMessages(String Status,Context cont,String filename, String TeleCaller, String Day,ArrayList<String> selectedPrograms) throws FileNotFoundException {
+        ContentResolver cr = cont.getContentResolver();
+
+        //Log.d("info","Input Stream:"+is);
+        Log.d("info", "Day of Calling Excel:" + Day);
+
+        try {
+            File SD_CARD_PATH = Environment.getExternalStorageDirectory();
+            File file = new File(SD_CARD_PATH, filename);
+            FileInputStream fIn = new FileInputStream(file);
+            // InputStream is = cr.openInputStream(fIn);
+            XSSFWorkbook workbook = new XSSFWorkbook(fIn);
+            XSSFSheet sheet = workbook.getSheetAt(0);
+            int rowsCount = sheet.getPhysicalNumberOfRows();
+            Log.d("info", "Row Count:" + rowsCount);
+            DataFormatter formatter = new DataFormatter();
+            FormulaEvaluator formulaEvaluator = workbook.getCreationHelper().createFormulaEvaluator();
+            for (int r = 1; r < rowsCount; r++) {
+                Row row = sheet.getRow(r);
+
+            }
+        }
+        catch (Exception e) {
+            /* proper exception handling to be here */
+            Log.d("info","Error to File");
+        }
+        return whatsappContacts;
+    }
+
     public ArrayList<Contact> fileResource(String Status,Context cont,String filename, String TeleCaller, String Day,ArrayList<String> selectedPrograms) throws FileNotFoundException {
         ContentResolver cr = cont.getContentResolver();
 
@@ -68,16 +99,21 @@ public class ExcelAccess {
                 con.name = formatter.formatCellValue(NameCell);
                 Log.d("info","Row name:"+con.name);
 
-                String value = getCellAsString(row, 1, formulaEvaluator);
-//                Cell NumberCell = sheet.getRow(r).getCell(1,row.CREATE_NULL_AS_BLANK);
-//                con.number = NumberCell.getStringCellValue().toString();
-//                Log.d("info","Row number:"+con.number);
-//
-                String num = value.replace(".","").replace("E9","");
-                if(num.length() == 9)
-                    num = num+'0';
-                //Log.d("info","Numbers Excel:"+num);
-                con.number = num;
+                Cell NumberCell = sheet.getRow(r).getCell(1,row.CREATE_NULL_AS_BLANK);
+                //  con.name = NameCell.getStringCellValue().toString();
+                con.number = formatter.formatCellValue(NumberCell);
+                Log.d("info","Row name:"+con.number);
+
+//                String value = getCellAsString(row, 1, formulaEvaluator);
+////                Cell NumberCell = sheet.getRow(r).getCell(1,row.CREATE_NULL_AS_BLANK);
+////                con.number = NumberCell.getStringCellValue().toString();
+////                Log.d("info","Row number:"+con.number);
+////
+//                String num = value.replace(".","").replace("E9","");
+//                if(num.length() == 9)
+//                    num = num+'0';
+//                //Log.d("info","Numbers Excel:"+num);
+//                con.number = num;
 
                 Cell ProgramCell = sheet.getRow(r).getCell(2,row.CREATE_NULL_AS_BLANK);
             //    con.program = ProgramCell.getStringCellValue().toString();
@@ -147,10 +183,10 @@ public class ExcelAccess {
 
 
 
-                if (selectedPrograms.contains(con.program)&&(Day.equals(con.doc)||Day.equals("ALL")))
+                if ((selectedPrograms.contains(con.program)||selectedPrograms.contains("ALL"))&&(Day.equals(con.doc)||Day.equals("ALL")))
                 {
                     if (Status.equalsIgnoreCase("Fresh Calls")) {
-                        if (con.CallResponse.equals("NA") && (con.tc.equals(TeleCaller) || TeleCaller.equals("ALL"))) {
+                        if ((con.CallResponse.equals("NA")||con.CallResponse.isEmpty()) && (con.tc.equals(TeleCaller) || TeleCaller.equals("ALL"))) {
                           contacts.add(con);
                             // sendSms("Hare Krishna <name>. Thank you for your confirmation for attending YFH",ids[0],ids[1]);
                         }

@@ -24,6 +24,32 @@
         android:background="@drawable/customtextbox"
         android:paddingLeft="10dp">
 
+        <RelativeLayout
+            android:id="@+id/FileSelectorLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/LFileName">
+
+            <AutoCompleteTextView
+                android:id="@+id/SearchNumber"
+                android:hint="Enter Number"
+                android:maxLength="1024"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp" />
+
+            <ImageView
+                android:id="@+id/SearchNo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@+id/SearchNumber"
+                android:layout_alignRight="@+id/SearchNumber"
+                android:layout_alignTop="@+id/SearchNumber"
+                android:padding="5dp"
+                app:srcCompat="?android:attr/actionModeWebSearchDrawable" />
+
+        </RelativeLayout>
+
         <TextView
             android:id="@+id/Status"
             android:layout_width="wrap_content"

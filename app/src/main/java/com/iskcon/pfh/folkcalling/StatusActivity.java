@@ -25,7 +25,7 @@ import java.util.HashMap;
 
 public class StatusActivity extends AppCompatActivity {
     private ShareActionProvider mShareActionProvider;
-    Button Report,shrReport,shrFile,ChooseProgram;
+    Button Report,shrReport,shrFile,ChooseProgram,sendWhatsapp;
     private String csvFilename;
     ArrayList<String> selectedPrograms = new ArrayList<>();
     @Override
@@ -35,6 +35,19 @@ public class StatusActivity extends AppCompatActivity {
         Bundle extras = getIntent().getExtras();
         csvFilename=extras.getString("filename");
         Log.d("info","Csvfilename:"+csvFilename);
+
+
+        sendWhatsapp = (Button)findViewById(R.id.btnWhatsapp);
+
+        sendWhatsapp.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+
+                sendWhatsappMessages();
+            }
+        });
         Report = (Button)findViewById(R.id.btnStatus);
         Report.setOnClickListener(new View.OnClickListener()
         {
@@ -76,7 +89,14 @@ public class StatusActivity extends AppCompatActivity {
             }
         });
     }
+    public void sendWhatsappMessages()
+    {
+        Intent k = new Intent(getApplicationContext(), Whatsapp.class);
 
+//      /  k.putExtra("filename", csvFilename);
+
+        startActivity(k);
+    }
     public void shareReport()
     {
         TextView rep = (TextView)findViewById(R.id.report);

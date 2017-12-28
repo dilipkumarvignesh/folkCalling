@@ -314,6 +314,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             k.putExtra("TeleCaller",TeleCaller);
             k.putExtra("DayValue",DayValue);
 //            k.putExtra("PrValue",PrValue);
+            if(selectedPrograms.isEmpty())
+            {
+                selectedPrograms.add("ALL");
+            }
             k.putStringArrayListExtra("PrValues",selectedPrograms);
             k.putExtra("A1SmsStatus",A1SmsStatus);
             k.putExtra("A3SmsStatus",A3SmsStatus);
@@ -471,7 +475,7 @@ public void callNow()
                //     Log.d("info","Inside Content"+getFilePath(file.getAbsolutePath().toString()));
 
 
-                //    lFileInput.setText(getFilePath(uri.getPath(),false));
+                    lFileInput.setText(getFilePath(uri.getPath(),false));
                     Toast.makeText(this,uri.getPath().toString(), Toast.LENGTH_LONG);
 //                    Cursor cursor = null;
 //                    try {
