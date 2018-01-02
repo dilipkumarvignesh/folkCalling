@@ -7,7 +7,7 @@ package com.iskcon.pfh.folkcalling;
 public class Contact {
 
     String name,number,Status,program,source,ColCompany,campaignedBy, dor, dop,doc, toc, tc,pResponse,CallResponse,
-    CallStatus,Comments,date_of_Calling,dTime,noc,RemainderDay, RemainderTime;
+    CallStatus,Comments,date_of_Calling,dTime,noc,RemainderDay, RemainderTime,TotalComments;
 
     public void setContact()
     {

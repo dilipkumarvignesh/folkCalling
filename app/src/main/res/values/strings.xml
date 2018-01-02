@@ -32,6 +32,27 @@
         <item>Z(Already Attended)</item>
     </string-array>
 
+    <string-array name="set_whatsapp_status">
+        <item>A1(Interested and coming)</item>
+        <item>A2(Not Interested)</item>
+        <item>A3(Interested and Not coming)</item>
+        <item>A4(Tentative)</item>
+        <item>B(Ringing but not picking)</item>
+        <item>C(Busy)</item>
+        <item>D(Invalid no / Out of service)</item>
+        <item>E(Switched Off)</item>
+        <item>F(Not Reachable)</item>
+        <item>G(Relocated to Out of Bangalore)</item>
+        <item>X(age>30 or female)</item>
+        <item>Y1(Call after few minutes)</item>
+        <item>Y2(Call Later)</item>
+        <item>Y3(Call on a particular date)</item>
+        <item>Z(Already Attended)</item>
+        <item>Inactive Calls</item>
+        <item>Active</item>
+        <item>Tentative</item>
+    </string-array>
+
     <string-array name="set_TC">
         <item>ALL</item>
         <item>TC1</item>

@@ -137,18 +137,27 @@ public class Operations extends AppCompatActivity implements View.OnClickListene
 //                }
 //
 //            }).start();
+            ArrayList <Contact> Searchcontacts = new ArrayList<>();
             try {
-                contacts = EA.fileResource(StatusValue, co, csvFilename, TeleCaller, DayValue, selectedPrograms);
+                ArrayList<String> sPrograms = new ArrayList<>();
+                sPrograms.add("ALL");
+
+                Searchcontacts = EA.fileResource("ALL", co, csvFilename, "ALL","ALL",sPrograms);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+            try {
+                contacts = EA.fileResource(StatusValue, co, csvFilename, TeleCaller,DayValue,selectedPrograms);
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
             }
             Toast.makeText(getApplicationContext(),
-                    contacts.size() + " Contacts Downloaded", Toast.LENGTH_LONG).show();
+                    Searchcontacts.size() + " Contacts Downloaded", Toast.LENGTH_LONG).show();
             contact_count = contacts.size();
             final String[] numbers = new String[contact_count];
-            for(int z = 0;z<contact_count;z++)
+            for(int z = 0;z<Searchcontacts.size();z++)
             {
-                numbers[z] = contacts.get(z).number+" "+contacts.get(z).name;
+                numbers[z] = Searchcontacts.get(z).number+" "+Searchcontacts.get(z).name;
                 Log.d("info","number+name:"+numbers[z]);
             }
 
@@ -323,15 +332,7 @@ public class Operations extends AppCompatActivity implements View.OnClickListene
                 jName = contact.name;
                 jNumber = contact.number;
 
-//                JSONObject objects = jA.getJSONObject(i);
 //
-//                jName = objects.get("Name").toString();
-//                Log.d("info", "CalledName:" + jName);
-//                String jNumber = objects.get("Number").toString();
-//                String fNumber = jNumber;
-             //   intent.setData(Uri.parse("tel:" + jNumber));
-                // String na = name[i];
-             //   t1.speak(jName, TextToSpeech.QUEUE_FLUSH, null);
                 intent.setData(Uri.parse("tel:" + jNumber));
                 startActivity(intent);
 
@@ -341,9 +342,8 @@ public class Operations extends AppCompatActivity implements View.OnClickListene
                         "Calling " + jName, Toast.LENGTH_LONG).show();
 
 
-                int cou = contact_count - i;
-                String Status = i + " Contacts Called " + cou + " Contacts Remaining";
-                txtStatus.setText(Status);
+
+
                 TextView nameStatus = (TextView) findViewById(R.id.txtStatus);
                 nameStatus.setText("Update Call Status for " + jName);
 
@@ -355,22 +355,11 @@ public class Operations extends AppCompatActivity implements View.OnClickListene
                 Handler h = new Handler();
                 h.postDelayed(showDialogRun, 3000);
                 i++;
+                int cou = contact_count - i;
+                String Status = i + " Contacts Called " + cou + " Contacts Remaining";
+                txtStatus.setText(Status);
 
             }
-
-            //vi.addView(ly1, params1);
-
-//         if(SearchStatus == 1)
-//         {
-//             i = pre_q;
-//             pre_q = 0;
-//             SearchStatus = 0;
-//
-//         }
-
-
-
-
 
     }
 
@@ -398,7 +387,9 @@ public class Operations extends AppCompatActivity implements View.OnClickListene
             String CampaignedName = NextCaller.campaignedBy;
             TextView CampaingendNameText = (TextView) d.findViewById(R.id.txtCampaigned);
             CampaingendNameText.setText(CampaignedName);
-
+            String PComments = NextCaller.TotalComments;
+            TextView PCommentsText = (TextView) d.findViewById(R.id.txtComments);
+            PCommentsText.setText(PComments);
             String DOR = NextCaller.dor;
             TextView DORtext = (TextView) d.findViewById(R.id.txtDOR);
             DORtext.setText(DOR);
