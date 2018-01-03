@@ -38,14 +38,12 @@ import java.util.Calendar;
 import java.util.Locale;
 
 public class Operations extends AppCompatActivity implements View.OnClickListener, ItemFragment.OnListFragmentInteractionListener {
-<<<<<<< HEAD
+
     Boolean updateList;
     CallUpdate item;
-    EditText txtGoogleId, CallComment,SearchText;
-=======
+    EditText SearchText;
     ExcelAccess EA;
     EditText txtGoogleId, CallComment;
->>>>>>> stable
     TextView txtStatus, lFileInput;
     String jName, csvFilename, SmsPrefix, A1txt, A3txt, Inactivetxt,jNumber,SearchName,SearchNumber;
     Boolean A1Status, A3Status, InactiveStatus;
@@ -73,10 +71,8 @@ public class Operations extends AppCompatActivity implements View.OnClickListene
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_operations);
-<<<<<<< HEAD
-=======
+
         EA = new ExcelAccess();
->>>>>>> stable
 
 
        // recyclerView.setAdapter(mAdapter);
@@ -277,7 +273,7 @@ public class Operations extends AppCompatActivity implements View.OnClickListene
                 Log.d("info", "CallEnabled:" + "FALSE");
                 break;
             case R.id.UpdateCallStatus:
-<<<<<<< HEAD
+
                 try {
                     Spinner sta = (Spinner) findViewById(R.id.updateSpinner);
                     EditText comments = (EditText) findViewById(R.id.CallComment);
@@ -319,7 +315,7 @@ public class Operations extends AppCompatActivity implements View.OnClickListene
 
                     Log.d("info", "StatusValue:" + StatusValue);
 
->>>>>>> stable
+
                     //   EditText comments = (EditText)findViewById(R.id.CallComment);
                     comments.setText("");
 
