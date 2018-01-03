@@ -19,12 +19,13 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
 public class StatusActivity extends AppCompatActivity {
     private ShareActionProvider mShareActionProvider;
-    Button Report,shrReport,shrFile,ChooseProgram;
+    Button Report,shrReport,shrFile,ChooseProgram,sendWhatsapp;
     private String csvFilename;
     ArrayList<String> selectedPrograms = new ArrayList<>();
     @Override
@@ -34,6 +35,19 @@ public class StatusActivity extends AppCompatActivity {
         Bundle extras = getIntent().getExtras();
         csvFilename=extras.getString("filename");
         Log.d("info","Csvfilename:"+csvFilename);
+
+
+        sendWhatsapp = (Button)findViewById(R.id.btnWhatsapp);
+
+        sendWhatsapp.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+
+                sendWhatsappMessages();
+            }
+        });
         Report = (Button)findViewById(R.id.btnStatus);
         Report.setOnClickListener(new View.OnClickListener()
         {
@@ -75,7 +89,14 @@ public class StatusActivity extends AppCompatActivity {
             }
         });
     }
+    public void sendWhatsappMessages()
+    {
+        Intent k = new Intent(getApplicationContext(), Whatsapp.class);
 
+        k.putExtra("filename", csvFilename);
+
+        startActivity(k);
+    }
     public void shareReport()
     {
         TextView rep = (TextView)findViewById(R.id.report);
@@ -103,9 +124,16 @@ public class StatusActivity extends AppCompatActivity {
         String TeleCaller = TC.getSelectedItem().toString();
         CheckBox date = (CheckBox)findViewById(R.id.checkBox);
         Boolean today = date.isChecked();
-        Log.d("info","TodayDate123:"+today);
-        CallStatusUpdate cs = new CallStatusUpdate();
-        HashMap fR = cs.finalReport(csvFilename,TeleCaller,selectedPrograms,today);
+
+        ExcelAccess EA = new ExcelAccess();
+        try {
+            HashMap fR = EA.finalReport(csvFilename,TeleCaller,selectedPrograms,today);
+
+         Log.d("info","TodayDate123:"+today);
+//        CallStatusUpdate cs = new CallStatusUpdate();
+//        HashMap fR = cs.finalReport(csvFilename,TeleCaller,selectedPrograms,today);
+
+
         Object totalPeople = fR.get("NoOfPeople");
         Log.d("info","TotalPeople:"+totalPeople);
         Object totalCalls = fR.get("NoOfCalls");
@@ -145,14 +173,18 @@ public class StatusActivity extends AppCompatActivity {
         rep.setText("Selected Programs: "+listString+ "\n Date: "+dat+"\nTeleCaller: "+TeleCaller+"\n\n\n"+
                 "Total People: "+totalPeople.toString()+"\n"+
 
+
                     "Total Calls: "+totalCalls.toString()+"\n"+
-                    "A1: "+A1.toString()+" A2: "+A2.toString()+ " A3: "+A3.toString()+"\n"+
-                    "A4: "+A4.toString()+" B: "+B.toString()+" C: "+C.toString()+" D: "+D.toString()+"\n"+
-                    "E: "+E.toString()+" F: "+F.toString()+ " G: "+G.toString()+ " X: "+X.toString()+"\n"+
-                    "Y1: "+Y1.toString()+" Y2: "+Y2.toString()+" Y3: "+Y3.toString()+" Z: "+Z.toString()+"\n"+
+                    "A1(Conformation Calls): "+A1.toString()+" A2(Not Interested): "+A2.toString()+ " A3(Interested and Not coming): "+A3.toString()+"\n"+
+                    "A4(Tentative): "+A4.toString()+" B(Ringing but not picking): "+B.toString()+" C(Busy): "+C.toString()+" D(Invalid No/Out of Service): "+D.toString()+"\n"+
+                    "E(Switched Off): "+E.toString()+" F(Not Reachable): "+F.toString()+ " G(Relocated to Out of Bangalore): "+G.toString()+ " X(Age > 30 or Female): "+X.toString()+"\n"+
+                    "Y1(Call After few minutes): "+Y1.toString()+" Y2(Call Later): "+Y2.toString()+" Y3(Call on a particular Date): "+Y3.toString()+" Z(Already Attended): "+Z.toString()+"\n"+
                     "Inactive: "+Inactive.toString()+" Drop: "+Drop.toString()+"\n"+
                     "Active: "+Active.toString());
 
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

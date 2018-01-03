@@ -4,12 +4,11 @@ import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.CalendarContract;
 import android.provider.CalendarContract.Events;
-import android.provider.CallLog;
 import android.speech.tts.TextToSpeech;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
@@ -19,16 +18,19 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.os.Handler;
+
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.FileNotFoundException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -36,23 +38,28 @@ import java.util.Calendar;
 import java.util.Locale;
 
 public class Operations extends AppCompatActivity implements View.OnClickListener, ItemFragment.OnListFragmentInteractionListener {
+<<<<<<< HEAD
     Boolean updateList;
     CallUpdate item;
     EditText txtGoogleId, CallComment,SearchText;
+=======
+    ExcelAccess EA;
+    EditText txtGoogleId, CallComment;
+>>>>>>> stable
     TextView txtStatus, lFileInput;
-    String jName, csvFilename, SmsPrefix, A1txt, A3txt, Inactivetxt;
+    String jName, csvFilename, SmsPrefix, A1txt, A3txt, Inactivetxt,jNumber,SearchName,SearchNumber;
     Boolean A1Status, A3Status, InactiveStatus;
-    Integer Callenabled;
+    Integer Callenabled,SearchStatus = 0;
     Button CallStop, UpdateCallStatus, Report, PickDate, PickTime, PickCalendar;
     ArrayList<String> selectedPrograms = new ArrayList<>();
-
+    ArrayList <Contact> contacts;
     JSONArray jA = new JSONArray();
     View vi;
     String GoogleId;
     TextToSpeech t1;
 
     Button b2;
-    int i = 0;
+    int i = 0,pre_q = 0;
     int contact_count = 0;
     Calendar dateSelected = Calendar.getInstance();
     private DatePickerDialog datePickerDialog;
@@ -66,6 +73,10 @@ public class Operations extends AppCompatActivity implements View.OnClickListene
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_operations);
+<<<<<<< HEAD
+=======
+        EA = new ExcelAccess();
+>>>>>>> stable
 
 
        // recyclerView.setAdapter(mAdapter);
@@ -133,11 +144,11 @@ public class Operations extends AppCompatActivity implements View.OnClickListene
         Boolean LFileCheck = extras.getBoolean("LocalFile");
         if (LFileCheck == true) {
             csvFilename = extras.getString("Filename");
-            String StatusValue = extras.getString("StatusValue");
-            String TeleCaller = extras.getString("TeleCaller");
-            String DayValue = extras.getString("DayValue");
+            final String  StatusValue = extras.getString("StatusValue");
+            final String TeleCaller = extras.getString("TeleCaller");
+            final String DayValue = extras.getString("DayValue");
 //            String PrValue=extras.getString("PrValue");
-            ArrayList<String> selectedPrograms = extras.getStringArrayList("PrValues");
+            final ArrayList<String> selectedPrograms = extras.getStringArrayList("PrValues");
             Log.d("info", "SelPrograms:" + selectedPrograms);
             SmsPrefix = extras.getString("smsPrefix");
             A1txt = extras.getString("A1txt");
@@ -146,12 +157,78 @@ public class Operations extends AppCompatActivity implements View.OnClickListene
             A1Status = extras.getBoolean("A1SmsStatus");
             A3Status = extras.getBoolean("A3SmsStatus");
             InactiveStatus = extras.getBoolean("InactiveSmsStatus");
-            CallStatusUpdate CallData = new CallStatusUpdate();
-            jA = CallData.getCallDataStatus(StatusValue, this, csvFilename, TeleCaller, DayValue, selectedPrograms);
+//            CallStatusUpdate CallData = new CallStatusUpdate();
+//            jA = CallData.getCallDataStatus(StatusValue, this, csvFilename, TeleCaller, DayValue, selectedPrograms);
+            final Context co = this;
+
+//            new Thread(new Runnable() {
+//                public void run() {
+//                    try {
+//                        contacts = EA.fileResource(StatusValue, co, csvFilename, TeleCaller, DayValue, selectedPrograms);
+//                    } catch (FileNotFoundException e) {
+//                        e.printStackTrace();
+//                    }
+//                }
+//
+//            }).start();
+            ArrayList <Contact> Searchcontacts = new ArrayList<>();
+            try {
+                ArrayList<String> sPrograms = new ArrayList<>();
+                sPrograms.add("ALL");
+
+                Searchcontacts = EA.fileResource("ALL", co, csvFilename, "ALL","ALL",sPrograms);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+            try {
+                contacts = EA.fileResource(StatusValue, co, csvFilename, TeleCaller,DayValue,selectedPrograms);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
             Toast.makeText(getApplicationContext(),
-                    jA.length() + " Contacts Downloaded", Toast.LENGTH_LONG).show();
-            contact_count = jA.length();
-            Log.d("info", "DownloadedData:" + jA);
+                    Searchcontacts.size() + " Contacts Downloaded", Toast.LENGTH_LONG).show();
+            contact_count = contacts.size();
+            final String[] numbers = new String[contact_count];
+            for(int z = 0;z<Searchcontacts.size();z++)
+            {
+                numbers[z] = Searchcontacts.get(z).number+" "+Searchcontacts.get(z).name;
+                Log.d("info","number+name:"+numbers[z]);
+            }
+
+            ArrayAdapter<String> adapter = new ArrayAdapter<String>
+                    (this, android.R.layout.select_dialog_item, numbers);
+            AutoCompleteTextView actv = (AutoCompleteTextView) findViewById(R.id.SearchNumber);
+            actv.setThreshold(1);//will start working from first character
+            actv.setAdapter(adapter);
+
+            actv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> adapter, View view, int position, long id) {
+                    Log.d("info","Item Selected:"+position+":"+id);
+                    String selection = (String) adapter.getItemAtPosition(position);
+                    String[] outputEle = selection.split(" ",2);
+                    TextView nameStatus = (TextView) findViewById(R.id.txtStatus);
+                    SearchName = outputEle[1];
+                    SearchNumber = outputEle[0];
+                    nameStatus.setText("Update Call Status for " + SearchName);
+                    SearchStatus = 1;
+                    int pos = -1;
+
+                    for (int i = 0; i < numbers.length; i++) {
+                        if (numbers[i].equals(selection)) {
+                            pos = i;
+
+                            Log.d("info","Number:"+pos);
+                            break;
+                        }
+                    }
+                    pre_q = i;
+                    i=pos;
+                }
+
+
+            });
+          //  Log.d("info", "DownloadedData:" + jA);
             //int cou = contact_count - i;
             String Status = "0 Contacts Called " + contact_count + " Contacts Remaining";
             txtStatus.setText(Status);
@@ -200,6 +277,7 @@ public class Operations extends AppCompatActivity implements View.OnClickListene
                 Log.d("info", "CallEnabled:" + "FALSE");
                 break;
             case R.id.UpdateCallStatus:
+<<<<<<< HEAD
                 try {
                     Spinner sta = (Spinner) findViewById(R.id.updateSpinner);
                     EditText comments = (EditText) findViewById(R.id.CallComment);
@@ -220,16 +298,36 @@ public class Operations extends AppCompatActivity implements View.OnClickListene
                         updateStatus(item.name,item.number,StatusValue,comm);
                         updateList = false;
                     }
+=======
+                Spinner sta = (Spinner) findViewById(R.id.updateSpinner);
+                EditText comments = (EditText) findViewById(R.id.CallComment);
+                String StatusValue = sta.getSelectedItem().toString();
+                String comm = comments.getText().toString();
+                updateStatus( StatusValue, comm);
+                   // JSONObject objects = jA.getJSONObject(i - 1);
+//
+//                 if (SearchStatus == 0) {
+//
+//                     updateStatus( StatusValue, comm);
+//                 }
+//                 else
+//                 {
+//                     //SearchStatus = 0;
+//                     updateStatus(StatusValue,comm);
+//
+//                 }
+
+                    Log.d("info", "StatusValue:" + StatusValue);
+
+>>>>>>> stable
                     //   EditText comments = (EditText)findViewById(R.id.CallComment);
                     comments.setText("");
 
 
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
+
                 break;
             case R.id.REPORT:
-                CallStatusUpdate updateCall = new CallStatusUpdate();
+              //  CallStatusUpdate updateCall = new CallStatusUpdate();
 
                 Intent k = new Intent(getApplicationContext(), StatusActivity.class);
 
@@ -255,24 +353,28 @@ public class Operations extends AppCompatActivity implements View.OnClickListene
                 newTimeFragment.show(getSupportFragmentManager(), "datePicker");
                 break;
             case R.id.CAL:
-                try {
-                    JSONObject objects = jA.getJSONObject(i);
+
+                   // JSONObject objects = jA.getJSONObject(i);
+                    Contact con = contacts.get(i-1);
                     Log.d("info", "CallRowNo:" + i);
-                    String name = objects.get("Name").toString();
-                    String jNumber = objects.get("Number").toString();
-                    Spinner sta = (Spinner) findViewById(R.id.updateSpinner);
-                    EditText comments = (EditText) findViewById(R.id.CallComment);
-                    String StatusValue = sta.getSelectedItem().toString();
-                    String comm = comments.getText().toString();
+                    String name = con.name;
+                    jNumber = con.number;
+                    sta = (Spinner) findViewById(R.id.updateSpinner);
+                    comments = (EditText) findViewById(R.id.CallComment);
+                    StatusValue = sta.getSelectedItem().toString();
+                    comm = comments.getText().toString();
                     Log.d("info", "StatusValue:" + StatusValue);
-                    // updateStatus(name,jNumber,StatusValue,comm);
+                    String timeSchedule[] = calDayTime(comm);
+                    con.RemainderDay = timeSchedule[0];
+                    con.RemainderTime = timeSchedule[1];
+
+                  //  updateStatus(name,jNumber,StatusValue,comm);
+                    addRemainder(name, jNumber, comm);
                     //   EditText comments = (EditText)findViewById(R.id.CallComment);
                     comments.setText("");
-                    addRemainder(name, jNumber, comm);
 
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
+
+
                 break;
 
 
@@ -313,6 +415,7 @@ public class Operations extends AppCompatActivity implements View.OnClickListene
 
         Log.d("info", "Connecting Call");
         Intent intent = new Intent(Intent.ACTION_CALL);
+<<<<<<< HEAD
         try {
             if (Callenabled == 1 && i < contact_count) {
 
@@ -328,6 +431,16 @@ public class Operations extends AppCompatActivity implements View.OnClickListene
                 intent.setData(Uri.parse("tel:" + fNumber));
                 // String na = name[i];
                 t1.speak(jName, TextToSpeech.QUEUE_FLUSH, null);
+=======
+
+            if (Callenabled == 1 && i < contact_count && SearchStatus == 0) {
+
+                Contact contact = contacts.get(i);
+                jName = contact.name;
+                jNumber = contact.number;
+
+//
+>>>>>>> stable
                 intent.setData(Uri.parse("tel:" + jNumber));
                 startActivity(intent);
 
@@ -335,6 +448,7 @@ public class Operations extends AppCompatActivity implements View.OnClickListene
 
                 Toast.makeText(getApplicationContext(),
                         "Calling " + jName, Toast.LENGTH_LONG).show();
+<<<<<<< HEAD
 //                if(updateList!=true) {
 //                    i++;
 //                    int cou = contact_count - i;
@@ -342,6 +456,14 @@ public class Operations extends AppCompatActivity implements View.OnClickListene
 //                    txtStatus.setText(Status);
 //                }
 
+=======
+
+
+
+
+                TextView nameStatus = (TextView) findViewById(R.id.txtStatus);
+                nameStatus.setText("Update Call Status for " + jName);
+>>>>>>> stable
 
                 Runnable showDialogRun = new Runnable() {
                     public void run() {
@@ -350,15 +472,12 @@ public class Operations extends AppCompatActivity implements View.OnClickListene
                 };
                 Handler h = new Handler();
                 h.postDelayed(showDialogRun, 3000);
-            }
+                i++;
+                int cou = contact_count - i;
+                String Status = i + " Contacts Called " + cou + " Contacts Remaining";
+                txtStatus.setText(Status);
 
-            //vi.addView(ly1, params1);
-
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
+            }git
 
     }
 
@@ -367,33 +486,35 @@ public class Operations extends AppCompatActivity implements View.OnClickListene
         d.setContentView(R.layout.custom_dialog);
         d.getWindow().setType(WindowManager.LayoutParams.TYPE_TOAST);
         d.show();
-        try {
-            JSONObject NextCaller = jA.getJSONObject(i - 1);
-            String PersonName = NextCaller.get("Name").toString();
+
+            Contact NextCaller = contacts.get(i-1);
+          //  JSONObject NextCaller = jA.getJSONObject(i - 1);
+           // String PersonName = NextCaller.get("Name").toString();
+            String PersonName = NextCaller.name;
             TextView PersonNameText = (TextView) d.findViewById(R.id.PersonName);
             PersonNameText.setText(PersonName);
-            String ProgramName = NextCaller.get("Program").toString();
+            String ProgramName = NextCaller.program;
             TextView PRnametext = (TextView) d.findViewById(R.id.txtProgramName);
             PRnametext.setText(ProgramName);
-            String SourceName = NextCaller.get("Source").toString();
+            String SourceName = NextCaller.source;
             TextView SourceText = (TextView) d.findViewById(R.id.txtSource);
             SourceText.setText(SourceName);
-            String CollegeName = NextCaller.get("College").toString();
+            String CollegeName = NextCaller.ColCompany;
             TextView CollegeNameText = (TextView) d.findViewById(R.id.txtCollege);
             CollegeNameText.setText(CollegeName);
-            String CampaignedName = NextCaller.get("Campaigned").toString();
+            String CampaignedName = NextCaller.campaignedBy;
             TextView CampaingendNameText = (TextView) d.findViewById(R.id.txtCampaigned);
             CampaingendNameText.setText(CampaignedName);
-
-            String DOR = NextCaller.get("DOR").toString();
+            String PComments = NextCaller.TotalComments;
+            TextView PCommentsText = (TextView) d.findViewById(R.id.txtComments);
+            PCommentsText.setText(PComments);
+            String DOR = NextCaller.dor;
             TextView DORtext = (TextView) d.findViewById(R.id.txtDOR);
             DORtext.setText(DOR);
-            String DOP = NextCaller.get("DOP").toString();
+            String DOP = NextCaller.dop;
             TextView DOPText = (TextView) d.findViewById(R.id.txtProgramDate);
             DOPText.setText(DOP);
-        } catch (JSONException e) {
 
-        }
         Button close_btn = (Button) d.findViewById(R.id.dialogButtonOK);
         close_btn.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -403,27 +524,85 @@ public class Operations extends AppCompatActivity implements View.OnClickListene
     }
 
 
-    public void updateStatus(String Name, String number, String Status, String comm) {
-        //EditText cFilename = (EditText) findViewById(R.id.LFileInput);
-        // String csvFilename = cFilename.getText().toString();
+    public void updateStatus(String Status, String comm) {
+
         CallStatusUpdate updateCall = new CallStatusUpdate();
         String status = updateCall.getStatus(Status);
-        if (status.equals("Y3")) {
-            // addRemainder("Dilip","9663898009","Hello");
-        } else {
-            updateCall.writeStatus(Name, number, Status, comm, this, csvFilename, SmsPrefix, A1txt, A1Status, A3txt, A3Status, Inactivetxt, InactiveStatus);
+        final String com = comm;
+        final String Stat = Status;
+        final Context co = this;
+        new Thread(new Runnable() {
+            public void run() {
+                Contact contac = new Contact();
+                if(SearchStatus == 1) {
+                     contac = contacts.get(i);
+                }
+                else if(SearchStatus == 0)
+                {
+                    contac = contacts.get(i-1);
+                }
+                EA.onWriteClick(contac, Stat, com, co, csvFilename, SmsPrefix, A1txt, A1Status, A3txt, A3Status, Inactivetxt, InactiveStatus);
+            }
+
+        }).start();
+
+
             Log.d("info", "SmsStatus: Inactive Status :" + InactiveStatus + " A3 Status:" + A3Status);
             Toast.makeText(getApplicationContext(), "Status Updated",
                     Toast.LENGTH_SHORT).show();
+<<<<<<< HEAD
             getLastOutgoingCallDuration(this);
             if(updateList == false) {
                 repeatCall();
             }
+=======
+
+            Log.d("info","CallStatusOperations:"+status);
+          //  getLastOutgoingCallDuration(this);
+        if(SearchStatus == 0) {
+            repeatCall();
+>>>>>>> stable
         }
+        else if (SearchStatus == 1)
+        {
+            SearchStatus = 0;
+            i = pre_q;
+            pre_q = 0;
+        }
+//            if(!(status.equals("Y3")))
+//            {
+//                Log.d("info","Inside CallCheck");
+//            repeatCall();
+//            }
 
 
     }
 
+    public String[] calDayTime(String day)
+    {
+        Calendar beginTime = Calendar.getInstance();
+
+        String[] time = day.split(" ");
+        Log.d("info", "TimeValue:" + time[2]);
+
+        Log.d("info", "TimeValue2:" + time[5]);
+        Log.d("info", "inside add Remainder");
+
+        String[] datesplit = time[2].split("/");
+        String[] timesplit = time[5].split(":");
+        int gday = Integer.parseInt(datesplit[0]);
+        int month = Integer.parseInt(datesplit[1]) - 1;
+        int year = Integer.parseInt(datesplit[2]);
+        int hour = Integer.parseInt(timesplit[0]);
+        int minu = Integer.parseInt(timesplit[1]);
+
+        String dayt = gday+"/"+month+"/"+year;
+        String timet = hour+":"+minu;
+
+        String ret[] = {dayt,timet};
+
+       return ret;
+    }
     public void addRemainder(String name, String number, String day) {
 
         Calendar beginTime = Calendar.getInstance();
@@ -466,56 +645,57 @@ public class Operations extends AppCompatActivity implements View.OnClickListene
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
         if (requestCode == 200) {
-            // repeatCall();
+
             Toast.makeText(getApplicationContext(),
                     "Remainder Successfully added", Toast.LENGTH_LONG).show();
+         //   repeatCall();
         }
 
     }
 
 
-    public String getLastOutgoingCallDuration(final Context context) {
-        String output = null;
-
-        final Uri callog = CallLog.Calls.CONTENT_URI;
-        Cursor cursor = null;
-
-        try {
-            // Query all the columns of the records that matches "type=2"
-            // (outgoing) and orders the results by "date"
-            cursor = context.getContentResolver().query(callog, null,
-                    CallLog.Calls.TYPE + "=" + CallLog.Calls.OUTGOING_TYPE,
-                    null, CallLog.Calls.DATE);
-            final int durationCol = cursor
-                    .getColumnIndex(CallLog.Calls.DURATION);
-            final int CallType = cursor.getColumnIndex(CallLog.Calls.TYPE);
-            Log.d("info", "CallType:" + CallType);
-
-            if (CallType == CallLog.Calls.MISSED_TYPE) {
-                Toast.makeText(getApplicationContext(),
-                        "Missed Call", Toast.LENGTH_LONG).show();
-                Log.d("info", "CallDuration:" + durationCol);
-            } else if (CallType == CallLog.Calls.OUTGOING_TYPE) {
-                Toast.makeText(getApplicationContext(),
-                        "OutGoing Call " + durationCol, Toast.LENGTH_LONG).show();
-            }
-
-
-            // Retrieve only the last record to get the last outgoing call
-            if (cursor.moveToLast()) {
-                // Retrieve only the duration column
-                output = cursor.getString(durationCol);
-            }
-        } finally {
-            // Close the resources
-            if (cursor != null) {
-                cursor.close();
-            }
-        }
-
-
-        return output;
-    }
+//    public String getLastOutgoingCallDuration(final Context context) {
+//        String output = null;
+//
+//        final Uri callog = CallLog.Calls.CONTENT_URI;
+//        Cursor cursor = null;
+//
+//        try {
+//            // Query all the columns of the records that matches "type=2"
+//            // (outgoing) and orders the results by "date"
+//            cursor = context.getContentResolver().query(callog, null,
+//                    CallLog.Calls.TYPE + "=" + CallLog.Calls.OUTGOING_TYPE,
+//                    null, CallLog.Calls.DATE);
+//            final int durationCol = cursor
+//                    .getColumnIndex(CallLog.Calls.DURATION);
+//            final int CallType = cursor.getColumnIndex(CallLog.Calls.TYPE);
+//            Log.d("info", "CallType:" + CallType);
+//
+//            if (CallType == CallLog.Calls.MISSED_TYPE) {
+//                Toast.makeText(getApplicationContext(),
+//                        "Missed Call", Toast.LENGTH_LONG).show();
+//                Log.d("info", "CallDuration:" + durationCol);
+//            } else if (CallType == CallLog.Calls.OUTGOING_TYPE) {
+//                Toast.makeText(getApplicationContext(),
+//                        "OutGoing Call " + durationCol, Toast.LENGTH_LONG).show();
+//            }
+//
+//
+//            // Retrieve only the last record to get the last outgoing call
+//            if (cursor.moveToLast()) {
+//                // Retrieve only the duration column
+//                output = cursor.getString(durationCol);
+//            }
+//        } finally {
+//            // Close the resources
+//            if (cursor != null) {
+//                cursor.close();
+//            }
+//        }
+//
+//
+//        return output;
+//    }
 
 
     public void getSelectedDate(int year, int month, int day) {

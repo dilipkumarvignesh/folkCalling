@@ -314,6 +314,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             k.putExtra("TeleCaller",TeleCaller);
             k.putExtra("DayValue",DayValue);
 //            k.putExtra("PrValue",PrValue);
+            if(selectedPrograms.isEmpty())
+            {
+                selectedPrograms.add("ALL");
+            }
             k.putStringArrayListExtra("PrValues",selectedPrograms);
             k.putExtra("A1SmsStatus",A1SmsStatus);
             k.putExtra("A3SmsStatus",A3SmsStatus);
@@ -467,11 +471,12 @@ public void callNow()
                 Log.d("info", "Filepath:" + file.getAbsolutePath());
                 String path = file.getAbsolutePath();
                 String displayName = null;
-                if (uriString.startsWith("content:/")) {
+                if (uriString.startsWith("content")) {
                //     Log.d("info","Inside Content"+getFilePath(file.getAbsolutePath().toString()));
 
 
                     lFileInput.setText(getFilePath(uri.getPath(),false));
+                    Toast.makeText(this,uri.getPath().toString(), Toast.LENGTH_LONG);
 //                    Cursor cursor = null;
 //                    try {
 //                        final String column = "_data";
@@ -495,7 +500,8 @@ public void callNow()
 //                    }
 
                 } else if (uriString.startsWith("file://")) {
-                    lFileInput.setText(getFilePath(data.getData().toString(),true));
+                    Toast.makeText(this,uriString.toString(), Toast.LENGTH_LONG);
+                   lFileInput.setText(getFilePath(data.getData().toString(),true));
                 }
 
                 Log.d("info", "Filepath:" + path);

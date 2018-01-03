@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.iskcon.pfh.folkcalling.Whatsapp">
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        android:id="@+id/UpdateLayout"
+        >
+    <TextView
+        android:id="@+id/txtStatus"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Status"/>
+    <Spinner
+        android:id="@+id/updateSpinner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/txtStatus"
+        android:layout_marginBottom="15dp"
+        android:background="@android:drawable/spinner_background"
+        android:entries="@array/set_whatsapp_status" />
+        <RelativeLayout
+            android:id="@+id/FileSelectorLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/updateSpinner">
+            <EditText
+                android:id="@+id/LFileInput"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:hint="Image Filename"
+                android:layout_marginBottom="5dp" />
+
+            <ImageView
+                android:id="@+id/GET_FILE"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@+id/LFileInput"
+                android:layout_alignRight="@+id/LFileInput"
+                android:layout_alignTop="@+id/LFileInput"
+                android:padding="5dp"
+                app:srcCompat="@android:drawable/ic_menu_search" />
+        </RelativeLayout>
+
+        <AutoCompleteTextView
+            android:id="@+id/txttemplate"
+            android:hint="Enter Template Name"
+            android:maxLength="1024"
+            android:layout_below="@+id/FileSelectorLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp" />
+        <EditText
+            android:id="@+id/txtMessage"
+            android:layout_width="fill_parent"
+            android:layout_height="300px"
+            android:gravity="top"
+            android:layout_below="@+id/txttemplate"
+            android:scrollbars="vertical" />
+
+        <Button
+            android:id="@+id/btnSaveTemplate"
+            android:layout_below="@id/txtMessage"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="Save Template"
+            />
+        <Button
+            android:id="@+id/btnDownload"
+            android:layout_below="@+id/btnSaveTemplate"
+            android:layout_centerHorizontal="true"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:background="@mipmap/download"/>
+    </RelativeLayout>
+
+</android.support.constraint.ConstraintLayout>
