@@ -51,6 +51,7 @@
         <item>Inactive Calls</item>
         <item>Active</item>
         <item>Tentative</item>
+        <item>ALL</item>
     </string-array>
 
     <string-array name="set_TC">

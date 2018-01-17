@@ -79,8 +79,11 @@ public class ExcelAccess {
                 //  con.CallResponse = CallResponseCell.getStringCellValue().toString();
                 con.CallResponse = formatter.formatCellValue(CallResponseCell);
                 Log.d("info","Row Response:"+con.CallResponse);
-
-                if(con.CallResponse.equals(finalStatus))
+                if(Status.equals("ALL"))
+                {
+                    whatsappContacts.add(con);
+                }
+                else if(con.CallResponse.equals(finalStatus))
                 {
                     whatsappContacts.add(con);
                 }

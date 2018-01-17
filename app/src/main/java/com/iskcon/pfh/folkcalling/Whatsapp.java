@@ -116,9 +116,9 @@ int i=0,contact_count=0;
                 handler.post(new Runnable() {
                     public void run() {
                         try {
-
-                            sendWhatsapp();
-
+                            if (i<contact_count) {
+                                sendWhatsapp();
+                            }
                         } catch (Exception e) {
                             // TODO Auto-generated catch block
                         }
@@ -147,8 +147,7 @@ int i=0,contact_count=0;
     public void sendWhatsapp()
     {
         Log.d("info","I Value:"+i);
-        if (i<contact_count)
-        {
+
 
                 ArrayList<Uri> imageUriArray = new ArrayList<Uri>();
                 String Message = txtMessage.getText().toString();
@@ -182,7 +181,7 @@ int i=0,contact_count=0;
                 startActivityForResult(sendIntent,1);
             i++;
 
-        }
+
     }
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         Log.d("info", "Inside OnActivityResult");

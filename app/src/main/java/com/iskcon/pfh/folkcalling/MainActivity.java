@@ -3,14 +3,23 @@ package com.iskcon.pfh.folkcalling;
 import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.ContentProviderOperation;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.OperationApplicationException;
 import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.RemoteException;
+import android.provider.ContactsContract;
+import android.provider.ContactsContract.CommonDataKinds.Phone;
+import android.provider.ContactsContract.CommonDataKinds.StructuredName;
+import android.provider.ContactsContract.Data;
+import android.provider.ContactsContract.RawContacts;
 import android.speech.tts.TextToSpeech;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -44,6 +53,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private static final int MY_PERMISSIONS_REQUEST_CALL = 0;
     private static final int MY_PERMISSIONS_REQUEST_SEND_SMS = 0;
     private static final int FILE_SELECT_CODE = 0;
+    private static final int PERMISSIONS_REQUEST_READ_CONTACTS = 100;
     private static String[] PERMISSIONS_STORAGE = {
             Manifest.permission.READ_EXTERNAL_STORAGE,
             Manifest.permission.WRITE_EXTERNAL_STORAGE,
@@ -80,6 +90,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         vi = this.findViewById(android.R.id.content);
         Speech.init(this,getPackageName());
         Callenabled = 1;
+        ContactHelper.insertContact(getContentResolver(),"Dilip KV1","12345678");
         if (permission != PackageManager.PERMISSION_GRANTED) {
             // We don't have permission so prompt the user
             ActivityCompat.requestPermissions(
@@ -89,6 +100,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
             );
+           // writeContact("ZABC","1234567890");
 
         }
 
@@ -163,6 +175,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
             }
         });
+        showContacts();
 
         Speech.init(this,getPackageName());
 
@@ -215,6 +228,27 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
 
     }
+
+    private void showContacts() {
+        // Check the SDK version and whether the permission is already granted or not.
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && checkSelfPermission(Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(new String[]{Manifest.permission.READ_CONTACTS}, PERMISSIONS_REQUEST_READ_CONTACTS);
+            //After this point you wait for callback in onRequestPermissionsResult(int, String[], int[]) overriden method
+        }
+        else
+        {
+            Boolean contactExists = ContactHelper.contactExists(this,"12367890");
+            if(contactExists)
+            {
+                Toast.makeText(this,"Contact Exists",Toast.LENGTH_LONG).show();
+            }
+            else
+            {
+                Toast.makeText(this,"Contact Does not Exist",Toast.LENGTH_LONG).show();
+            }
+        }
+    }
+
     private void processJson(JSONObject object) {
 
         i=0;
@@ -352,22 +386,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
 
-//         Toast.makeText(getApplicationContext(),
-//                 jA.length()+" Contacts Downloaded", Toast.LENGTH_LONG).show();
-
-
-       // String final_google_id  = getGoogleId(GoogleId);
 
 
         }
 
 
 
-public void callNow()
-        {           Log.d("info","inside Call now");
-//
-//                MY_PERMISSIONS_REQUEST_CALL);
-    }
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
         switch (requestCode) {
             case MY_PERMISSIONS_REQUEST_CALL: {
@@ -377,6 +401,21 @@ public void callNow()
  
                 }
                 }
+            case PERMISSIONS_REQUEST_READ_CONTACTS:{
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // Permission is granted
+                   // writeContact("ZABC","1234567890");
+               Boolean contactExists = ContactHelper.contactExists(this,"1234567890");
+               if(contactExists)
+               {
+                   Toast.makeText(this,"Contact Exists",Toast.LENGTH_LONG).show();
+               }
+               else
+               {
+                   Toast.makeText(this,"Contact Does not Exist",Toast.LENGTH_LONG).show();
+               }
+                }
+            }
         }
     }
 
@@ -576,6 +615,29 @@ public void callNow()
                     }
                 });
         builder.show();
+    }
+
+    private void writeContact(String displayName, String number) {
+        ArrayList contentProviderOperations = new ArrayList();
+        //insert raw contact using RawContacts.CONTENT_URI
+        contentProviderOperations.add(ContentProviderOperation.newInsert(RawContacts.CONTENT_URI)
+                .withValue(RawContacts.ACCOUNT_TYPE, null).withValue(RawContacts.ACCOUNT_NAME, null).build());
+        //insert contact display name using Data.CONTENT_URI
+        contentProviderOperations.add(ContentProviderOperation.newInsert(Data.CONTENT_URI)
+                .withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, 0).withValue(ContactsContract.Data.MIMETYPE, StructuredName.CONTENT_ITEM_TYPE)
+                .withValue(StructuredName.DISPLAY_NAME, displayName).build());
+        //insert mobile number using Data.CONTENT_URI
+        contentProviderOperations.add(ContentProviderOperation.newInsert(Data.CONTENT_URI)
+                .withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, 0).withValue(ContactsContract.Data.MIMETYPE, Phone.CONTENT_ITEM_TYPE)
+                .withValue(Phone.NUMBER, number).withValue(Phone.TYPE, Phone.TYPE_MOBILE).build());
+        try {
+            getApplicationContext().getContentResolver().
+                    applyBatch(ContactsContract.AUTHORITY, contentProviderOperations);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        } catch (OperationApplicationException e) {
+            e.printStackTrace();
+        }
     }
 
 }
