@@ -1,7 +1,9 @@
 package com.iskcon.pfh.folkcalling;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -33,6 +35,7 @@ import java.util.Locale;
 public class Operations extends AppCompatActivity implements View.OnClickListener, ItemFragment.OnListFragmentInteractionListener {
     ExcelAccess EA;
     EditText CallComment;
+    Activity act;
     TextView txtStatus, lFileInput;
     String jName, csvFilename, SmsPrefix, A1txt, A3txt, Inactivetxt,jNumber,SearchName,SearchNumber;
     Boolean A1Status, A3Status, InactiveStatus;
@@ -54,7 +57,7 @@ public class Operations extends AppCompatActivity implements View.OnClickListene
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_operations);
         EA = new ExcelAccess();
-
+        act = getActivity();
 
         // recyclerView.setAdapter(mAdapter);
         txtStatus = (TextView) findViewById(R.id.Status);
@@ -188,6 +191,16 @@ public class Operations extends AppCompatActivity implements View.OnClickListene
         //  Log.d("info","DownloadedLink"+link.toString());
     }
 
+    public Activity getActivity() {
+        Context context = this;
+        while (context instanceof ContextWrapper) {
+            if (context instanceof Activity) {
+                return (Activity)context;
+            }
+            context = ((ContextWrapper)context).getBaseContext();
+        }
+        return null;
+    }
     @Override
     public void onClick(View v) {
         Log.d("info", "Button clicked:" + v.getId());
@@ -407,7 +420,7 @@ public class Operations extends AppCompatActivity implements View.OnClickListene
                 {
                     contac = contacts.get(i-1);
                 }
-                EA.onWriteClick(contac, Stat, com, co, csvFilename, SmsPrefix, A1txt, A1Status, A3txt, A3Status, Inactivetxt, InactiveStatus);
+                EA.onWriteClick(act,contac, Stat, com, co, csvFilename, SmsPrefix, A1txt, A1Status, A3txt, A3Status, Inactivetxt, InactiveStatus);
             }
 
         }).start();

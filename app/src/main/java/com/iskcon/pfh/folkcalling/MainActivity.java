@@ -59,8 +59,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             Manifest.permission.WRITE_EXTERNAL_STORAGE,
             Manifest.permission.CALL_PHONE,
             Manifest.permission.SEND_SMS,
-            Manifest.permission.READ_CALL_LOG
-
+            Manifest.permission.READ_CALL_LOG,
+            Manifest.permission.READ_CONTACTS,
+            Manifest.permission.WRITE_CONTACTS
     };
     ArrayList<String> selectedPrograms = new ArrayList<>();
     EditText txtGoogleId;
@@ -175,7 +176,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
             }
         });
-        showContacts();
+      //  showContacts();
 
         Speech.init(this,getPackageName());
 
@@ -617,7 +618,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         builder.show();
     }
 
-    private void writeContact(String displayName, String number) {
+    private void writeContact(Activity _activity,String displayName, String number) {
         ArrayList contentProviderOperations = new ArrayList();
         //insert raw contact using RawContacts.CONTENT_URI
         contentProviderOperations.add(ContentProviderOperation.newInsert(RawContacts.CONTENT_URI)
@@ -631,7 +632,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 .withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, 0).withValue(ContactsContract.Data.MIMETYPE, Phone.CONTENT_ITEM_TYPE)
                 .withValue(Phone.NUMBER, number).withValue(Phone.TYPE, Phone.TYPE_MOBILE).build());
         try {
-            getApplicationContext().getContentResolver().
+            _activity.getContentResolver().
                     applyBatch(ContactsContract.AUTHORITY, contentProviderOperations);
         } catch (RemoteException e) {
             e.printStackTrace();

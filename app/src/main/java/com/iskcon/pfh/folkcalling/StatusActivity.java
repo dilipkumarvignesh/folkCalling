@@ -127,7 +127,7 @@ public class StatusActivity extends AppCompatActivity {
 
         ExcelAccess EA = new ExcelAccess();
         try {
-            HashMap fR = EA.finalReport(csvFilename,TeleCaller,selectedPrograms,today);
+            HashMap fR = EA.finalReport(this,csvFilename,TeleCaller,selectedPrograms,today);
 
          Log.d("info","TodayDate123:"+today);
 //        CallStatusUpdate cs = new CallStatusUpdate();
@@ -174,12 +174,24 @@ public class StatusActivity extends AppCompatActivity {
                 "Total People: "+totalPeople.toString()+"\n"+
 
 
-                    "Total Calls: "+totalCalls.toString()+"\n"+
-                    "A1(Conformation Calls): "+A1.toString()+" A2(Not Interested): "+A2.toString()+ " A3(Interested and Not coming): "+A3.toString()+"\n"+
-                    "A4(Tentative): "+A4.toString()+" B(Ringing but not picking): "+B.toString()+" C(Busy): "+C.toString()+" D(Invalid No/Out of Service): "+D.toString()+"\n"+
-                    "E(Switched Off): "+E.toString()+" F(Not Reachable): "+F.toString()+ " G(Relocated to Out of Bangalore): "+G.toString()+ " X(Age > 30 or Female): "+X.toString()+"\n"+
-                    "Y1(Call After few minutes): "+Y1.toString()+" Y2(Call Later): "+Y2.toString()+" Y3(Call on a particular Date): "+Y3.toString()+" Z(Already Attended): "+Z.toString()+"\n"+
-                    "Inactive: "+Inactive.toString()+" Drop: "+Drop.toString()+"\n"+
+                    "Total Calls: "+totalCalls.toString()+"\n\n"+
+                    "A1(Conformation Calls): "+A1.toString()+"\n"+
+                    "A2(Not Interested): "+A2.toString()+"\n"+
+                    "A3(Interested and Not coming): "+A3.toString()+"\n"+
+                    "A4(Tentative): "+A4.toString()+"\n"+
+                    "B(Ringing but not picking): "+B.toString()+"\n"+
+                    "C(Busy): "+C.toString()+"\n"+
+                    "D(Invalid No/Out of Service): "+D.toString()+"\n"+
+                    "E(Switched Off): "+E.toString()+"\n"+
+                    "F(Not Reachable): "+F.toString()+"\n"+
+                    "G(Relocated to Out of Bangalore): "+G.toString()+"\n"+
+                    "X(Age > 30 or Female): "+X.toString()+"\n"+
+                    "Y1(Call After few minutes): "+Y1.toString()+"\n"+
+                    "Y2(Call Later): "+Y2.toString()+"\n"+
+                    "Y3(Call on a particular Date): "+Y3.toString()+"\n"+
+                    "Z(Already Attended): "+Z.toString()+"\n\n"+
+                    "Inactive: "+Inactive.toString()+"\n"+
+                    "Drop: "+Drop.toString()+"\n"+
                     "Active: "+Active.toString());
 
         } catch (IOException e) {

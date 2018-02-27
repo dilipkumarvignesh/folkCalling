@@ -1,14 +1,14 @@
 package com.iskcon.pfh.folkcalling;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.os.Environment;
 import android.util.Log;
+import android.widget.Toast;
 
-import org.apache.poi.hssf.usermodel.HSSFDateUtil;
 import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.CellValue;
 import org.apache.poi.ss.usermodel.DataFormatter;
 import org.apache.poi.ss.usermodel.FormulaEvaluator;
 import org.apache.poi.ss.usermodel.Row;
@@ -43,7 +43,7 @@ public class ExcelAccess {
 
     };
 
-    public ArrayList<Contact> getWhatsappMessages(String Status,String filename) throws FileNotFoundException {
+    public ArrayList<Contact> getWhatsappMessages(Context cont,String Status,String filename) throws FileNotFoundException {
 
 
         //Log.d("info","Input Stream:"+is);
@@ -79,7 +79,7 @@ public class ExcelAccess {
                 //  con.CallResponse = CallResponseCell.getStringCellValue().toString();
                 con.CallResponse = formatter.formatCellValue(CallResponseCell);
                 Log.d("info","Row Response:"+con.CallResponse);
-                if(Status.equals("ALL"))
+                if(Status.equals("ALL")&&!(con.number.isEmpty()))
                 {
                     whatsappContacts.add(con);
                 }
@@ -110,6 +110,7 @@ public class ExcelAccess {
         catch (Exception e) {
             /* proper exception handling to be here */
             Log.d("info","Error to File");
+            Toast.makeText(cont,e.getMessage(),Toast.LENGTH_LONG).show();
         }
         return whatsappContacts;
     }
@@ -217,7 +218,7 @@ public class ExcelAccess {
                 con.TotalComments = formatter.formatCellValue(TotalComments);
                 Log.d("info","Row date_of_Calling:"+con.TotalComments);
 
-                if(Status.equals("ALL")) {
+                if((Status.equals("ALL")&&!(con.number.isEmpty()) )) {
                     contacts.add(con);
                 }
                     else
@@ -268,6 +269,7 @@ public class ExcelAccess {
         }catch (Exception e) {
             /* proper exception handling to be here */
             Log.d("info","Error to File");
+            Toast.makeText(cont,"Reading Error. File Read problem"+e.getMessage(),Toast.LENGTH_LONG).show();
         }
 
         return contacts;
@@ -328,7 +330,7 @@ public class ExcelAccess {
 //        }
     }
 
-    public void onWriteClick(Contact contac, String Status, String comm, Context con, String filename, String SmsPrefix, String A1txt, Boolean A1Status, String A3txt, Boolean A3Status, String Inactivetxt, Boolean InactiveStatus) {
+    public void onWriteClick(Activity act,Contact contac, String Status, String comm, Context con, String filename, String SmsPrefix, String A1txt, Boolean A1Status, String A3txt, Boolean A3Status, String Inactivetxt, Boolean InactiveStatus) {
         printlnToUser("writing xlsx file");
         File SD_CARD_PATH = Environment.getExternalStorageDirectory();
 
@@ -526,43 +528,50 @@ public class ExcelAccess {
             printlnToUser("sharing file...");
             //  share(outFileName, getApplicationContext());
         } catch (Exception e) {
+            final Activity act1 = act;
+            final Exception exp = e;
             /* proper exception handling to be here */
             printlnToUser(e.toString());
-//            Toast.makeText(con,"error in exel:"+e.toString() , Toast.LENGTH_LONG).show();
+            act1.runOnUiThread(new Runnable() {
+                public void run() {
+                    Toast.makeText(act1,"error in excel Write:"+exp.toString() , Toast.LENGTH_LONG).show();
+                }
+            });
+
         }
     }
 
-    protected String getCellAsString(Row row, int c, FormulaEvaluator formulaEvaluator) {
-        String value = "";
-        try {
-            Cell cell = row.getCell(c);
-            CellValue cellValue = formulaEvaluator.evaluate(cell);
-            switch (cellValue.getCellType()) {
-                case Cell.CELL_TYPE_BOOLEAN:
-                    value = ""+cellValue.getBooleanValue();
-                    break;
-                case Cell.CELL_TYPE_NUMERIC:
-                    double numericValue = cellValue.getNumberValue();
-                    if(HSSFDateUtil.isCellDateFormatted(cell)) {
-                        double date = cellValue.getNumberValue();
-                        SimpleDateFormat formatter =
-                                new SimpleDateFormat("dd/MM/yy");
-                        value = formatter.format(HSSFDateUtil.getJavaDate(date));
-                    } else {
-                        value = ""+numericValue;
-                    }
-                    break;
-                case Cell.CELL_TYPE_STRING:
-                    value = ""+cellValue.getStringValue();
-                    break;
-                default:
-            }
-        } catch (NullPointerException e) {
-            /* proper error handling should be here */
-            printlnToUser(e.toString());
-        }
-        return value;
-    }
+//    protected String getCellAsString(Row row, int c, FormulaEvaluator formulaEvaluator) {
+//        String value = "";
+//        try {
+//            Cell cell = row.getCell(c);
+//            CellValue cellValue = formulaEvaluator.evaluate(cell);
+//            switch (cellValue.getCellType()) {
+//                case Cell.CELL_TYPE_BOOLEAN:
+//                    value = ""+cellValue.getBooleanValue();
+//                    break;
+//                case Cell.CELL_TYPE_NUMERIC:
+//                    double numericValue = cellValue.getNumberValue();
+//                    if(HSSFDateUtil.isCellDateFormatted(cell)) {
+//                        double date = cellValue.getNumberValue();
+//                        SimpleDateFormat formatter =
+//                                new SimpleDateFormat("dd/MM/yy");
+//                        value = formatter.format(HSSFDateUtil.getJavaDate(date));
+//                    } else {
+//                        value = ""+numericValue;
+//                    }
+//                    break;
+//                case Cell.CELL_TYPE_STRING:
+//                    value = ""+cellValue.getStringValue();
+//                    break;
+//                default:
+//            }
+//        } catch (NullPointerException e) {
+//            /* proper error handling should be here */
+//            printlnToUser(e.toString());
+//        }
+//        return value;
+//    }
     private String getDate() {
         Calendar cal = Calendar.getInstance();
 
@@ -614,7 +623,7 @@ public class ExcelAccess {
 
     }
 
-    public HashMap finalReport(String filename, String TeleCaller, ArrayList<String> Program, Boolean Date) throws IOException {
+    public HashMap finalReport(Context con,String filename, String TeleCaller, ArrayList<String> Program, Boolean Date) throws IOException {
 
         File SD_CARD_PATH = Environment.getExternalStorageDirectory();
         File file = new File(SD_CARD_PATH, filename);
@@ -623,6 +632,7 @@ public class ExcelAccess {
             fIn = new FileInputStream(file);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
+            Toast.makeText(con,"File Not found ",Toast.LENGTH_LONG).show();
         }
         // InputStream is = cr.openInputStream(fIn);
         XSSFWorkbook workbook = new XSSFWorkbook(fIn);
@@ -753,8 +763,8 @@ public class ExcelAccess {
             }
 
         } catch (Exception e) {
-//            Toast.makeText(Con.getApplicationContext(), e.getMessage(),
-//                    Toast.LENGTH_SHORT).show();
+            Toast.makeText(con.getApplicationContext(), e.getMessage(),
+                    Toast.LENGTH_SHORT).show();
         }
         Log.d("info","TotalNoOfPeopleCalls:"+totalNoOfPeople);
         map.put("A1",A1);
