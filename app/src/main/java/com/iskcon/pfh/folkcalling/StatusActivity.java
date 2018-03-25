@@ -1,6 +1,7 @@
 package com.iskcon.pfh.folkcalling;
 
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
@@ -19,7 +20,6 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -27,6 +27,9 @@ public class StatusActivity extends AppCompatActivity {
     private ShareActionProvider mShareActionProvider;
     Button Report,shrReport,shrFile,ChooseProgram,sendWhatsapp;
     private String csvFilename;
+    String TeleCaller;
+    CheckBox date;
+    TextView rep;
     ArrayList<String> selectedPrograms = new ArrayList<>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -121,82 +124,108 @@ public class StatusActivity extends AppCompatActivity {
        // Spinner program = (Spinner)findViewById(R.id.updateProgram);
        // String ProgramValue = program.getSelectedItem().toString();
         Spinner TC = (Spinner)findViewById(R.id.updateTC);
-        String TeleCaller = TC.getSelectedItem().toString();
-        CheckBox date = (CheckBox)findViewById(R.id.checkBox);
-        Boolean today = date.isChecked();
-
-        ExcelAccess EA = new ExcelAccess();
-        try {
-            HashMap fR = EA.finalReport(this,csvFilename,TeleCaller,selectedPrograms,today);
-
-         Log.d("info","TodayDate123:"+today);
-//        CallStatusUpdate cs = new CallStatusUpdate();
-//        HashMap fR = cs.finalReport(csvFilename,TeleCaller,selectedPrograms,today);
+        TeleCaller = TC.getSelectedItem().toString();
+        date = (CheckBox)findViewById(R.id.checkBox);
 
 
-        Object totalPeople = fR.get("NoOfPeople");
-        Log.d("info","TotalPeople:"+totalPeople);
-        Object totalCalls = fR.get("NoOfCalls");
-        Object A1 = fR.get("A1");
-        Object A2 = fR.get("A2");
-        Object A3 = fR.get("A3");
-        Object A4 = fR.get("A4");
-        Object B = fR.get("B");
-        Object C = fR.get("C");
-        Object D = fR.get("D");
-        Object E = fR.get("E");
-        Object F = fR.get("F");
-        Object G = fR.get("G");
-        Object X = fR.get("X");
-        Object Y1 = fR.get("Y1");
-        Object Y2 = fR.get("Y2");
-        Object Y3 = fR.get("Y3");
-        Object Z = fR.get("Z");
-        Object Inactive = fR.get("Inactive");
-        Object Drop = fR.get("Drop");
-        Object Active = fR.get("Active");
-
-        TextView rep = (TextView)findViewById(R.id.report);
-        String dat = "";
-        if(today == true)
-        {
-        dat = "Today";
-        }
-        else
-        dat = "Overall";
-        String listString = "";
-
-        for (String s : selectedPrograms)
-        {
-            listString += s + ",";
-        }
-        rep.setText("Selected Programs: "+listString+ "\n Date: "+dat+"\nTeleCaller: "+TeleCaller+"\n\n\n"+
-                "Total People: "+totalPeople.toString()+"\n"+
+       // ExcelAccess EA = new ExcelAccess();
 
 
-                    "Total Calls: "+totalCalls.toString()+"\n\n"+
-                    "A1(Conformation Calls): "+A1.toString()+"\n"+
-                    "A2(Not Interested): "+A2.toString()+"\n"+
-                    "A3(Interested and Not coming): "+A3.toString()+"\n"+
-                    "A4(Tentative): "+A4.toString()+"\n"+
-                    "B(Ringing but not picking): "+B.toString()+"\n"+
-                    "C(Busy): "+C.toString()+"\n"+
-                    "D(Invalid No/Out of Service): "+D.toString()+"\n"+
-                    "E(Switched Off): "+E.toString()+"\n"+
-                    "F(Not Reachable): "+F.toString()+"\n"+
-                    "G(Relocated to Out of Bangalore): "+G.toString()+"\n"+
-                    "X(Age > 30 or Female): "+X.toString()+"\n"+
-                    "Y1(Call After few minutes): "+Y1.toString()+"\n"+
-                    "Y2(Call Later): "+Y2.toString()+"\n"+
-                    "Y3(Call on a particular Date): "+Y3.toString()+"\n"+
-                    "Z(Already Attended): "+Z.toString()+"\n\n"+
-                    "Inactive: "+Inactive.toString()+"\n"+
-                    "Drop: "+Drop.toString()+"\n"+
-                    "Active: "+Active.toString());
 
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+            final ProgressDialog progress = new ProgressDialog(this);
+            progress.setTitle("Loading");
+            progress.setMessage("Wait while loading...");
+            progress.setCancelable(false); // disable dismiss by tapping outside of the dialog
+
+            Runnable runnable = new Runnable() {
+                @Override
+                public void run() {
+//
+                    runOnUiThread(new Runnable() {
+
+                        @Override
+                        public void run() {
+                            progress.show();
+                        }
+                    });
+                    CallStatusUpdate callManager = new CallStatusUpdate();
+                    final Boolean today = date.isChecked();
+                    HashMap fR = callManager.finalReport(csvFilename, TeleCaller, selectedPrograms, today);
+
+                    final Object totalPeople = fR.get("NoOfPeople");
+                    Log.d("info", "TotalPeople:" + totalPeople);
+                    final Object totalCalls = fR.get("NoOfCalls");
+                    final Object A1 = fR.get("A1");
+                    final Object A2 = fR.get("A2");
+                    final Object A3 = fR.get("A3");
+                    final Object A4 = fR.get("A4");
+                    final Object B = fR.get("B");
+                    final Object C = fR.get("C");
+                    final Object D = fR.get("D");
+                    final Object E = fR.get("E");
+                    final Object F = fR.get("F");
+                    final Object G = fR.get("G");
+                    final Object X = fR.get("X");
+                    final Object Y1 = fR.get("Y1");
+                    final Object Y2 = fR.get("Y2");
+                    final Object Y3 = fR.get("Y3");
+                    final Object Z = fR.get("Z");
+                    final Object Inactive = fR.get("Inactive");
+                    final Object Drop = fR.get("Drop");
+                    final Object Active = fR.get("Active");
+
+                    rep = (TextView) findViewById(R.id.report);
+
+
+                    runOnUiThread(new Runnable() {
+
+                        @Override
+                        public void run() {
+                            String listString = "";
+
+                            for (String s : selectedPrograms) {
+                                listString += s + ",";
+                            }
+                            String dat = "";
+                            if (today == true) {
+                                dat = "Today";
+                            } else
+                                dat = "Overall";
+                            rep.setText("Selected Programs: " + listString + "\n Date: " + dat + "\nTeleCaller: " + TeleCaller + "\n\n\n" +
+                                    "Total People: " + totalPeople.toString() + "\n" +
+
+
+                                    "Total Calls: " + totalCalls.toString() + "\n\n" +
+                                    "A1(Conformation Calls): " + A1.toString() + "\n" +
+                                    "A2(Not Interested): " + A2.toString() + "\n" +
+                                    "A3(Interested and Not coming): " + A3.toString() + "\n" +
+                                    "A4(Tentative): " + A4.toString() + "\n" +
+                                    "B(Ringing but not picking): " + B.toString() + "\n" +
+                                    "C(Busy): " + C.toString() + "\n" +
+                                    "D(Invalid No/Out of Service): " + D.toString() + "\n" +
+                                    "E(Switched Off): " + E.toString() + "\n" +
+                                    "F(Not Reachable): " + F.toString() + "\n" +
+                                    "G(Relocated to Out of Bangalore): " + G.toString() + "\n" +
+                                    "X(Age > 30 or Female): " + X.toString() + "\n" +
+                                    "Y1(Call After few minutes): " + Y1.toString() + "\n" +
+                                    "Y2(Call Later): " + Y2.toString() + "\n" +
+                                    "Y3(Call on a particular Date): " + Y3.toString() + "\n" +
+                                    "Z(Already Attended): " + Z.toString() + "\n\n" +
+                                    "Inactive: " + Inactive.toString() + "\n" +
+                                    "Drop: " + Drop.toString() + "\n" +
+                                    "Active: " + Active.toString());
+                                    progress.dismiss();
+
+                        }
+
+
+                    });
+
+                }
+
+
+        };
+        new Thread(runnable).start();
     }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

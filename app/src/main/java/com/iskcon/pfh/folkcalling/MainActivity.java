@@ -3,23 +3,17 @@ package com.iskcon.pfh.folkcalling;
 import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.ContentProviderOperation;
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.OperationApplicationException;
 import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.RemoteException;
-import android.provider.ContactsContract;
-import android.provider.ContactsContract.CommonDataKinds.Phone;
-import android.provider.ContactsContract.CommonDataKinds.StructuredName;
-import android.provider.ContactsContract.Data;
-import android.provider.ContactsContract.RawContacts;
 import android.speech.tts.TextToSpeech;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -43,6 +37,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Locale;
 
@@ -70,7 +65,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     Integer Callenabled;
     Button btnDownload;
     ImageView SearchFile;
-
+    String csvFilename;
     JSONArray jA = new JSONArray();
     View vi;
     String GoogleId;
@@ -79,7 +74,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     Button chooseProgram;
     int i=0;
     int contact_count=0;
-
+    ArrayList<Contact> contacts;
     private static final int REQUEST_EXTERNAL_STORAGE = 1;
 
     @Override
@@ -151,7 +146,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
         //Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
       //  setSupportActionBar(toolbar);
-        txtGoogleId = (EditText) findViewById(R.id.txtGoogleId);
+    //    txtGoogleId = (EditText) findViewById(R.id.txtGoogleId);
         txtStatus = (TextView) findViewById(R.id.Status);
         btnDownload = (Button) findViewById(R.id.btnDownload);
         btnDownload.setOnClickListener(new View.OnClickListener() {
@@ -302,9 +297,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void download_excel() {
         //  DownloadWebpageTask myTask = new DownloadWebpageTask();
         i=0;
-        GoogleId = txtGoogleId.getText().toString();
+//        GoogleId = txtGoogleId.getText().toString();
         EditText cFilename = (EditText) findViewById(R.id.LFileInput);
-        String csvFilename = cFilename.getText().toString();
+        csvFilename = cFilename.getText().toString();
         if (!csvFilename.equals(""))
         {
             Spinner sta = (Spinner)findViewById(R.id.spinner);
@@ -466,15 +461,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     }
 
-//    public void updateStatus(String Name,String number, String Status,String comm)
-//    {
-//        EditText cFilename = (EditText) findViewById(R.id.LFileInput);
-//        String csvFilename = cFilename.getText().toString();
-//        CallStatusUpdate updateCall = new CallStatusUpdate();
-//        updateCall.writeStatus(Name,number,Status,comm,this,csvFilename);
-//        Toast.makeText(getApplicationContext(),"Status Updated",
-//                            Toast.LENGTH_SHORT).show();
-//    }
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -492,10 +479,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 // TODO Extract the data returned from the child Activity.
                 String returnValue = data.getStringExtra("Status");
                 Log.d("info","UpdatedStatus="+returnValue);
-                TextView updText = (TextView)findViewById(R.id.UpdatedStatus1);
-                String StatusText = updText.getText().toString();
-                StatusText = StatusText + "\n"+ returnValue;
-                updText.setText(StatusText);
+//                TextView updText = (TextView)findViewById(R.id.UpdatedStatus1);
+//                String StatusText = updText.getText().toString();
+//                StatusText = StatusText + "\n"+ returnValue;
+//                updText.setText(StatusText);
 
 
             }
@@ -516,32 +503,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
                     lFileInput.setText(getFilePath(uri.getPath(),false));
+                    csvFilename = lFileInput.getText().toString();
                     Toast.makeText(this,uri.getPath().toString(), Toast.LENGTH_LONG);
-//                    Cursor cursor = null;
-//                    try {
-//                        final String column = "_data";
-//                        final String[] projection = {
-//                                column
-//                        };
-//                        cursor = this.getContentResolver().query(uri,projection, null, null, null);
-//
-//                        final int index = cursor.getColumnIndexOrThrow(column);
-//                        if (cursor != null && cursor.moveToFirst()) {
-//                            displayName = cursor.getString(index);
-//                            Log.d("info","CursorValue:"+cursor.moveToFirst());
-//                            Log.d("info","CursorValue1"+cursor.getString(0));
-//                            Log.d("info","CursorValue2"+cursor.getString(1));
-//                            Log.d("info","CursorValue3"+cursor.getString(2));
-//
-//                        }
-//
-//                    } finally {
-//                        cursor.close();
-//                    }
+
 
                 } else if (uriString.startsWith("file://")) {
                     Toast.makeText(this,uriString.toString(), Toast.LENGTH_LONG);
                    lFileInput.setText(getFilePath(data.getData().toString(),true));
+
+                  //  EditText cFilename = (EditText) findViewById(R.id.LFileInput);
+                    csvFilename = lFileInput.getText().toString();
                 }
 
                 Log.d("info", "Filepath:" + path);
@@ -618,28 +589,109 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         builder.show();
     }
 
-    private void writeContact(Activity _activity,String displayName, String number) {
-        ArrayList contentProviderOperations = new ArrayList();
-        //insert raw contact using RawContacts.CONTENT_URI
-        contentProviderOperations.add(ContentProviderOperation.newInsert(RawContacts.CONTENT_URI)
-                .withValue(RawContacts.ACCOUNT_TYPE, null).withValue(RawContacts.ACCOUNT_NAME, null).build());
-        //insert contact display name using Data.CONTENT_URI
-        contentProviderOperations.add(ContentProviderOperation.newInsert(Data.CONTENT_URI)
-                .withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, 0).withValue(ContactsContract.Data.MIMETYPE, StructuredName.CONTENT_ITEM_TYPE)
-                .withValue(StructuredName.DISPLAY_NAME, displayName).build());
-        //insert mobile number using Data.CONTENT_URI
-        contentProviderOperations.add(ContentProviderOperation.newInsert(Data.CONTENT_URI)
-                .withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, 0).withValue(ContactsContract.Data.MIMETYPE, Phone.CONTENT_ITEM_TYPE)
-                .withValue(Phone.NUMBER, number).withValue(Phone.TYPE, Phone.TYPE_MOBILE).build());
-        try {
-            _activity.getContentResolver().
-                    applyBatch(ContactsContract.AUTHORITY, contentProviderOperations);
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        } catch (OperationApplicationException e) {
-            e.printStackTrace();
-        }
+    public void showAddContacts(View view)
+    {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setMessage("Contacts from the file will be added to your phonebook for enabling sending Whatsapp messages. It can later be deleted once the messages are sent ");
+        builder.setTitle("Add Contacts");
+// Add the buttons
+        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                getContacts();
+            }
+        });
+        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                // User cancelled the dialog
+            }
+        });
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 
+    public Activity getActivity() {
+        Context context = this;
+        while (context instanceof ContextWrapper) {
+            if (context instanceof Activity) {
+                return (Activity) context;
+            }
+            context = ((ContextWrapper) context).getBaseContext();
+        }
+        return null;
+    }
+
+public void getContacts() {
+    try {
+        final ProgressDialog progress = new ProgressDialog(this);
+        progress.setTitle("Loading");
+        progress.setMessage("Wait while loading...");
+        progress.setCancelable(false); // disable dismiss by tapping outside of the dialog
+
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+
+                runOnUiThread(new Runnable() {
+
+                    @Override
+                    public void run() {
+                        progress.show();
+                    }
+                });
+
+                CallStatusUpdate callManager = new CallStatusUpdate();
+
+                try {
+                    contacts = callManager.getWhatsappMessages("ALL", csvFilename);
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
+
+                // Toast.makeText(getApplicationContext(), contacts.size() + "Downloaded", Toast.LENGTH_LONG).show();
+                addContacts();
+                contact_count = contacts.size();
+                runOnUiThread(new Runnable() {
+
+                    @Override
+                    public void run() {
+                        progress.dismiss();
+                        // callAsynchronousTask();
+                    }
+                });
+            }
+        };
+        new Thread(runnable).start();
+
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
 }
 
+    public void addContacts()
+    {
+        //Toast.makeText(con,"Inside Write Contacts",Toast.LENGTH_LONG).show();
+        for(int i=0;i<contacts.size();i++)
+        {
+
+            try {
+
+                Contact contact = contacts.get(i);
+                String Number = contact.number;
+                Log.d("info","ContactNumber:"+Number);
+                Boolean ContactExists = ContactHelper.contactExists(this,Number);
+                Log.d("info","ContactExists:"+ContactExists);
+                if(!ContactExists)
+                {
+                    String Name = contact.name;
+                    ContactHelper.writeContact(getActivity(),Name,Number);
+                    Log.d("info","Writing Contact");
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                //Toast.makeText(this,e.getMessage(),Toast.LENGTH_LONG).show();
+            }
+        }
+    }
+}

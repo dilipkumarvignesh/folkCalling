@@ -18,17 +18,17 @@
     android:paddingLeft="16dp"
     android:paddingRight="16dp">
 
-    <TextView
-        android:id="@+id/GoogleIdText"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:text="Enter Google Sheet ID" />
+    <!--<TextView-->
+        <!--android:id="@+id/GoogleIdText"-->
+        <!--android:layout_width="fill_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:text="Enter Google Sheet ID" />-->
 
-    <EditText
-        android:id="@+id/txtGoogleId"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/GoogleIdText" />
+    <!--<EditText-->
+        <!--android:id="@+id/txtGoogleId"-->
+        <!--android:layout_width="fill_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_below="@+id/GoogleIdText" />-->
 
     <TextView
         android:id="@+id/LFileName"
@@ -228,10 +228,15 @@
                 />
         </RelativeLayout>
     </RelativeLayout>
-
+    <CheckBox android:id="@+id/checkbox_cheese"
+        android:layout_below="@+id/sms_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Add Contacts for Whatsapp Messaging"
+        android:onClick="showAddContacts"/>
     <Button
         android:id="@+id/btnDownload"
-        android:layout_below="@+id/sms_layout"
+        android:layout_below="@+id/checkbox_cheese"
         android:layout_centerHorizontal="true"
         android:layout_width="70dp"
         android:layout_height="70dp"

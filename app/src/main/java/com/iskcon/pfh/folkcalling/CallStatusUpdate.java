@@ -1,20 +1,20 @@
 package com.iskcon.pfh.folkcalling;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
 import android.os.Environment;
 import android.telephony.SmsManager;
 import android.util.Log;
 import android.widget.Toast;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.text.SimpleDateFormat;
@@ -31,6 +31,7 @@ public class CallStatusUpdate {
     private static final int REQUEST_EXTERNAL_STORAGE = 1;
     public static ArrayList CallList = new ArrayList<CallUpdate>();
 
+    ArrayList<Contact> contacts = new ArrayList<Contact>();
     private Context Con;
     //  CSVWriter writer;
     private static String[] PERMISSIONS_STORAGE = {
@@ -38,11 +39,12 @@ public class CallStatusUpdate {
             Manifest.permission.WRITE_EXTERNAL_STORAGE
     };
 
-    public static ArrayList<CallUpdate> CallArrayList()
-    {  Log.d("info","CallListStatus1:"+CallList.size());
-       return CallList;
+    public static ArrayList<CallUpdate> CallArrayList() {
+        Log.d("info", "CallListStatus1:" + CallList.size());
+        return CallList;
     }
-    public void writeStatus(String Name, String Number, String Status, String comm, Context con, String filename, String SmsPrefix, String A1txt, Boolean A1Status, String A3txt, Boolean A3Status, String Inactivetxt, Boolean InactiveStatus) {
+
+    public void writeStatus(Activity act, Contact contac, String Status, String comm, Context con, String filename, String SmsPrefix, String A1txt, Boolean A1Status, String A3txt, Boolean A3Status, String Inactivetxt, Boolean InactiveStatus) {
         InputStream inputStream;
         String[] ids;
         FileInputStream iStream;
@@ -70,10 +72,10 @@ public class CallStatusUpdate {
                 ids = csvLine.split(",");
 
                 //   ids[2]=Status;
-                Log.d("info", "Write Number:" + Number);
+                Log.d("info", "Write Number:" + contac.number);
                 String CallResponse = "";
-                if (ids[0].equalsIgnoreCase(Name) && ids[1].equalsIgnoreCase(Number)) {
-                    Log.d("info", "Write Number Inside:" + Number);
+                if (ids[0].equalsIgnoreCase(contac.name) && ids[1].equalsIgnoreCase(contac.number)) {
+                    Log.d("info", "Write Number Inside:" + contac.number);
                     FinalStatus = getStatus(Status);
                     // csvLine=String.join(",",ids);
 
@@ -205,7 +207,7 @@ public class CallStatusUpdate {
 
             }
 
-            Log.d("info", "After Writing 1");
+
             reader.close();
             bw.close();
             file.delete();
@@ -218,12 +220,16 @@ public class CallStatusUpdate {
 
     }
 
+
+
     public String constructMessage(String Prefix, String name, String Message) {
         String finalMessage = Prefix + " " + name + "," + Message;
         return finalMessage;
     }
 
-    public JSONArray getCallDataStatus(String Status, Context Con, String Filename, String TeleCaller, String Day, ArrayList<String> selectedPrograms) {
+
+
+    public ArrayList<Contact> getCallDataStatus1(String Status, Context Con, String Filename, String TeleCaller, String Day, ArrayList<String> selectedPrograms) {
         this.Con = Con;
         InputStream inputStream;
         String[] ids;
@@ -231,12 +237,11 @@ public class CallStatusUpdate {
         BufferedReader reader;
         String message;
         String csvLine;
-        JSONArray jA = new JSONArray();
-        Log.d("info", "CurrentStatus" + Status);
+        ArrayList<Contact> contacts= new ArrayList<Contact>();
         File SD_CARD_PATH = Environment.getExternalStorageDirectory(); //.toString();
         String fname = Filename;
 
-
+        contacts.clear();
         try {
             File file = new File(SD_CARD_PATH, fname);
             FileInputStream fIn = new FileInputStream(file);
@@ -245,99 +250,96 @@ public class CallStatusUpdate {
             while ((csvLine = reader.readLine()) != null) {
 //                Toast.makeText(Con.getApplicationContext(), csvLine,
 //                Toast.LENGTH_SHORT).show();
-
-                JSONObject obj = new JSONObject();
+                Contact con = new Contact();
+                // JSONObject obj = new JSONObject();
                 ids = csvLine.split(",");
                 Log.d("info", "Rowinfo:" + ids[2]);
                 Log.d("info", "RowName:" + ids[0]);
                 Log.d("info", "StatusValue:" + Status);
-                CallUpdate obj1 = new CallUpdate(ids[0],ids[1]);
-                CallList.add(obj1);
-                Log.d("info","CallListSize:"+CallList.size());
-                if (selectedPrograms.contains(ids[2]))
-                {
-                    if (Status.equalsIgnoreCase("Fresh Calls")) {
-                    if (ids[12].equals("NA") && (ids[10].equals(TeleCaller) || TeleCaller.equals("ALL")) && (ids[8].equals(Day) || Day.equals("ALL"))) {
-                        obj.put("Name", ids[0]);
+//                CallUpdate obj1 = new CallUpdate(ids[0],ids[1]);
+//                CallList.add(obj1);
 
-                        Log.d("info", "RowName" + ids[0]);
-                        Log.d("info", "InfoValues:" + jA);
-                        obj.put("Number", ids[1]);
-                        obj.put("Program", ids[2]);
-                        obj.put("Program", ids[2]);
-                        obj.put("Source", ids[3]);
-                        obj.put("College", ids[4]);
-                        obj.put("Campaigned", ids[5]);
-                        obj.put("DOR", ids[6]);
-                        obj.put("DOP", ids[7]);
+                con.name = ids[0];
+                con.number = ids[1];
+                con.program = ids[2];
+                con.source = ids[3];
+                con.ColCompany = ids[4];
+                con.campaignedBy = ids[5];
+                con.dor = ids[6];
+                con.dop = ids[7];
 
-                        jA.put(obj);
-                        // sendSms("Hare Krishna <name>. Thank you for your confirmation for attending YFH",ids[0],ids[1]);
-                    }
-                } else if (Status.equals("Confirmation Calls") && (ids[10].equals(TeleCaller) || TeleCaller.equals("ALL")) && (ids[8].equals(Day) || Day.equals("ALL"))) {
-                    if (ids[12].equals("A1")) {
-                        obj.put("Name", ids[0]);
-                        obj.put("Number", ids[1]);
-                        obj.put("Program", ids[2]);
-                        obj.put("Source", ids[3]);
-                        obj.put("College", ids[4]);
-                        obj.put("Campaigned", ids[5]);
-                        obj.put("DOR", ids[6]);
-                        obj.put("DOP", ids[7]);
-                        jA.put(obj);
-                    }
-                } else if (Status.equals("Inactive Calls") && (ids[10].equals(TeleCaller) || TeleCaller.equals("ALL")) && (ids[8].equals(Day) || Day.equals("ALL"))) {
-                    if (ids[12].equals("B") || ids[12].equals("C") || ids[12].equals("Y2") || ids[12].equals("E") || ids[12].equals("F") ||
-                            ids[12].equals("Y1")) {
-                        obj.put("Name", ids[0]);
-                        obj.put("Number", ids[1]);
-                        obj.put("Program", ids[2]);
-                        obj.put("Source", ids[3]);
-                        obj.put("College", ids[4]);
-                        obj.put("Campaigned", ids[5]);
-                        obj.put("DOR", ids[6]);
-                        obj.put("DOP", ids[7]);
-                        jA.put(obj);
-                    }
-                } else if (Status.equals("Tentative") && (ids[10].equals(TeleCaller) || TeleCaller.equals("ALL")) && (ids[8].equals(Day) || Day.equals("ALL"))) {
-                    if (ids[12].equals("A4") || ids[12].equals("Y1") || ids[12].equals("Y2")) {
-                        obj.put("Name", ids[0]);
-                        obj.put("Number", ids[1]);
-                        obj.put("Program", ids[2]);
-                        obj.put("Source", ids[3]);
-                        obj.put("College", ids[4]);
-                        obj.put("Campaigned", ids[5]);
-                        obj.put("DOR", ids[6]);
-                        obj.put("DOP", ids[7]);
-                        jA.put(obj);
-                    }
-                } else if (Status.equals("Recall Inactive Numbers") && (ids[10].equals(TeleCaller) || TeleCaller.equals("ALL")) && (ids[8].equals(Day) || Day.equals("ALL"))) {
-                    Log.d("info", "Inside RecallInactive");
-                    Log.d("info", "DateValue" + ids[15]);
+                con.toc = ids[8];
+                Log.d("info", "Row TimeOfCalling:" + con.toc);
 
-                    Log.d("info", "TodayDate" + getDate());
-                    if ((ids[12].equals("B") || ids[12].equals("C") || ids[12].equals("Y2") || ids[12].equals("E") || ids[12].equals("F") ||
-                            ids[12].equals("Y1")) && ids[15].equals(getDate())) {
-                        obj.put("Name", ids[0]);
-                        obj.put("Number", ids[1]);
-                        obj.put("Program", ids[2]);
-                        obj.put("Source", ids[3]);
-                        obj.put("College", ids[4]);
-                        obj.put("Campaigned", ids[5]);
-                        obj.put("DOR", ids[6]);
-                        obj.put("DOP", ids[7]);
-                        jA.put(obj);
+
+                con.tc = ids[10];
+                Log.d("info", "Row TC:" + con.tc);
+
+
+                // con.tc = TCCell.getStringCellValue().toString();
+                con.pResponse = ids[11];
+
+
+                con.CallResponse = ids[12];
+                con.noc = ids[17];
+                Log.d("info", "No of Calls Row Response:" + con.noc);
+
+
+                con.date_of_Calling = ids[15];
+
+
+                // con.TotalComments = ids[20]
+                Log.d("info", "CallListSize:" + CallList.size());
+                if ((Status.equals("ALL") && !(con.number.isEmpty()))) {
+                    contacts.add(con);
+                } else {
+                    Log.d("info", "Selected Programs:" + selectedPrograms);
+
+
+                    if ((selectedPrograms.contains(con.program) || selectedPrograms.contains("ALL")) && (Day.equals(con.doc) || Day.equals("ALL"))) {
+                        if (Status.equalsIgnoreCase("Fresh Calls")) {
+                            if ((con.CallResponse.equals("NA") || (con.CallResponse.isEmpty() && !(con.number.isEmpty()))) && (con.tc.equals(TeleCaller) || TeleCaller.equals("ALL"))) {
+                                contacts.add(con);
+                                // sendSms("Hare Krishna <name>. Thank you for your confirmation for attending YFH",ids[0],ids[1]);
+                            }
+                        } else if (Status.equals("Confirmation Calls") && (con.tc.equals(TeleCaller) || TeleCaller.equals("ALL"))) {
+                            if (con.CallResponse.equals("A1")) {
+                                contacts.add(con);
+                                Log.d("info", "Contact Call Response:" + con.CallResponse);
+                                Log.d("info", "Contact added:" + con.number);
+                            }
+                        } else if (Status.equals("Inactive Calls") && (con.tc.equals(TeleCaller) || TeleCaller.equals("ALL"))) {
+                            if (con.CallResponse.equals("B") || con.CallResponse.equals("C") || con.CallResponse.equals("Y2") || con.CallResponse.equals("E") || con.CallResponse.equals("F") ||
+                                    con.CallResponse.equals("Y1")) {
+                                contacts.add(con);
+                            }
+                        } else if (Status.equals("Tentative") && (con.tc.equals(TeleCaller) || TeleCaller.equals("ALL"))) {
+                            if (con.CallResponse.equals("A4") || con.CallResponse.equals("Y1") || con.CallResponse.equals("Y2")) {
+                                contacts.add(con);
+                            }
+                        } else if (Status.equals("Recall Inactive Numbers") && (con.tc.equals(TeleCaller) || TeleCaller.equals("ALL")) && con.date_of_Calling.equals(getDate())) {
+                            Log.d("info", "Inside RecallInactive");
+
+                            if ((con.CallResponse.equals("B") || con.CallResponse.equals("C") || con.CallResponse.equals("Y2") || con.CallResponse.equals("E") || con.CallResponse.equals("F") ||
+                                    con.CallResponse.equals("Y1"))) {
+                                contacts.add(con);
+                            }
+                        }
+
+
                     }
+
+
                 }
 
+            }
 
-            }}
-            Log.d("info", "Downloaded Info Data:" + jA);
+            fIn.close();
         } catch (Exception e) {
             Toast.makeText(Con.getApplicationContext(), e.getMessage(),
                     Toast.LENGTH_SHORT).show();
         }
-        return jA;
+        return contacts;
     }
 
     private String getDate() {
@@ -383,8 +385,8 @@ public class CallStatusUpdate {
         BufferedReader reader;
         HashMap<String, Integer> map = new HashMap<String, Integer>();
 
-        int totalNoOfPeople=0,totalNoOfCalls=0,A1=0,Z=0,active = 0,inActive = 0,drop = 0,
-                A2=0,A3=0,A4=0,B=0,C=0,D=0,E=0,F=0,G=0,X=0,Y1=0,Y2=0,Y3=0;
+        int totalNoOfPeople = 0, totalNoOfCalls = 0, A1 = 0, Z = 0, active = 0, inActive = 0, drop = 0,
+                A2 = 0, A3 = 0, A4 = 0, B = 0, C = 0, D = 0, E = 0, F = 0, G = 0, X = 0, Y1 = 0, Y2 = 0, Y3 = 0;
         String csvLine;
         try {
             File file = new File(SD_CARD_PATH, filename);
@@ -394,118 +396,117 @@ public class CallStatusUpdate {
             while ((csvLine = reader.readLine()) != null) {
 
                 ids = csvLine.split(",");
-                Log.d("info","People:"+ids[0]);
-                Log.d("info","SelectedPrograms:"+Program);
-                if ((TeleCaller.equals(ids[10])||(TeleCaller.equals("ALL")))&&(Program.contains(ids[2])))
-                {
-                    if( ((Date==true) && ids[15].equals(getDate())) || (Date==false) )
-                    {
-                    Log.d("info","SelectedPeople:"+ids[0]);
-                     totalNoOfPeople++;
+                Log.d("info", "People:" + ids[0]);
+                Log.d("info", "SelectedPrograms:" + Program);
+                if ((TeleCaller.equals(ids[10]) || (TeleCaller.equals("ALL"))) && (Program.contains(ids[2]))) {
+                    if (((Date == true) && ids[15].equals(getDate())) || (Date == false)) {
+                        Log.d("info", "SelectedPeople:" + ids[0]);
+                        totalNoOfPeople++;
                         totalNoOfCalls = totalNoOfCalls + Integer.parseInt(ids[17]);
-                    switch (ids[12]) {
-                        case "A1":
-                            A1++;
+                        switch (ids[12]) {
+                            case "A1":
+                                A1++;
 
-                            break;
-                        case "A2":
-                           A2++;
+                                break;
+                            case "A2":
+                                A2++;
 
-                            break;
-                        case "A3":
-                            A3++;
-                            break;
-                        case "A4":
-                            A4++;
+                                break;
+                            case "A3":
+                                A3++;
+                                break;
+                            case "A4":
+                                A4++;
 
-                            break;
-                        case "B":
-                            B++;
-                            break;
-                        case "C":
-                           C++;
+                                break;
+                            case "B":
+                                B++;
+                                break;
+                            case "C":
+                                C++;
 
-                            break;
-                        case "D":
-                            D++;
-                            break;
-                        case "E":
-                            E++;
-                            break;
-                        case "F":
-                       F++;
-                            break;
-                        case "G":
-                           G++;
-                            break;
-                        case "X":
-                           X++;
+                                break;
+                            case "D":
+                                D++;
+                                break;
+                            case "E":
+                                E++;
+                                break;
+                            case "F":
+                                F++;
+                                break;
+                            case "G":
+                                G++;
+                                break;
+                            case "X":
+                                X++;
 
-                            break;
-                        case "Y1":
-                            Y1++;
+                                break;
+                            case "Y1":
+                                Y1++;
 
-                            break;
-                        case "Y2":
-                           Y2++;
+                                break;
+                            case "Y2":
+                                Y2++;
 
-                            break;
-                        case "Y3":
-                          Y3++;
-
-
-                            Log.d("info", "Y3 Response Selected");
-                            break;
-                        case "Z":
-                          Z++;
-
-                            break;
+                                break;
+                            case "Y3":
+                                Y3++;
 
 
+                                Log.d("info", "Y3 Response Selected");
+                                break;
+                            case "Z":
+                                Z++;
+
+                                break;
+
+
+                        }
+
+                        if (ids[13].equals("Active")) {
+                            active++;
+                        }
+                        if (ids[13].equals("Inactive")) {
+                            inActive++;
+                        }
+                        if (ids[13].equals("Drop")) {
+                            drop++;
+                        }
                     }
-
-                    if(ids[13].equals("Active"))
-                    {
-                        active++;
-                    }
-                    if(ids[13].equals("Inactive"))
-                    {
-                        inActive++;
-                    }
-                    if(ids[13].equals("Drop"))
-                    {
-                        drop++;
-                    }
-                }}
+                }
             }
 
+            fIn.close();
         } catch (Exception e) {
 //            Toast.makeText(Con.getApplicationContext(), e.getMessage(),
 //                    Toast.LENGTH_SHORT).show();
         }
-        Log.d("info","TotalNoOfPeopleCalls:"+totalNoOfPeople);
-        map.put("A1",A1);
-        map.put("A2",A2);
-        map.put("A3",A3);
-        map.put("A4",A4);
-        map.put("B",B);
-        map.put("C",C);
-        map.put("D",D);
-        map.put("E",E);
-        map.put("F",F);
-        map.put("G",G);
-        map.put("X",X);
-        map.put("Y1",Y1);
-        map.put("Y2",Y2);
-        map.put("Y3",Y3);
 
 
-        map.put("Z",Z);
-        map.put("Inactive",inActive);
-        map.put("Drop",drop);
-        map.put("Active",active);
-        map.put("NoOfPeople",totalNoOfPeople);
-        map.put("NoOfCalls",totalNoOfCalls);
+        Log.d("info", "TotalNoOfPeopleCalls:" + totalNoOfPeople);
+        map.put("A1", A1);
+        map.put("A2", A2);
+        map.put("A3", A3);
+        map.put("A4", A4);
+        map.put("B", B);
+        map.put("C", C);
+        map.put("D", D);
+        map.put("E", E);
+        map.put("F", F);
+        map.put("G", G);
+        map.put("X", X);
+        map.put("Y1", Y1);
+        map.put("Y2", Y2);
+        map.put("Y3", Y3);
+
+
+        map.put("Z", Z);
+        map.put("Inactive", inActive);
+        map.put("Drop", drop);
+        map.put("Active", active);
+        map.put("NoOfPeople", totalNoOfPeople);
+        map.put("NoOfCalls", totalNoOfCalls);
 
         return map;
 
@@ -521,57 +522,57 @@ public class CallStatusUpdate {
             case "A2":
                 CallResponse = "Active";
 
-            break;
+                break;
             case "A3":
                 CallResponse = "Active";
 
-            break;
+                break;
             case "A4":
                 CallResponse = "Active";
 
-            break;
+                break;
             case "B":
                 CallResponse = "Inactive";
 
-            break;
+                break;
             case "C":
                 CallResponse = "Inactive";
 
-            break;
+                break;
             case "D":
                 CallResponse = "Drop";
 
-            break;
+                break;
             case "E":
                 CallResponse = "Inactive";
 
-            break;
+                break;
             case "F":
                 CallResponse = "Inactive";
 
-            break;
+                break;
             case "G":
                 CallResponse = "Drop";
 
-            break;
+                break;
             case "X":
                 CallResponse = "Drop";
 
-            break;
+                break;
             case "Y1":
                 CallResponse = "Inactive";
 
-            break;
+                break;
             case "Y2":
                 CallResponse = "Inactive";
 
-            break;
+                break;
             case "Y3":
                 CallResponse = "Inactive";
 
 
-            Log.d("info", "Y3 Response Selected");
-            break;
+                Log.d("info", "Y3 Response Selected");
+                break;
             case "Z":
                 CallResponse = "Drop";
 
@@ -580,5 +581,70 @@ public class CallStatusUpdate {
         return (CallResponse);
 
     }
-}
+
+    public ArrayList<Contact> getWhatsappMessages(String Status, String filename) throws FileNotFoundException {
+
+
+        String[] ids;
+
+        BufferedReader reader;
+
+        String csvLine;
+
+        Log.d("info", "CurrentStatus" + Status);
+        File SD_CARD_PATH = Environment.getExternalStorageDirectory(); //.toString();
+        String fname = filename;
+        ArrayList<Contact> whatsappContacts = new ArrayList<Contact>();
+
+        try {
+            File file = new File(SD_CARD_PATH, fname);
+            FileInputStream fIn = new FileInputStream(file);
+            reader = new BufferedReader(new InputStreamReader(fIn));
+
+            while ((csvLine = reader.readLine()) != null) {
+
+                Contact con = new Contact();
+
+                ids = csvLine.split(",");
+                Log.d("info", "Rowinfo:" + ids[2]);
+                Log.d("info", "RowName:" + ids[0]);
+                Log.d("info", "StatusValue:" + Status);
+
+                con.name = ids[0];
+                con.number = ids[1];
+
+                con.CallResponse = ids[12];
+
+
+                String finalStatus = getStatus(Status);
+                Log.d("info", "Final Status:" + finalStatus);
+
+                    if (Status.equals("ALL") && !(con.number.isEmpty())) {
+                        whatsappContacts.add(con);
+                    } else if (con.CallResponse.equals(finalStatus)) {
+                        whatsappContacts.add(con);
+                    } else if (Status.equals("Inactive Calls")) {
+                        if (con.CallResponse.equals("B") || con.CallResponse.equals("C") || con.CallResponse.equals("Y2") || con.CallResponse.equals("E") || con.CallResponse.equals("F") ||
+                                con.CallResponse.equals("Y1")) {
+                            contacts.add(con);
+                        }
+                    } else if (Status.equals("Tentative")) {
+                        if (con.CallResponse.equals("A4") || con.CallResponse.equals("Y1") || con.CallResponse.equals("Y2")) {
+                            whatsappContacts.add(con);
+                        }
+                    } else if (Status.equals("Active")) {
+                        if (con.CallResponse.equals("A1") || con.CallResponse.equals("A2") || con.CallResponse.equals("A3") || con.CallResponse.equals("A4")) {
+                            whatsappContacts.add(con);
+                        }
+                    }
+                }
+                fIn.close();
+                Log.d("info", "whatsappContacts:" + whatsappContacts.size());
+            } catch (IOException e1) {
+            e1.printStackTrace();
+        }
+
+        return whatsappContacts;
+        }
+    }
 

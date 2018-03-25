@@ -50,17 +50,17 @@
 
         </RelativeLayout>
 
-        <TextView
-            android:id="@+id/Status"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Calling Status" />
+        <!--<TextView-->
+            <!--android:id="@+id/Status"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:text="Calling Status" />-->
 
-        <TextView
-            android:id="@+id/UpdatedStatus1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/Status" />
+        <!--<TextView-->
+            <!--android:id="@+id/UpdatedStatus1"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_below="@+id/Status" />-->
 
     </LinearLayout>
 
@@ -75,6 +75,8 @@
 
         <TextView
             android:id="@+id/txtStatus"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
@@ -147,6 +149,16 @@
                 android:paddingTop="3dp"
                 android:textSize="18dp"
                 android:text="Update Response" />
+
+            <TextView
+                android:id="@+id/Status"
+                android:paddingTop="10dp"
+                android:paddingLeft="10dp"
+                android:layout_below="@+id/UpdateCallStatus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Calling Status" />
+
         </RelativeLayout>
     </RelativeLayout>
     <RelativeLayout
@@ -188,27 +200,27 @@
 
     </LinearLayout>
     </RelativeLayout>
-    <RelativeLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/btnLayout1">
-        <EditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Enter Search Text"
-            android:id="@+id/SearchText"/>
-    <LinearLayout
-        android:layout_below="@+id/SearchText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/RC"
-        android:orientation="vertical"
-        >
+    <!--<RelativeLayout-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_below="@+id/btnLayout1">-->
+        <!--<EditText-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:hint="Enter Search Text"-->
+            <!--android:id="@+id/SearchText"/>-->
+    <!--<LinearLayout-->
+        <!--android:layout_below="@+id/SearchText"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:id="@+id/RC"-->
+        <!--android:orientation="vertical"-->
+        <!--&gt;-->
 
 
-    </LinearLayout>
+    <!--</LinearLayout>-->
 
-    </RelativeLayout>
+    <!--</RelativeLayout>-->
 
 </RelativeLayout>
     </ScrollView>

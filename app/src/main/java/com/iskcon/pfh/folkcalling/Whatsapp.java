@@ -1,8 +1,10 @@
 package com.iskcon.pfh.folkcalling;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
@@ -19,7 +21,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
-import android.widget.Toast;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -29,6 +30,7 @@ public class Whatsapp extends AppCompatActivity {
 AutoCompleteTextView txtTemplate;
 EditText txtMessage,imageFile,lFileInput;
 ImageView search;
+Activity act;
 Button btnDownload;
 String csvFilename;
 Timer timer;
@@ -82,27 +84,56 @@ int i=0,contact_count=0;
 
             }
         });
-        ArrayList<String> sPrograms = new ArrayList<>();
-        sPrograms.add("ALL");
-        ExcelAccess EA = new ExcelAccess();
-        try {
-            ProgressDialog progress = new ProgressDialog(this);
-            progress.setTitle("Loading");
-            progress.setMessage("Wait while loading...");
-            progress.setCancelable(false); // disable dismiss by tapping outside of the dialog
-            progress.show();
-// To dismiss the dialog
+//        final Context con = this;
+       act = getActivity();
+//     //   ExcelAccess EA = new ExcelAccess();
+//        try {
+//           final ProgressDialog progress = new ProgressDialog(this);
+//            progress.setTitle("Loading");
+//            progress.setMessage("Wait while loading...");
+//            progress.setCancelable(false); // disable dismiss by tapping outside of the dialog
+//
+//            Runnable runnable = new Runnable() {
+//                @Override
+//                public void run() {
+////
+//                    runOnUiThread(new Runnable() {
+//
+//                        @Override
+//                        public void run() {
+//                            progress.show();
+//                        }
+//                    });
+//                    ArrayList<String> sPrograms = new ArrayList<>();
+//                    sPrograms.add("ALL");
+//                    CallStatusUpdate callManager = new CallStatusUpdate();
+//                    Spinner status = (Spinner)findViewById(R.id.updateSpinner);
+//                    String statusValue = status.getSelectedItem().toString();
+//                    try {
+//                        contacts = callManager.getWhatsappMessages(statusValue,csvFilename);
+//                    } catch (FileNotFoundException e) {
+//                        e.printStackTrace();
+//                    }
+//
+//                    // Toast.makeText(getApplicationContext(), contacts.size() + "Downloaded", Toast.LENGTH_LONG).show();
+//                    addContacts();
+//                    contact_count = contacts.size();
+//                    runOnUiThread(new Runnable() {
+//
+//                        @Override
+//                        public void run() {
+//                            progress.dismiss();
+//                        }
+//                    });
+//                }};
+//           new Thread(runnable).start();
+//
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//
 
-            contacts = EA.fileResource("ALL", this, csvFilename, "ALL","ALL",sPrograms);
-            Toast.makeText(getApplicationContext(),contacts.size()+"Downloaded",Toast.LENGTH_LONG).show();
-            addContacts();
-            progress.dismiss();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
 
-
-        contact_count = contacts.size();
 
                 btSave.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -114,22 +145,67 @@ int i=0,contact_count=0;
 
     public void sendWhatsappMessage()
     {
-        ExcelAccess EA = new ExcelAccess();
-        Spinner status = (Spinner)findViewById(R.id.updateSpinner);
-        String statusValue = status.getSelectedItem().toString();
-        Context co = this;
+
+
         try {
-            contacts=EA.getWhatsappMessages(this,statusValue,csvFilename);
-            contact_count = contacts.size();
-            Log.d("info","WhatsappContacts Size:"+contacts.size());
-            callAsynchronousTask();
-        } catch (FileNotFoundException e) {
+            final ProgressDialog progress = new ProgressDialog(this);
+            progress.setTitle("Loading");
+            progress.setMessage("Wait while loading...");
+            progress.setCancelable(false); // disable dismiss by tapping outside of the dialog
+
+            Runnable runnable = new Runnable() {
+                @Override
+                public void run() {
+//
+                    runOnUiThread(new Runnable() {
+
+                        @Override
+                        public void run() {
+                            progress.show();
+                        }
+                    });
+                    ArrayList<String> sPrograms = new ArrayList<>();
+                    sPrograms.add("ALL");
+                    CallStatusUpdate callManager = new CallStatusUpdate();
+                    Spinner status = (Spinner)findViewById(R.id.updateSpinner);
+                    String statusValue = status.getSelectedItem().toString();
+                    try {
+                        contacts = callManager.getWhatsappMessages(statusValue,csvFilename);
+                    } catch (FileNotFoundException e) {
+                        e.printStackTrace();
+                    }
+
+                    // Toast.makeText(getApplicationContext(), contacts.size() + "Downloaded", Toast.LENGTH_LONG).show();
+                 //   addContacts();
+                    contact_count = contacts.size();
+                    runOnUiThread(new Runnable() {
+
+                        @Override
+                        public void run() {
+                            progress.dismiss();
+                            callAsynchronousTask();
+                        }
+                    });
+                }};
+            new Thread(runnable).start();
+
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
+    public Activity getActivity() {
+        Context context = this;
+        while (context instanceof ContextWrapper) {
+            if (context instanceof Activity) {
+                return (Activity) context;
+            }
+            context = ((ContextWrapper) context).getBaseContext();
+        }
+        return null;
+    }
     public void addContacts()
     {
-        Toast.makeText(this,"Inside Write Contacts",Toast.LENGTH_LONG).show();
+        //Toast.makeText(con,"Inside Write Contacts",Toast.LENGTH_LONG).show();
         for(int i=0;i<contacts.size();i++)
         {
 
@@ -143,37 +219,17 @@ int i=0,contact_count=0;
                 if(!ContactExists)
                 {
                     String Name = contact.name;
-                    ContactHelper.writeContact(this,Name,Number);
+                    ContactHelper.writeContact(act,Name,Number);
                     Log.d("info","Writing Contact");
                 }
 
             } catch (Exception e) {
                 e.printStackTrace();
-                Toast.makeText(this,e.getMessage(),Toast.LENGTH_LONG).show();
+                //Toast.makeText(this,e.getMessage(),Toast.LENGTH_LONG).show();
             }
         }
     }
     public void callAsynchronousTask() {
-//
-//        final Handler handler = new Handler();
-//        timer = new Timer();
-//        TimerTask doAsynchronousTask = new TimerTask() {
-//            @Override
-//            public void run() {
-//                handler.post(new Runnable() {
-//                    public void run() {
-//                        try {
-//                            if (i<contact_count) {
-//                                sendWhatsapp();
-//                            }
-//                        } catch (Exception e) {
-//                            // TODO Auto-generated catch block
-//                        }
-//                    }
-//                });
-//            }
-//        };
-//        timer.schedule(doAsynchronousTask, 0, 3000); //execute in every 50000 ms
 
         final Handler handler1 = new Handler();
 
@@ -184,35 +240,21 @@ int i=0,contact_count=0;
       /* do what you need to do */
                 sendWhatsapp();
       /* and here comes the "trick" */
-                if(i<=contact_count)
-                    handler1.postDelayed(this, 4000);
+                if(i<contact_count)
+                    handler1.postDelayed(this, 3000);
                 else
                     handler1.removeCallbacks(this);
             }
         };
 
-        handler1.postDelayed(runnable, 4000);
+        handler1.postDelayed(runnable, 3000);
     }
 
-//        final Handler handler1 = new Handler();
-//
-//
-//        Runnable runnable = new Runnable() {
-//            @Override
-//            public void run() {
-//      /* do what you need to do */
-//                sendWhatsapp();
-//      /* and here comes the "trick" */
-//                handler1.postDelayed(this, 3000);
-//            }
-//        };
-//
-//        handler1.postDelayed(runnable, 3000);
     public void sendWhatsapp()
     {
         Log.d("info","I Value:"+i);
 
-               if(i<=contact_count) {
+               if(i<contact_count) {
 
                    ArrayList<Uri> imageUriArray = new ArrayList<Uri>();
                    String Message = txtMessage.getText().toString();
@@ -298,5 +340,97 @@ int i=0,contact_count=0;
         builder.show();
 
 
+    }
+
+    public void deleteContacts()
+    {
+
+
+
+        final ProgressDialog progress = new ProgressDialog(this);
+        progress.setTitle("Loading");
+        progress.setMessage("Wait while loading...");
+        progress.setCancelable(false); // disable dismiss by tapping outside of the dialog
+
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+
+                runOnUiThread(new Runnable() {
+
+                    @Override
+                    public void run() {
+                        progress.show();
+
+                    }
+                });
+
+                CallStatusUpdate callManager = new CallStatusUpdate();
+                ArrayList<Contact> contacts = new ArrayList<Contact>();
+
+
+                try {
+                    contacts = callManager.getWhatsappMessages("ALL", csvFilename);
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
+
+                for(int i=0;i<contacts.size();i++)
+                {
+
+                    try {
+
+                        Contact contact = contacts.get(i);
+                        String Number = contact.number;
+                        Log.d("info","ContactNumber:"+Number);
+                        Boolean ContactExists = ContactHelper.contactExists(act,Number);
+                        Log.d("info","ContactExists:"+ContactExists);
+                        if(ContactExists)
+                        {
+                            String Name = contact.name;
+                            ContactHelper.deleteContact(act,Number);
+                            Log.d("info","Writing Contact");
+                        }
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        //Toast.makeText(this,e.getMessage(),Toast.LENGTH_LONG).show();
+                    }
+                }
+
+                runOnUiThread(new Runnable() {
+
+                    @Override
+                    public void run() {
+                        progress.dismiss();
+                        // callAsynchronousTask();
+                    }
+                });
+            }
+        };
+        new Thread(runnable).start();
+
+
+    }
+
+    public void showDeleteContacts(View view)
+    {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setMessage("Contacts from the file will be added to your phonebook for enabling sending Whatsapp messages. It can later be deleted once the messages are sent ");
+        builder.setTitle("Add Contacts");
+// Add the buttons
+        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                deleteContacts();
+            }
+        });
+        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                // User cancelled the dialog
+            }
+        });
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 }

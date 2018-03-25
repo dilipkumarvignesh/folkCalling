@@ -13,6 +13,7 @@ import android.provider.ContactsContract.CommonDataKinds.StructuredName;
 import android.provider.ContactsContract.Data;
 import android.provider.ContactsContract.PhoneLookup;
 import android.provider.ContactsContract.RawContacts;
+import android.util.Log;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -102,28 +103,7 @@ public class ContactHelper {
 
         return -1;
     }
-    //    private void writeContact(String displayName, String number) {
-//        ArrayList contentProviderOperations = new ArrayList();
-//        //insert raw contact using RawContacts.CONTENT_URI
-//        contentProviderOperations.add(ContentProviderOperation.newInsert(RawContacts.CONTENT_URI)
-//                .withValue(RawContacts.ACCOUNT_TYPE, null).withValue(RawContacts.ACCOUNT_NAME, null).build());
-//        //insert contact display name using Data.CONTENT_URI
-//        contentProviderOperations.add(ContentProviderOperation.newInsert(Data.CONTENT_URI)
-//                .withValueBackReference(Data.RAW_CONTACT_ID, 0).withValue(Data.MIMETYPE, StructuredName.CONTENT_ITEM_TYPE)
-//                .withValue(StructuredName.DISPLAY_NAME, displayName).build());
-//        //insert mobile number using Data.CONTENT_URI
-//        contentProviderOperations.add(ContentProviderOperation.newInsert(Data.CONTENT_URI)
-//                .withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, 0).withValue(Data.MIMETYPE, Phone.CONTENT_ITEM_TYPE)
-//                .withValue(Phone.NUMBER, number).withValue(Phone.TYPE, Phone.TYPE_MOBILE).build());
-//        try {
-//            getApplicationContext().getContentResolver().
-//                    applyBatch(ContactsContract.AUTHORITY, contentProviderOperations);
-//        } catch (RemoteException e) {
-//            e.printStackTrace();
-//        } catch (OperationApplicationException e) {
-//            e.printStackTrace();
-//        }
-//    }
+
     public static boolean insertContact(ContentResolver contactAdder,
                                         String firstName, String mobileNumber) {
         ArrayList<ContentProviderOperation> ops = new ArrayList<ContentProviderOperation>();
@@ -161,17 +141,18 @@ public class ContactHelper {
         return true;
     }
 
-    public static void deleteContact(ContentResolver contactHelper,
+    public static void deleteContact(Activity _activity,
                                      String number) {
 
         ArrayList<ContentProviderOperation> ops = new ArrayList<ContentProviderOperation>();
         String[] args = new String[] { String.valueOf(getContactID(
-                contactHelper, number)) };
+                _activity.getContentResolver(), number)) };
 
         ops.add(ContentProviderOperation.newDelete(RawContacts.CONTENT_URI)
                 .withSelection(RawContacts.CONTACT_ID + "=?", args).build());
         try {
-            contactHelper.applyBatch(ContactsContract.AUTHORITY, ops);
+            _activity.getContentResolver().applyBatch(ContactsContract.AUTHORITY, ops);
+            Log.d("info","Contacts Deleted");
         } catch (RemoteException e) {
             e.printStackTrace();
         } catch (OperationApplicationException e) {

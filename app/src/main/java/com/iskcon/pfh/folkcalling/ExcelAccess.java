@@ -274,61 +274,7 @@ public class ExcelAccess {
 
         return contacts;
     }
-    public void onReadClick(Context context) {
-        printlnToUser("reading XLSX file from resources");
-      //  InputStream stream = context.getResources().openRawResource(R.raw.mtmw);
-//        ArrayList<Contact> contacts = new ArrayList<Contact>();
-//
-//        try {
-//            XSSFWorkbook workbook = new XSSFWorkbook(stream);
-//            XSSFSheet sheet = workbook.getSheetAt(0);
-//            int rowsCount = sheet.getPhysicalNumberOfRows();
-//            FormulaEvaluator formulaEvaluator = workbook.getCreationHelper().createFormulaEvaluator();
-//            for (int r = 1; r<rowsCount; r++) {
-//                Row row = sheet.getRow(r);
-//                String name = "", number = "", status = "";
-//                int cellsCount = row.getPhysicalNumberOfCells();
-//                Contact con = new Contact(name, number, status);
-//
-//                Cell StatusCell = sheet.getRow(r).getCell(2);
-//                con.Status = StatusCell.getStringCellValue();
-//
-//                if (con.Status.equals("NA")) {
-//                    Cell nameCell = sheet.getRow(r).getCell(0);
-//                    con.name = nameCell.getStringCellValue();
-//
-//                    Cell numberCell = sheet.getRow(r).getCell(1);
-//                    con.number = numberCell.getStringCellValue().toString();
-//                    contacts.add(con);
-//                }
-//            }
-////                for (int c = 0; c<cellsCount; c++) {
-//                    String value = getCellAsString(row, c, formulaEvaluator);
-//
-//                    String cellInfo = "r:"+r+"; c:"+c+"; v:"+value;
-//                    if (c==0)
-//                    {
-//
-//                        con.name = value;
-//                    }
-//                    else if (c==1)
-//                    {
-//                        String num = value.replace(".","").replace("E9","");
-//
-//
-//                        con.number = num;
-//                    }
-//
-//
-//                    printlnToUser(cellInfo);
-//                }contacts.add(con);
 
-
-
-
-
-//        }
-    }
 
     public void onWriteClick(Activity act,Contact contac, String Status, String comm, Context con, String filename, String SmsPrefix, String A1txt, Boolean A1Status, String A3txt, Boolean A3Status, String Inactivetxt, Boolean InactiveStatus) {
         printlnToUser("writing xlsx file");
@@ -541,37 +487,6 @@ public class ExcelAccess {
         }
     }
 
-//    protected String getCellAsString(Row row, int c, FormulaEvaluator formulaEvaluator) {
-//        String value = "";
-//        try {
-//            Cell cell = row.getCell(c);
-//            CellValue cellValue = formulaEvaluator.evaluate(cell);
-//            switch (cellValue.getCellType()) {
-//                case Cell.CELL_TYPE_BOOLEAN:
-//                    value = ""+cellValue.getBooleanValue();
-//                    break;
-//                case Cell.CELL_TYPE_NUMERIC:
-//                    double numericValue = cellValue.getNumberValue();
-//                    if(HSSFDateUtil.isCellDateFormatted(cell)) {
-//                        double date = cellValue.getNumberValue();
-//                        SimpleDateFormat formatter =
-//                                new SimpleDateFormat("dd/MM/yy");
-//                        value = formatter.format(HSSFDateUtil.getJavaDate(date));
-//                    } else {
-//                        value = ""+numericValue;
-//                    }
-//                    break;
-//                case Cell.CELL_TYPE_STRING:
-//                    value = ""+cellValue.getStringValue();
-//                    break;
-//                default:
-//            }
-//        } catch (NullPointerException e) {
-//            /* proper error handling should be here */
-//            printlnToUser(e.toString());
-//        }
-//        return value;
-//    }
     private String getDate() {
         Calendar cal = Calendar.getInstance();
 
@@ -596,15 +511,7 @@ public class ExcelAccess {
 //        output.append(string+"\n");
     }
 
-    public void share(String fileName, Context context) {
-//        Uri fileUri = Uri.parse("content://"+getPackageName()+"/"+fileName);
-//        printlnToUser("sending "+fileUri.toString()+" ...");
-//        Intent shareIntent = new Intent();
-//        shareIntent.setAction(Intent.ACTION_SEND);
-//        shareIntent.putExtra(Intent.EXTRA_STREAM, fileUri);
-//        shareIntent.setType("application/octet-stream");
-      //  startActivity(Intent.createChooser(shareIntent, getResources().getText(R.string.send_to)));
-    }
+
 
     public String getStatus(String Status) {
         String[] status = Status.split("[(]");
