@@ -6,16 +6,15 @@ import android.content.Context;
 import android.os.Environment;
 import android.telephony.SmsManager;
 import android.util.Log;
-import android.widget.Toast;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -45,16 +44,11 @@ public class CallStatusUpdate {
     }
 
     public void writeStatus(Activity act, Contact contac, String Status, String comm, Context con, String filename, String SmsPrefix, String A1txt, Boolean A1Status, String A3txt, Boolean A3Status, String Inactivetxt, Boolean InactiveStatus) {
-        InputStream inputStream;
         String[] ids;
-        FileInputStream iStream;
         BufferedReader reader;
-        String message;
-
 
         File SD_CARD_PATH = Environment.getExternalStorageDirectory();
-
-
+        String oldLine = "";
         String fname2 = "1" + ".csv";
         try {
             File file = new File(SD_CARD_PATH, filename);
@@ -145,8 +139,7 @@ public class CallStatusUpdate {
 
 
                     }
-//                    String TodayDate = getDate();
-//                    String currentTime = currentTime();
+
                     Log.d("info", "Outside switch");
                     if (ids[12].equals("NA"))   //Check if current call response is there
                     {
@@ -176,9 +169,11 @@ public class CallStatusUpdate {
                     ids[14] = comm;
                     ids[15] = getDate();
                     ids[16] = currentTime();
+//                    ids[19] = contac.RemainderDay;
+//                    ids[20] = contac.RemainderTime;
                     csvLine = ids[0] + "," + ids[1] + "," + ids[2] + "," + ids[3] + "," + ids[4] + "," + ids[5] +
                             "," + ids[6] + "," + ids[7] + "," + ids[8] + "," + ids[9] + "," + ids[10]
-                            + "," + ids[11] + "," + ids[12] + "," + ids[13] + "," + ids[14] + "," + ids[15] + "," + ids[16] + "," + ids[17] + "," + ids[18] + "," + ids[19];
+                            + "," + ids[11] + "," + ids[12] + "," + ids[13] + "," + ids[14] + "," + ids[15] + "," + ids[16] + "," + ids[17] + "," + ids[18] ; //+ ids[19]+","+ids[20];
                     // csvLine=csvLine+","+Status+","+CallResponse+","+comm+","+TodayDate+","+currentTime;
 
                     bw.write(csvLine + "\n");
@@ -186,7 +181,7 @@ public class CallStatusUpdate {
                 } else {
                     bw.write(csvLine + "\n");
                 }
-
+                oldLine = oldLine+csvLine+System.lineSeparator();
 
                 Log.d("Collumn 1 ", "" + ids[0] + ids[1]);
                 //txtEd.setText(message);
@@ -212,15 +207,190 @@ public class CallStatusUpdate {
             bw.close();
             file.delete();
             file1.renameTo(new File(SD_CARD_PATH, filename));
+            Log.d("info","oldLine:"+oldLine);
 
         } catch (Exception e) {
-            Toast.makeText(con.getApplicationContext(), e.getMessage(),
-                    Toast.LENGTH_SHORT).show();
+            e.printStackTrace();
+            Log.e("error",e.getMessage());
         }
 
     }
 
+    public void writeStatus1(Activity act, Contact contac, String Status, String comm, Context con, String filename, String SmsPrefix, String A1txt, Boolean A1Status, String A3txt, Boolean A3Status, String Inactivetxt, Boolean InactiveStatus) {
+        String[] ids;
+        BufferedReader reader;
 
+        File SD_CARD_PATH = Environment.getExternalStorageDirectory();
+
+
+        try {
+            File file = new File(SD_CARD_PATH, filename);
+           // File file1 = new File(SD_CARD_PATH, fname2);
+         //   FileInputStream fIn = new FileInputStream(file);
+            reader = new BufferedReader(new FileReader(file));
+            FileWriter writer = null;
+         //   BufferedWriter bw = new BufferedWriter(new FileWriter(file1));
+            String csvLine;
+
+            String oldLine = "";
+
+            while ((csvLine = reader.readLine()) != null) {
+
+
+                String FinalStatus = "";
+                ids = csvLine.split(",");
+
+                //   ids[2]=Status;
+                Log.d("info", "Write Number:" + contac.number);
+                String CallResponse = "";
+                if (ids[0].equalsIgnoreCase(contac.name) && ids[1].equalsIgnoreCase(contac.number)) {
+                    Log.d("info", "Write Number Inside:" + contac.number);
+                    FinalStatus = getStatus(Status);
+                    // csvLine=String.join(",",ids);
+
+                    switch (FinalStatus) {
+                        case "A1":
+                            CallResponse = "Active";
+
+                            break;
+                        case "A2":
+                            CallResponse = "Active";
+
+                            break;
+                        case "A3":
+                            CallResponse = "Active";
+
+                            break;
+                        case "A4":
+                            CallResponse = "Active";
+
+                            break;
+                        case "B":
+                            CallResponse = "Inactive";
+
+                            break;
+                        case "C":
+                            CallResponse = "Inactive";
+
+                            break;
+                        case "D":
+                            CallResponse = "Drop";
+
+                            break;
+                        case "E":
+                            CallResponse = "Inactive";
+
+                            break;
+                        case "F":
+                            CallResponse = "Inactive";
+
+                            break;
+                        case "G":
+                            CallResponse = "Drop";
+
+                            break;
+                        case "X":
+                            CallResponse = "Drop";
+
+                            break;
+                        case "Y1":
+                            CallResponse = "Inactive";
+
+                            break;
+                        case "Y2":
+                            CallResponse = "Inactive";
+
+                            break;
+                        case "Y3":
+                            CallResponse = "Inactive";
+
+
+                            Log.d("info", "Y3 Response Selected");
+                            break;
+                        case "Z":
+                            CallResponse = "Drop";
+
+                            break;
+
+
+                    }
+
+                    Log.d("info", "Outside switch");
+                    if (ids[12].equals("NA"))   //Check if current call response is there
+                    {
+                        Log.d("info", "100");
+                        ids[12] = getStatus(Status);
+
+                    } else {
+                        Log.d("info", "101");
+                        ids[11] = ids[12];
+                        ids[12] = getStatus(Status);
+
+                    }
+                    if (getDate().equals(ids[15])) {
+                        Log.d("info", "102");
+                        int call = Integer.parseInt(ids[17]);
+                        call = call + 1;
+                        ids[17] = Integer.toString(call);
+
+                    } else {
+                        Log.d("info", "104");
+                        int call = 1;
+                        ids[17] = Integer.toString(call);
+                    }
+                    Log.d("info", "105");
+                    ids[13] = CallResponse;
+                    comm = comm.replace(',', '.');
+                    ids[14] = comm;
+                    ids[15] = getDate();
+                    ids[16] = currentTime();
+//                    ids[19] = contac.RemainderDay;
+//                    ids[20] = contac.RemainderTime;
+                    csvLine = ids[0] + "," + ids[1] + "," + ids[2] + "," + ids[3] + "," + ids[4] + "," + ids[5] +
+                            "," + ids[6] + "," + ids[7] + "," + ids[8] + "," + ids[9] + "," + ids[10]
+                            + "," + ids[11] + "," + ids[12] + "," + ids[13] + "," + ids[14] + "," + ids[15] + "," + ids[16] + "," + ids[17] + "," + ids[18] ; //+ ids[19]+","+ids[20];
+                    // csvLine=csvLine+","+Status+","+CallResponse+","+comm+","+TodayDate+","+currentTime;
+
+                //    bw.write(csvLine + "\n");
+                    Log.d("info", "After write");
+                } else {
+                 //   bw.write(csvLine + "\n");
+                }
+
+                oldLine=oldLine+csvLine+System.lineSeparator();
+
+                Log.d("Collumn 1 ", "" + ids[0] + ids[1]);
+                //txtEd.setText(message);
+                if (FinalStatus.equals("A1") && A1Status == true) {
+                    String finalMessage = constructMessage(SmsPrefix, ids[0], A1txt);
+                    sendSms(finalMessage, ids[1]);
+                }
+
+                if (FinalStatus.equals("A4") && A3Status == true) {
+                    String finalMessage = constructMessage(SmsPrefix, ids[0], A3txt);
+                    sendSms(finalMessage, ids[1]);
+                }
+
+                if (CallResponse.equals("Inactive") && InactiveStatus == true) {
+                    String finalMessage = constructMessage(SmsPrefix, ids[0], Inactivetxt);
+                    sendSms(finalMessage, ids[1]);
+                }
+
+            }
+
+            writer = new FileWriter(file);
+            writer.write(oldLine);
+            reader.close();
+            writer.close();
+
+            Log.d("info","oldLine:"+oldLine);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.e("error",e.getMessage());
+        }
+
+    }
 
     public String constructMessage(String Prefix, String name, String Message) {
         String finalMessage = Prefix + " " + name + "," + Message;
@@ -231,11 +401,11 @@ public class CallStatusUpdate {
 
     public ArrayList<Contact> getCallDataStatus1(String Status, Context Con, String Filename, String TeleCaller, String Day, ArrayList<String> selectedPrograms) {
         this.Con = Con;
-        InputStream inputStream;
+
         String[] ids;
-        FileInputStream iStream;
+
         BufferedReader reader;
-        String message;
+
         String csvLine;
         ArrayList<Contact> contacts= new ArrayList<Contact>();
         File SD_CARD_PATH = Environment.getExternalStorageDirectory(); //.toString();
@@ -248,16 +418,13 @@ public class CallStatusUpdate {
             reader = new BufferedReader(new InputStreamReader(fIn));
 
             while ((csvLine = reader.readLine()) != null) {
-//                Toast.makeText(Con.getApplicationContext(), csvLine,
-//                Toast.LENGTH_SHORT).show();
+//
                 Contact con = new Contact();
-                // JSONObject obj = new JSONObject();
+
                 ids = csvLine.split(",");
                 Log.d("info", "Rowinfo:" + ids[2]);
                 Log.d("info", "RowName:" + ids[0]);
                 Log.d("info", "StatusValue:" + Status);
-//                CallUpdate obj1 = new CallUpdate(ids[0],ids[1]);
-//                CallList.add(obj1);
 
                 con.name = ids[0];
                 con.number = ids[1];
@@ -336,8 +503,8 @@ public class CallStatusUpdate {
 
             fIn.close();
         } catch (Exception e) {
-            Toast.makeText(Con.getApplicationContext(), e.getMessage(),
-                    Toast.LENGTH_SHORT).show();
+            e.printStackTrace();
+            Log.d("info","Error:"+e.getMessage());
         }
         return contacts;
     }
@@ -376,6 +543,62 @@ public class CallStatusUpdate {
 
         smsManager.sendTextMessage(number, null, Message, null, null);
 
+    }
+
+    public void writeNoDelete(String filename,String oldString,String newString)
+    {
+        File fileToBeModified = new File(filename);
+
+        String oldContent = "";
+
+        BufferedReader reader = null;
+
+        FileWriter writer = null;
+
+        try
+        {
+            reader = new BufferedReader(new FileReader(fileToBeModified));
+
+            //Reading all the lines of input text file into oldContent
+
+            String line = reader.readLine();
+
+            while (line != null)
+            {
+                oldContent = oldContent + line + System.lineSeparator();
+
+                line = reader.readLine();
+            }
+
+            //Replacing oldString with newString in the oldContent
+
+            String newContent = oldContent.replaceAll(oldString, newString);
+
+            //Rewriting the input text file with newContent
+
+            writer = new FileWriter(fileToBeModified);
+
+            writer.write(newContent);
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+        finally
+        {
+            try
+            {
+                //Closing the resources
+
+                reader.close();
+
+                writer.close();
+            }
+            catch (IOException e)
+            {
+                e.printStackTrace();
+            }
+        }
     }
 
     public HashMap finalReport(String filename, String TeleCaller, ArrayList<String> Program, Boolean Date) {
@@ -582,7 +805,7 @@ public class CallStatusUpdate {
 
     }
 
-    public ArrayList<Contact> getWhatsappMessages(String Status, String filename) throws FileNotFoundException {
+    public ArrayList<Contact> getWhatsappMessages(String Status, String filename,ArrayList<String> selectedPrograms) throws FileNotFoundException {
 
 
         String[] ids;
@@ -606,7 +829,7 @@ public class CallStatusUpdate {
                 Contact con = new Contact();
 
                 ids = csvLine.split(",");
-                Log.d("info", "Rowinfo:" + ids[2]);
+                Log.d("info", "Rowinfo:" + con);
                 Log.d("info", "RowName:" + ids[0]);
                 Log.d("info", "StatusValue:" + Status);
 
@@ -614,25 +837,30 @@ public class CallStatusUpdate {
                 con.number = ids[1];
 
                 con.CallResponse = ids[12];
+                con.program = ids[2];
 
+                if(selectedPrograms.isEmpty())
+                {
+                    selectedPrograms.add("ALL");
+                }
 
                 String finalStatus = getStatus(Status);
                 Log.d("info", "Final Status:" + finalStatus);
 
-                    if (Status.equals("ALL") && !(con.number.isEmpty())) {
+                    if (Status.equals("ALL") && !(con.number.isEmpty())&&(selectedPrograms.contains(con.program)||selectedPrograms.contains("ALL"))) {
                         whatsappContacts.add(con);
-                    } else if (con.CallResponse.equals(finalStatus)) {
+                    } else if (con.CallResponse.equals(finalStatus)&&(selectedPrograms.contains(con.program)||selectedPrograms.contains("ALL"))) {
                         whatsappContacts.add(con);
-                    } else if (Status.equals("Inactive Calls")) {
+                    } else if (Status.equals("Inactive Calls")&&(selectedPrograms.contains(con.program)||selectedPrograms.contains("ALL"))) {
                         if (con.CallResponse.equals("B") || con.CallResponse.equals("C") || con.CallResponse.equals("Y2") || con.CallResponse.equals("E") || con.CallResponse.equals("F") ||
                                 con.CallResponse.equals("Y1")) {
                             contacts.add(con);
                         }
-                    } else if (Status.equals("Tentative")) {
+                    } else if (Status.equals("Tentative")&&(selectedPrograms.contains(con.program)||selectedPrograms.contains("ALL"))) {
                         if (con.CallResponse.equals("A4") || con.CallResponse.equals("Y1") || con.CallResponse.equals("Y2")) {
                             whatsappContacts.add(con);
                         }
-                    } else if (Status.equals("Active")) {
+                    } else if (Status.equals("Active")&&(selectedPrograms.contains(con.program)||selectedPrograms.contains("ALL"))) {
                         if (con.CallResponse.equals("A1") || con.CallResponse.equals("A2") || con.CallResponse.equals("A3") || con.CallResponse.equals("A4")) {
                             whatsappContacts.add(con);
                         }

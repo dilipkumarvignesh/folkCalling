@@ -9,19 +9,17 @@ import android.content.ContextWrapper;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -70,7 +68,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     View vi;
     String GoogleId;
     TextToSpeech t1;
-
+    CheckBox whatsapp;
     Button chooseProgram;
     int i=0;
     int contact_count=0;
@@ -100,53 +98,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         }
 
-        ToggleButton toggle = (ToggleButton) findViewById(R.id.toggleButton);
-        ToggleButton A3toggle = (ToggleButton) findViewById(R.id.A3toggleButton);
-        ToggleButton Inactivetoggle = (ToggleButton) findViewById(R.id.toggleButton);
+
         chooseProgram = (Button)findViewById(R.id.ChooseProgram);
         chooseProgram.setOnClickListener(this);
 
-        PhoneStateListener callStateListener = new PhoneStateListener() {
-            public void onCallStateChanged(int state, String incomingNumber){
-                if(state==TelephonyManager.CALL_STATE_RINGING){
-                  //  tts.speak(incomingNumber+" calling", TextToSpeech.QUEUE_FLUSH, null);
-//                    Toast.makeText(getApplicationContext(),"Phone is Ringing : "+incomingNumber,
-//                            Toast.LENGTH_LONG).show();
-                }
-                if(state==TelephonyManager.CALL_STATE_OFFHOOK){
-//                    Toast.makeText(getApplicationContext(),"Phone in a call or call picked",
-//                            Toast.LENGTH_LONG).show();
-                }
-                if(state==TelephonyManager.CALL_STATE_IDLE){
-                    //phone is neither ringing nor in a call
-//                    Toast.makeText(getApplicationContext(),"Phone Idle",
-//                            Toast.LENGTH_LONG).show();
-
-//                    Intent showDialogIntent = new Intent(MainActivity.this, DisplayMessageActivity.class);
-//                        showDialogIntent.putExtra("Name", jName);
-//                        startActivityForResult(showDialogIntent, 2);
-//                    if (i!=0) {
-//                        FragmentManager fm = getFragmentManager();
-//                        CallStatus cs = new CallStatus();
-//                        cs.show(fm, "DialogFragment");
-//                        Runnable showDialogRun = new Runnable() {
-//                            public void run() {
-//                                repeatCall();
-//                            }
-//                        };
-//                        Handler h = new Handler();
-//                        h.postDelayed(showDialogRun, 3000);
-//                    }
-                }
-            }
-        };
-
-        telephonyManager.listen(callStateListener, PhoneStateListener.LISTEN_CALL_STATE);
-        ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
-        //Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-      //  setSupportActionBar(toolbar);
-    //    txtGoogleId = (EditText) findViewById(R.id.txtGoogleId);
         txtStatus = (TextView) findViewById(R.id.Status);
         btnDownload = (Button) findViewById(R.id.btnDownload);
         btnDownload.setOnClickListener(new View.OnClickListener() {
@@ -154,7 +109,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 download_excel();
             }
         });
-
+        whatsapp = (CheckBox)findViewById(R.id.checkbox_cheese);
         lFileInput = (TextView)findViewById(R.id.LFileInput);
         SearchFile = (ImageView)findViewById(R.id.GET_FILE);
         SearchFile.setOnClickListener(this);
@@ -361,24 +316,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
         }
-        else if(!GoogleId.equals(""))
+        else
         {
-            String final_google_id = getGoogleId(GoogleId);
-
-            Toast.makeText(getApplicationContext(),
-                    "Downloading Excel. Please wait ...", Toast.LENGTH_LONG).show();
-            DownloadWebpageTask dow = new DownloadWebpageTask(new AsyncResult() {
-                @Override
-                public void onResult(JSONObject object) {
-                    //    ActivityCompat.requestPermissions(this,
-//                new String[]{Manifest.permission.CALL_PHONE},
-                    processJson(object);
-
-                }
-            });
-           // String final_google_id = "1C7XyjLQj0t6waLGlDWsvVdGtM0JWh24RFi0ZiR5L6w0";
-            dow.execute("https://spreadsheets.google.com/tq?key="+final_google_id);
+            Toast.makeText(this,"Please Select a file",Toast.LENGTH_LONG).show();
         }
+
 
 
 
@@ -399,8 +341,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
             case PERMISSIONS_REQUEST_READ_CONTACTS:{
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    // Permission is granted
-                   // writeContact("ZABC","1234567890");
+
                Boolean contactExists = ContactHelper.contactExists(this,"1234567890");
                if(contactExists)
                {
@@ -497,7 +438,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 File file = new File(uriString);
                 Log.d("info", "Filepath:" + file.getAbsolutePath());
                 String path = file.getAbsolutePath();
-                String displayName = null;
+
                 if (uriString.startsWith("content")) {
                //     Log.d("info","Inside Content"+getFilePath(file.getAbsolutePath().toString()));
 
@@ -602,7 +543,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         });
         builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
-                // User cancelled the dialog
+          whatsapp.setChecked(false);
             }
         });
 
@@ -624,8 +565,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 public void getContacts() {
     try {
         final ProgressDialog progress = new ProgressDialog(this);
-        progress.setTitle("Loading");
-        progress.setMessage("Wait while loading...");
+        progress.setTitle("Adding Contacts");
+        progress.setMessage("Please wait...");
         progress.setCancelable(false); // disable dismiss by tapping outside of the dialog
 
         Runnable runnable = new Runnable() {
@@ -643,7 +584,8 @@ public void getContacts() {
                 CallStatusUpdate callManager = new CallStatusUpdate();
 
                 try {
-                    contacts = callManager.getWhatsappMessages("ALL", csvFilename);
+                    selectedPrograms.add("ALL");
+                    contacts = callManager.getWhatsappMessages("ALL", csvFilename,selectedPrograms);
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();
                 }

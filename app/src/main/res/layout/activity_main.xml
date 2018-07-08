@@ -5,6 +5,7 @@
     <!--android:layout_height="fill_parent">-->
 
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:fbutton="http://schemas.android.com/apk/res-auto"
     android:id="@+id/ScrollView01"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -120,13 +121,27 @@
         android:layout_below="@+id/updateDay"
         android:layout_marginBottom="3dp"
         android:text="Program" />
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Choose Programs"
+    <!--<Button-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:text="Choose Programs"-->
+        <!--android:id="@+id/ChooseProgram"-->
+        <!--android:layout_below="@+id/ProgramspinnerText"-->
+        <!--android:layout_marginBottom="3dp"/>-->
+
+    <info.hoang8f.widget.FButton
         android:id="@+id/ChooseProgram"
         android:layout_below="@+id/ProgramspinnerText"
-        android:layout_marginBottom="3dp"/>
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="left|top"
+        android:layout_margin="10dp"
+        android:minHeight="@dimen/demo_button_min_height"
+        android:minWidth="@dimen/demo_button_min_width"
+        android:text="Choose Programs"
+        android:textColor="@android:color/white"
+        fbutton:buttonColor="@color/fbutton_color_turquoise"
+        fbutton:shadowEnabled="true" />
     <!--<Spinner-->
         <!--android:id="@+id/updateProgram"-->
         <!--android:layout_width="match_parent"-->

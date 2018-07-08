@@ -20,6 +20,7 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.Spinner;
 
 import java.io.FileNotFoundException;
@@ -30,6 +31,7 @@ public class Whatsapp extends AppCompatActivity {
 AutoCompleteTextView txtTemplate;
 EditText txtMessage,imageFile,lFileInput;
 ImageView search;
+    ArrayList<String> selectedPrograms = new ArrayList<>();
 Activity act;
 Button btnDownload;
 String csvFilename;
@@ -164,13 +166,15 @@ int i=0,contact_count=0;
                             progress.show();
                         }
                     });
-                    ArrayList<String> sPrograms = new ArrayList<>();
-                    sPrograms.add("ALL");
+//                    ArrayList<String> sPrograms = new ArrayList<>();
+//                    sPrograms.add("ALL");
                     CallStatusUpdate callManager = new CallStatusUpdate();
                     Spinner status = (Spinner)findViewById(R.id.updateSpinner);
                     String statusValue = status.getSelectedItem().toString();
                     try {
-                        contacts = callManager.getWhatsappMessages(statusValue,csvFilename);
+                        Log.d("info","WStatusValue:"+statusValue);
+                        Log.d("info","WSelectedPrograms:"+selectedPrograms);
+                        contacts = callManager.getWhatsappMessages(statusValue,csvFilename,selectedPrograms);
                     } catch (FileNotFoundException e) {
                         e.printStackTrace();
                     }
@@ -178,6 +182,7 @@ int i=0,contact_count=0;
                     // Toast.makeText(getApplicationContext(), contacts.size() + "Downloaded", Toast.LENGTH_LONG).show();
                  //   addContacts();
                     contact_count = contacts.size();
+                    Log.d("info","Downloaded Whatsapp contact Size:"+contact_count);
                     runOnUiThread(new Runnable() {
 
                         @Override
@@ -370,7 +375,9 @@ int i=0,contact_count=0;
 
 
                 try {
-                    contacts = callManager.getWhatsappMessages("ALL", csvFilename);
+                    ArrayList<String> sPrograms = new ArrayList<>();
+                    sPrograms.add("ALL");
+                    contacts = callManager.getWhatsappMessages("ALL", csvFilename,sPrograms);
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();
                 }
@@ -432,5 +439,35 @@ int i=0,contact_count=0;
 
         AlertDialog dialog = builder.create();
         dialog.show();
+    }
+
+    public void selectPrograms(View view)
+    {
+        final String[] items = {"PR1","PR2","PR3","PR4","PR5","PR6","PR7","PR8","PR9","PR10","PR11","PR12","PR13","PR14","PR15"};
+        selectedPrograms.clear();
+        AlertDialog.Builder builder =
+                new AlertDialog.Builder(this);
+
+        builder.setTitle("Select Programs")
+                .setMultiChoiceItems(items, null,
+                        new DialogInterface.OnMultiChoiceClickListener() {
+                            public void onClick(DialogInterface dialog, int item, boolean isChecked) {
+
+                                selectedPrograms.add(items[item]);
+                            }
+                        });
+
+        builder.setPositiveButton("OK",
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        ListView list = ((android.app.AlertDialog) dialog).getListView();
+                        //ListView has boolean array like {1=true, 3=true}, that shows checked items
+
+                        //
+                    }
+                });
+        builder.show();
     }
 }

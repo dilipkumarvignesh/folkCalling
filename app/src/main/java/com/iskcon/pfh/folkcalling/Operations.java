@@ -125,73 +125,14 @@ public class Operations extends AppCompatActivity implements View.OnClickListene
             try {
                 sPrograms = new ArrayList < > ();
                 sPrograms.add("ALL");
-                //
-                //
-                //                Searchcontacts = callManager.getCallDataStatus1("ALL", co, csvFilename, "ALL","ALL",sPrograms);
-                //                Log.d("info","SearchContacts Size:"+Searchcontacts.size());
-                //
-                //                numbers = new String[Searchcontacts.size()];
-                //                for(int z = 0;z<Searchcontacts.size();z++)
-                //                {   Log.d("info","SearchConta name:"+Searchcontacts.get(z).name);
-                //                    numbers[z] = Searchcontacts.get(z).number+" "+Searchcontacts.get(z).name+":"+z;
-                //                    Log.d("info","Z Value:"+z);
-                //                    Log.d("info","number+name:"+numbers[z]);
-                //                }
-                //
-                //               // contacts = EA.fileResource(StatusValue, co, csvFilename, TeleCaller,DayValue,selectedPrograms);
-                //
-                //                contacts = callManager.getCallDataStatus1(StatusValue,co,csvFilename,TeleCaller,DayValue,selectedPrograms);
-                //                Log.d("info","SearchContacts Size1:"+contacts);
-                //                contact_count = contacts.size();
-                //                Log.d("info","FilterContacts Downloaded:"+contact_count);
-                //                Log.d("info","Numbers length:"+numbers.length);
-                //                Toast.makeText(getApplicationContext(),
-                //                        Searchcontacts.size() + " Contacts Downloaded", Toast.LENGTH_LONG).show();
-                //
-                //                ArrayAdapter<String> adapter = new ArrayAdapter<String>
-                //                        (this, android.R.layout.select_dialog_item, numbers);
-                //                AutoCompleteTextView actv = (AutoCompleteTextView) findViewById(R.id.SearchNumber);
-                //                actv.setThreshold(1);//will start working from first character
-                //                actv.setAdapter(adapter);
-                //
-                //                actv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                //                    @Override
-                //                    public void onItemClick(AdapterView<?> adapter, View view, int position, long id) {
-                //                        Log.d("info","Item Selected:"+position+":"+id);
-                //                        String selection = (String) adapter.getItemAtPosition(position);
-                //                        String[] outputEle = selection.split(" ",2);
-                //                        TextView nameStatus = (TextView) findViewById(R.id.txtStatus);
-                //                        SearchName = outputEle[1];
-                //                        Log.d("info","Search Name:"+SearchName);
-                //                        SearchNumber = outputEle[0];
-                //                        nameStatus.setText("Update Call Status for " + SearchName);
-                //                        SearchStatus = 1;
-                //                        int pos = -1;
-                //
-                //                        for (int i = 0; i < numbers.length; i++) {
-                //                            if (numbers[i].equals(selection)) {
-                //                                pos = i;
-                //
-                //                                Log.d("info","Number:"+pos);
-                //                                break;
-                //                            }
-                //                        }
-                //                        pre_q = i;
-                //                        i=pos;
-                //                        Log.d("info","Searched Number position:"+i);
-                //                    }
-                //
-                //
-                //                });
-                //                String Status = "0 Contacts Called " + contact_count + " Contacts Remaining";
-                //                txtStatus.setText(Status);
+
                 final ProgressDialog progress = new ProgressDialog(this);
                 Runnable runnable = new Runnable() {
                     @Override
                     public void run() {
 
-                        progress.setTitle("Loading");
-                        progress.setMessage("Wait while loading...");
+                        progress.setTitle("Loading Contacts");
+                        progress.setMessage("Please wait ...");
                         progress.setCancelable(false); // disable dismiss by tapping outside of the dialog
 
                         runOnUiThread(new Runnable() {
@@ -210,7 +151,7 @@ public class Operations extends AppCompatActivity implements View.OnClickListene
                           numbers = new String[Searchcontacts.size()];
                         for (int z = 0; z < Searchcontacts.size(); z++) {
                             Log.d("info", "SearchConta name:" + Searchcontacts.get(z).name);
-                            numbers[z] = Searchcontacts.get(z).number + " " + Searchcontacts.get(z).name + ":" + z;
+                            numbers[z] = Searchcontacts.get(z).number + " " + Searchcontacts.get(z).name;
                             Log.d("info", "Z Value:" + z);
                             Log.d("info", "number+name:" + numbers[z]);
                         }
@@ -295,11 +236,7 @@ public class Operations extends AppCompatActivity implements View.OnClickListene
     public void onClick(View v) {
         Log.d("info", "Button clicked:" + v.getId());
         switch (v.getId()) {
-            //            case R.id.CALLCONTINUE:
-            //                Callenabled = 1;
-            //                Log.d("info","CallEnabled:"+"TRUE");
-            //                repeatCall();
-            //                break;
+
             case R.id.CALLSTOP:
                 if (Callenabled == 0) {
                     Callenabled = 1;
@@ -386,21 +323,11 @@ public class Operations extends AppCompatActivity implements View.OnClickListene
                 break;
 
 
-            //`               new DatePickerDialog(MainActivity.this, date, myCalendar
-            //                    .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
-            //                    myCalendar.get(Calendar.DAY_OF_MONTH)).show();
-            //                break;
-
         }
 
     }
 
-    private void updateLabel() {
-        String myFormat = "MM/dd/yy"; //In which you need put here
-        SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
 
-        //  edittext.setText(sdf.format(myCalendar.getTime()));
-    }
 
     public void repeatCall() {
         //        Intent showDialogIntent = new Intent(this, DisplayMessageActivity.class);
@@ -462,7 +389,12 @@ public class Operations extends AppCompatActivity implements View.OnClickListene
         final Dialog d = new Dialog(this, R.style.CustomDialogTheme);
         d.setContentView(R.layout.custom_dialog);
         d.getWindow().setType(WindowManager.LayoutParams.TYPE_TOAST);
-        d.show();
+        if (android.os.Build.VERSION.SDK_INT <= 23){
+            d.show();
+        } else{
+            // do something for phones running an SDK before lollipop
+        }
+
 
         Contact NextCaller = contacts.get(i - 1);
         //  JSONObject NextCaller = jA.getJSONObject(i - 1);
@@ -516,21 +448,17 @@ public class Operations extends AppCompatActivity implements View.OnClickListene
                     if (SearchStatus == 1) {
                         Log.d("info", "Current Search position" + i);
                         int updateContact = i;
-                        Log.d("info", "SearchBeforeName:" + contac.name);
-                        Log.d("info", "SearSize:" + Searchcontacts.size());
-                        //                        for(int k=0;i<Searchcontacts.size();i++)
-                        //                        {
-                        //                            Log.d("info","SearchLoopName:"+Searchcontacts.get(k).name);
-                        //                        }
+
+
                         contac = Searchcontacts.get(updateContact);
 
                         Log.d("info", "Search Contact Update Name:" + contac.name);
                     } else if (SearchStatus == 0) {
                         contac = contacts.get(i - 1);
-                        // callManager.writeStatus(act, contac, Stat, com, co, csvFilename, SmsPrefix, A1txt, A1Status, A3txt, A3Status, Inactivetxt, InactiveStatus);
+
                     }
-                    callManager.writeStatus(act, contac, Stat, com, co, csvFilename, SmsPrefix, A1txt, A1Status, A3txt, A3Status, Inactivetxt, InactiveStatus);
-                    //  EA.onWriteClick(act,contac, Stat, com, co, csvFilename, SmsPrefix, A1txt, A1Status, A3txt, A3Status, Inactivetxt, InactiveStatus);
+                    callManager.writeStatus1(act, contac, Stat, com, co, csvFilename, SmsPrefix, A1txt, A1Status, A3txt, A3Status, Inactivetxt, InactiveStatus);
+
 
                 }
 

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:fbutton="http://schemas.android.com/apk/res-auto"
     android:id="@+id/ScrollView01"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -51,13 +52,21 @@
     <!--android:entries="@array/set_Pr"-->
        <!--/>-->
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Choose Programs"
+
+    <info.hoang8f.widget.FButton
         android:id="@+id/ChooseProgram"
         android:layout_below="@+id/ProgramspinnerText"
-        android:layout_marginBottom="3dp"/>
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="left|top"
+        android:layout_margin="10dp"
+        android:minHeight="@dimen/demo_button_min_height"
+        android:minWidth="@dimen/demo_button_min_width"
+        android:text="Choose Programs"
+        android:textColor="@android:color/white"
+        fbutton:buttonColor="@color/fbutton_color_turquoise"
+        fbutton:shadowEnabled="true" />
+
 
     <CheckBox
         android:id="@+id/checkBox"
