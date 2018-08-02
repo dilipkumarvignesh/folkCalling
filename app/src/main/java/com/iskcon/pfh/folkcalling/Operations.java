@@ -7,36 +7,45 @@ import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.provider.CalendarContract;
 import android.provider.CalendarContract.Events;
+import android.provider.Settings;
 import android.speech.tts.TextToSpeech;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup.LayoutParams;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.PopupWindow;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Locale;
+
+//import android.widget.LinearLayout.LayoutParams;
+
 
 public class Operations extends AppCompatActivity implements View.OnClickListener, ItemFragment.OnListFragmentInteractionListener {
     ExcelAccess EA;
     CallStatusUpdate callManager;
     EditText CallComment;
     Activity act;
+    private static final int SYSTEM_ALERT_WINDOW_PERMISSION = 2084;
     TextView txtStatus, lFileInput;
     String jName, csvFilename, SmsPrefix, A1txt, A3txt, Inactivetxt, jNumber, SearchName, SearchNumber;
     Boolean A1Status, A3Status, InactiveStatus;
@@ -58,6 +67,7 @@ public class Operations extends AppCompatActivity implements View.OnClickListene
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_operations);
+        Log.d("info","FilePath:"+ Environment.getExternalStorageDirectory().getAbsolutePath() );
         EA = new ExcelAccess();
         callManager = new CallStatusUpdate();
         act = getActivity();
@@ -93,7 +103,9 @@ public class Operations extends AppCompatActivity implements View.OnClickListene
 
         UpdateCallStatus = (Button) findViewById(R.id.UpdateCallStatus);
         CallStop.setOnClickListener(this);
-
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !Settings.canDrawOverlays(this)) {
+            askPermission();
+        }
         UpdateCallStatus.setOnClickListener(this);
         Report = (Button) findViewById(R.id.REPORT);
         Report.setOnClickListener(this);
@@ -104,6 +116,7 @@ public class Operations extends AppCompatActivity implements View.OnClickListene
         Boolean LFileCheck = extras.getBoolean("LocalFile");
         if (LFileCheck == true) {
             csvFilename = extras.getString("Filename");
+            Log.d("info","CSV FIles:"+csvFilename);
             final String StatusValue = extras.getString("StatusValue");
             final String TeleCaller = extras.getString("TeleCaller");
             final String DayValue = extras.getString("DayValue");
@@ -385,14 +398,29 @@ public class Operations extends AppCompatActivity implements View.OnClickListene
 
     }
 
+    public void showDetailInfo()
+    {
+        LayoutInflater layoutInflater =
+                (LayoutInflater)getBaseContext()
+                        .getSystemService(LAYOUT_INFLATER_SERVICE);
+        View popupView = layoutInflater.inflate(R.layout.popup, null);
+        final PopupWindow popupWindow = new PopupWindow(
+                popupView, LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+
+        popupWindow.showAsDropDown(CallComment, 50, -30);
+    }
     private void showDetailDialog() {
         final Dialog d = new Dialog(this, R.style.CustomDialogTheme);
         d.setContentView(R.layout.custom_dialog);
-        d.getWindow().setType(WindowManager.LayoutParams.TYPE_TOAST);
-        if (android.os.Build.VERSION.SDK_INT <= 23){
+
+        if (android.os.Build.VERSION.SDK_INT < Build.VERSION_CODES.O){
+            d.getWindow().setType(WindowManager.LayoutParams.TYPE_TOAST);
             d.show();
         } else{
             // do something for phones running an SDK before lollipop
+            d.getWindow().setType(WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY);
+            d.show();
+            //showDetailInfo();
         }
 
 
@@ -628,4 +656,9 @@ public class Operations extends AppCompatActivity implements View.OnClickListene
                 Toast.LENGTH_LONG).show();
     }
 
+    private void askPermission() {
+        Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
+                Uri.parse("package:" + getPackageName()));
+        startActivityForResult(intent, SYSTEM_ALERT_WINDOW_PERMISSION);
+    }
 }

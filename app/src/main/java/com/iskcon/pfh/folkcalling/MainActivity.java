@@ -12,6 +12,7 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.speech.tts.TextToSpeech;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -79,6 +80,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        Log.d("info","FilePath:"+ Environment.getExternalStorageDirectory().getAbsolutePath() );
         TelephonyManager telephonyManager = (TelephonyManager)getSystemService(
                 Context.TELEPHONY_SERVICE);
         vi = this.findViewById(android.R.id.content);
@@ -141,6 +143,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.CALLSTOP:
                  Callenabled = 0;
                 Log.d("info","CallEnabled:"+"FALSE");
+
+
                 break;
             case R.id.UpdateCallStatus:
                 try {
@@ -255,6 +259,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 //        GoogleId = txtGoogleId.getText().toString();
         EditText cFilename = (EditText) findViewById(R.id.LFileInput);
         csvFilename = cFilename.getText().toString();
+        Log.d("info","FIlename:"+csvFilename);
         if (!csvFilename.equals(""))
         {
             Spinner sta = (Spinner)findViewById(R.id.spinner);
